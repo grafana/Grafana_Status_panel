@@ -1,4 +1,5 @@
 import { PanelOptionsEditorBuilder } from '@grafana/data';
+import { config } from '@grafana/runtime';
 import { StatusColorOptionsEditor } from 'components/StatusColorOptionsEditor';
 
 export interface StatusPanelOptions {
@@ -93,6 +94,12 @@ export const statusPanelOptionsBuilder = (builder: PanelOptionsEditorBuilder<Sta
       name: 'Colors',
       editor: StatusColorOptionsEditor,
       category: ['Threshold Options'],
+      defaultValue: {
+        crit: config.theme2.visualization.getColorByName("red"),
+        warn: config.theme2.visualization.getColorByName("orange"),
+        ok: config.theme2.visualization.getColorByName("green"),
+        disable: config.theme2.visualization.getColorByName("gray"),
+      }
     })
     .addBooleanSwitch({
       path: 'isAutoScrollOnOverflow',
