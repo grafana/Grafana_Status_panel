@@ -71,6 +71,8 @@ export const StatusPanel: React.FC<Props> = ({
     ? 'noData'
     : 'ok';
 
+
+
   return (
     <div
       ref={wrapper}
@@ -84,7 +86,7 @@ export const StatusPanel: React.FC<Props> = ({
           zIndex: 10,
         },
         !(panelStatus === 'ok' && options.isIgnoreOKColors) &&
-          options.colorMode === 'Panel' && { backgroundColor: (options.colors as any)[panelStatus] }
+          options.colorMode === 'Panel' && { backgroundColor: (options.colors as any)[panelStatus === "noData" ? "disable": panelStatus] }
       )}
     >
       <ReactCardFlip isFlipped={flipped}>

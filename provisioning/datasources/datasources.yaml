@@ -1,0 +1,11 @@
+apiVersion: 1
+
+datasources:
+  - name: Static
+    type: grafana-testdata-datasource
+    uid: bdi86bi8f7zswc
+    access: proxy
+    isDefault: true
+    orgId: 1
+    version: 1
+    editable: true

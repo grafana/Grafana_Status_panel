@@ -37,7 +37,7 @@ export function buildStatusMetricProps(
   let disables: StatusMetricProp[] = [];
   data.series.forEach(df => {
     // find first non-time column
-    const field = df.fields.find(field => field.name !== 'Time')!;
+    const field = df.fields.find(field => field.name.toLowerCase() !== 'time')!;
     if (!field?.state) {
       return;
     }
@@ -47,9 +47,12 @@ export function buildStatusMetricProps(
       return;
     }
 
+    if (!field.state?.calcs) {
+      return;
+    }
     // determine field status & handle formatting based on value handler
     let fieldStatus: StatusType = config.custom.displayAliasType === 'Always' ? 'ok' : 'hide';
-    let displayValue = '';
+    let displayValue = '';    
     switch (config.custom.thresholds.valueHandler) {
       case 'Number Threshold':
         let value: number = field.state.calcs![config.custom.aggregation];
