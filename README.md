@@ -1,8 +1,12 @@
 # Grafana Status Panel
 
-> This project was originally contributed by [Vonage](https://github.com/Vonage/Grafana_Status_panel) - thanks for all your great work! It has been forked and republished by Grafana Labs to allow existing users to use the new React-based version following the deprecation of AngularJS. See [Notices]
+>This project was originally contributed by [Vonage](https://github.com/Vonage/Grafana_Status_panel) - thanks for all your great work!
+>
+>The previous published version of the plugin relied on AngularJS which is [deprecated](https://grafana.com/docs/grafana/latest/developers/angular_deprecation/). The source code was updated and we reached out to Vonage to support the new version being published, but they were unable to pursue this at the time. If this situation changes, we will archive our fork and return publishing responsibilities to the original authors.
+>
+>Given its popularity, we - Grafana Labs - have forked the plugin, addressed some issues in the code and republished under the same plugin ID, but with the Grafana signature. This was done to minimize disruption for existing users, allowing you to simply update your plugin version. If we had published under a new ID it would have required manual updates to dashboards to migrate to the new plugin. We have changed the signature to Grafana to reflect the change in publisher and so that it is clear we are not impersonating the original authors. For additional information on the changes, see the [Notices].
 
-> ⚠️ This project is not actively maintained by Grafana Labs. The current version is published as-is with no code contributions thus far from Grafana Labs. Pull requests are welcome and will be reviewed on a best-effort basis. Contact integrations@grafana.com if you are interested in taking on this project longer term.
+⚠️ This project is not actively maintained by Grafana Labs. Pull requests are welcome and will be reviewed on a best-effort basis. Contact integrations@grafana.com if you are interested in taking on this project longer term. We will be happy to work with and eventually hand over to people who are interested in maintaining it again.
 
 This is a plugin meant to be used as a centralized view for the status of component in a glance.
 It is very similar to the Single Stat panel, but it can hold multiple values from the same data source.
