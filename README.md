@@ -5,8 +5,8 @@
 >The previous published version of the plugin relied on AngularJS which is [deprecated](https://grafana.com/docs/grafana/latest/developers/angular_deprecation/). We reached out to Vonage to support publishing an updated version based on the changes made in the source repo, but they were unable to pursue this at the time. 
 >
 >We have stepped up for the time being to minimize disruption, but would be happy to hand maintainership back at any point in the future.
-
-We have republished under the same plugin ID, but with the Grafana signature. This means you can simply update your plugin version. A new ID would have required manual updates to your dashboards. We changed the signature to Grafana to reflect the change in publisher and so that it is clear we are not impersonating the original authors. For additional information on the changes, see the [Notices].
+>
+>We have republished under the same plugin ID, but with the Grafana signature. This means you can simply update your plugin version. A new ID would have required manual updates to your dashboards. We changed the signature to Grafana to reflect the change in publisher and so that it is clear we are not impersonating the original authors. For additional information on the changes, see the [Notices].
 
 ⚠️ This project is not actively maintained by Grafana Labs. Pull requests are welcome and will be reviewed on a best-effort basis. Contact integrations@grafana.com if you are interested in taking on this project longer term. We will be happy to work with and eventually hand over to people who are interested in maintaining it again.
 
