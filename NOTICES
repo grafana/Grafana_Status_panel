@@ -1,0 +1,7 @@
+Copyright (c) 2024 Grafana Labs
+
+This software is based on the Status Panel plugin from Vonage: Copyright (c) 2016 Vonage Holdings Corp. For a copy of the original license see [LICENSE-original](/LICENSE-original).
+
+Notable changes:
+- From a project perspective, the License has remained the same as Apache 2.0 but re-licensed by Grafana Labs, the CODEOWNERS file has been removed, and the built plugin archive has been deleted.
+- For a complete list of changes following the fork, refer to the [CHANGELOG](/CHANGELOG).
