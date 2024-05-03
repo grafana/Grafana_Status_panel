@@ -1,5 +1,3 @@
-version: '3.0'
-
 services:
   grafana:
     user: root
@@ -14,8 +12,7 @@ services:
     ports:
       - 3000:3000/tcp
     volumes:
-      - ./dist:/var/lib/grafana/plugins/vonage-status-panel-react
-      - ./dist_hjdsouza:/var/lib/grafana/plugins/vonage-statushjdsouza-panel
+      - ./dist:/var/lib/grafana/plugins/vonage-status-panel-react      
       - ./provisioning:/etc/grafana/provisioning
       - .:/root/vonage-status-panel
 
@@ -24,4 +21,4 @@ services:
       GF_LOG_FILTERS: plugin.vonage-status-panel:debug
       GF_LOG_LEVEL: info
       GF_DATAPROXY_LOGGING: 1
-      GF_PLUGINS_ALLOW_LOADING_UNSIGNED_PLUGINS: vonage-status-panel, vonage-statushjdsouza-panel
+      GF_PLUGINS_ALLOW_LOADING_UNSIGNED_PLUGINS: vonage-status-panel
