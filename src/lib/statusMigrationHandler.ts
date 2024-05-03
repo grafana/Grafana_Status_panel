@@ -1,10 +1,9 @@
 import { DataLink, PanelMigrationHandler, PanelModel } from '@grafana/data';
 import { StatusPanelOptions } from './statusPanelOptionsBuilder';
-import { defaults } from 'lodash';
 import { StatusThresholdOptions } from 'components/StatusThresholdOptionsEditor';
 import { StatusFieldOptions } from './statusFieldOptionsBuilder';
 
-interface AngularPanelModel extends PanelModel {
+interface AngularPanelModel extends Omit<PanelModel, "targets">{
   clusterName: string;
   namePrefix: string;
   maxAlertNumber: number;
@@ -18,7 +17,7 @@ interface AngularPanelModel extends PanelModel {
   isIgnoreOKColors: boolean;
   isHideAlertsOnDisable: boolean;
   links: DataLink[];
-  targets: [{
+  targets?: [{
     aggregation?: Pick<StatusFieldOptions, 'aggregation'>;
     alias?: string;
     crit?: number;    
@@ -33,7 +32,7 @@ interface AngularPanelModel extends PanelModel {
   }];
 }
 
-const isAngularModel = (panel: PanelModel): panel is AngularPanelModel => !!panel.options && 'clusterName' in panel;
+const isAngularModel = (panel: Omit<PanelModel, "targets">): panel is AngularPanelModel => !!panel.options && 'clusterName' in panel;
 
 
 const migrateFieldConfig = (panel: AngularPanelModel) => {

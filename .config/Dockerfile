@@ -5,6 +5,8 @@ FROM grafana/${grafana_image}:${grafana_version}
 
 ARG development=true
 
+ARG GO_VERSION=1.21.6
+ARG GO_ARCH=amd64
 
 ENV DEV "${development}"
 
@@ -15,7 +17,6 @@ ENV GF_AUTH_ANONYMOUS_ENABLED "true"
 ENV GF_AUTH_BASIC_ENABLED "false"
 # Set development mode so plugins can be loaded without the need to sign
 ENV GF_DEFAULT_APP_MODE "development"
-ENV GF_INSTALL_PLUGINS "vonage-status-panel"
 
 
 LABEL maintainer="Grafana Labs <hello@grafana.com>"
@@ -39,10 +40,31 @@ RUN if [ "${development}" = "true" ]; then \
     fi \
     fi
 
+    
 COPY supervisord/supervisord.conf /etc/supervisor.d/supervisord.ini
 COPY supervisord/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 
+# Installing Go
+RUN if [ "${development}" = "true" ]; then \
+    curl -O -L https://golang.org/dl/go${GO_VERSION}.linux-${GO_ARCH}.tar.gz && \
+    rm -rf /usr/local/go && \
+    tar -C /usr/local -xzf go${GO_VERSION}.linux-${GO_ARCH}.tar.gz && \
+    echo "export PATH=$PATH:/usr/local/go/bin:~/go/bin" >> ~/.bashrc && \
+    rm -f go${GO_VERSION}.linux-${GO_ARCH}.tar.gz; \
+    fi
 
+# Installing delve for debugging
+RUN if [ "${development}" = "true" ]; then \
+    /usr/local/go/bin/go install github.com/go-delve/delve/cmd/dlv@latest; \
+    fi
+
+# Installing mage for plugin (re)building
+RUN if [ "${development}" = "true" ]; then \
+    git clone https://github.com/magefile/mage; \
+    cd mage; \
+    export PATH=$PATH:/usr/local/go/bin; \
+    go run bootstrap.go; \
+    fi
 
 # Inject livereload script into grafana index.html
 RUN sed -i 's|</body>|<script src="http://localhost:35729/livereload.js"></script></body>|g' /usr/share/grafana/public/views/index.html

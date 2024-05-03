@@ -9,8 +9,10 @@ services:
       args:
         grafana_image: ${GRAFANA_IMAGE:-grafana-enterprise}
         grafana_version: ${GRAFANA_VERSION:-10.3.3}
+        development: ${DEVELOPMENT:-true}
     ports:
       - 3000:3000/tcp
+      - 2345:2345/tcp # delve
     volumes:
       - ./dist:/var/lib/grafana/plugins/vonage-status-panel-react      
       - ./provisioning:/etc/grafana/provisioning

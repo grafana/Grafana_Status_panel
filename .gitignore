@@ -36,3 +36,6 @@ grafana
 .sass-cache
 dist_*
 dist
+
+playwright
+playwright-report

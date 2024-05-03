@@ -9,7 +9,7 @@ import {
   LinkModel,
   getValueFormat,
 } from '@grafana/data';
-import { css, cx } from 'emotion';
+import { css, cx } from '@emotion/css';
 import _ from 'lodash';
 
 import { StatusFieldOptions } from 'lib/statusFieldOptionsBuilder';

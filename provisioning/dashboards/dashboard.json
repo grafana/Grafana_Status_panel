@@ -125,63 +125,8 @@
         }
       ],
       "title": "Total",
-      "type": "vonage-status-panel-react"
-    },
-    {
-      "clusterName": "Prod Results",
-      "colorMode": "Panel",
-      "colors": {
-        "crit": "rgba(245, 54, 54, 0.9)",
-        "disable": "rgba(128, 128, 128, 0.9)",
-        "ok": "rgba(50, 128, 45, 0.9)",
-        "warn": "rgba(237, 129, 40, 0.9)"
-      },
-      "cornerRadius": 0,
-      "datasource": {
-        "type": "grafana-testdata-datasource",
-        "uid": "bdi86bi8f7zswc"
-      },
-      "displayName": "Prod Results",
-      "flipCard": false,
-      "flipTime": 5,
-      "fontFormat": "Regular",
-      "gridPos": {
-        "h": 8,
-        "w": 12,
-        "x": 12,
-        "y": 0
-      },
-      "id": 2,
-      "isAutoScrollOnOverflow": false,
-      "isGrayOnNoData": false,
-      "isHideAlertsOnDisable": false,
-      "isIgnoreOKColors": false,
-      "pluginVersion": "2.0.0",
-      "targets": [
-        {
-          "$$hashKey": "object:102",
-          "aggregation": "Last",
-          "alias": "results",
-          "crit": 30,
-          "datasource": {
-            "type": "grafana-testdata-datasource",
-            "uid": "bdi86bi8f7zswc"
-          },
-          "decimals": 2,
-          "displayAliasType": "Always",
-          "displayType": "Regular",
-          "displayValueWithAlias": "When Alias Displayed",
-          "refId": "A",
-          "scenarioId": "csv_metric_values",
-          "stringInput": "1,20,90,32",
-          "units": "none",
-          "valueHandler": "Number Threshold",
-          "warn": 10
-        }
-      ],
-      "title": "Status Panel Angular",
       "type": "vonage-status-panel"
-    }
+    }    
   ],
   "refresh": "",
   "schemaVersion": 39,
