@@ -6,8 +6,8 @@
   "info": {
     "description": "Status Panel for Grafana",
     "author": {
-      "name": "Vonage",
-      "url": "https://github.com/Vonage"
+      "name": "Grafana",
+      "url": "https://github.com/grafana/Grafana_Status_panel"
     },
     "keywords": ["status", "panel"],
     "logos": {
@@ -17,16 +17,16 @@
     "links": [
       {
         "name": "Github",
-        "url": "https://github.com/Grafana/Grafana_Status_panel"
+        "url": "https://github.com/grafana/Grafana_Status_panel"
       },
       {
         "name": "License",
-        "url": "https://github.com/Grafana/Grafana_Status_panel/blob/master/LICENSE"
+        "url": "https://github.com/grafana/Grafana_Status_panel/blob/master/LICENSE"
       }
     ],
     "screenshots": [],
-    "version": "2.0.0",
-    "updated": "2024-05-03"
+    "version": "%VERSION%",
+    "updated": "%TODAY%"
   },
   "dependencies": {
     "grafanaDependency": ">=10.0.0",
