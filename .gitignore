@@ -33,5 +33,6 @@ profile.cov
 grafana
 .notouch
 .sass-cache/
-/dist/src/
 .sass-cache
+dist_*
+dist
