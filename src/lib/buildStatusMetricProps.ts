@@ -2,12 +2,12 @@ import {
   PanelData,
   FieldConfigSource,
   FieldConfig,
-  formattedValueToString,
-  toFixedUnit,
+  formattedValueToString,  
   toFixed,
   dateTimeAsMoment,
   InterpolateFunction,
   LinkModel,
+  getValueFormat,
 } from '@grafana/data';
 import { css, cx } from 'emotion';
 import _ from 'lodash';
@@ -66,8 +66,8 @@ export function buildStatusMetricProps(
 
         if (!_.isFinite(value)) {
           displayValue = 'Invalid Number';
-        } else if (config.unit) {
-          displayValue = formattedValueToString(toFixedUnit(config.unit)(value, config.decimals));
+        } else if (config.unit) {          
+          displayValue = formattedValueToString(getValueFormat(config.unit)(value, config.decimals));
         } else {
           displayValue = toFixed(value, config.decimals);
         }
