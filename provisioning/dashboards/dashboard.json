@@ -34,6 +34,9 @@
       },
       "fieldConfig": {
         "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
           "custom": {
             "aggregation": "last",
             "dateFormat": "YYYY-MM-DD HH:mm:ss",
@@ -61,7 +64,8 @@
                 "value": 80
               }
             ]
-          }
+          },
+          "unitScale": true
         },
         "overrides": []
       },
@@ -71,9 +75,9 @@
         "x": 0,
         "y": 0
       },
-      "id": 1,
+      "id": 3,
       "options": {
-        "clusterName": "",
+        "clusterName": "Prod Results",
         "clusterTargetBlank": false,
         "clusterUrl": "",
         "colorMode": "Panel",
@@ -90,26 +94,41 @@
         "isGrayOnNoData": false,
         "isHideAlertsOnDisable": false,
         "isIgnoreOKColors": false,
-        "maxAlertNumber": -1,
-        "namePrefix": ""
+        "maxAlertNumber": -1
       },
       "pluginVersion": "2.0.0",
       "targets": [
         {
-          "alias": "test1",
+          "alias": "Current",
+          "csvContent": "\"time\",\"Current\"\n\"2024-04-02 00:30:00\", 83561\n\"2024-04-02 00:36:00\", 82875",
           "datasource": {
             "type": "grafana-testdata-datasource",
             "uid": "bdi86bi8f7zswc"
           },
+          "displayType": "Regular",
           "refId": "A",
-          "scenarioId": "csv_metric_values",
-          "stringInput": "30"
+          "scenarioId": "csv_content",
+          "valueHandler": "Number Threshold"
+        },
+        {
+          "alias": "Peak",
+          "csvContent": "\"time\",\"Peak\"\n\"2024-04-02 00:30:00\", 83561\n\"2024-04-02 00:36:00\", 82875",
+          "datasource": {
+            "type": "grafana-testdata-datasource",
+            "uid": "bdi86bi8f7zswc"
+          },
+          "displayType": "Regular",
+          "hide": false,
+          "refId": "B",
+          "scenarioId": "csv_content",
+          "valueHandler": "Number Threshold"
         }
       ],
-      "title": "Status Panel React",
+      "title": "Total",
       "type": "vonage-status-panel-react"
     },
     {
+      "clusterName": "Prod Results",
       "colorMode": "Panel",
       "colors": {
         "crit": "rgba(245, 54, 54, 0.9)",
@@ -122,7 +141,7 @@
         "type": "grafana-testdata-datasource",
         "uid": "bdi86bi8f7zswc"
       },
-      "displayName": "",
+      "displayName": "Prod Results",
       "flipCard": false,
       "flipTime": 5,
       "fontFormat": "Regular",
@@ -149,9 +168,9 @@
             "uid": "bdi86bi8f7zswc"
           },
           "decimals": 2,
-          "displayAliasType": "Warning / Critical",
+          "displayAliasType": "Always",
           "displayType": "Regular",
-          "displayValueWithAlias": "Never",
+          "displayValueWithAlias": "When Alias Displayed",
           "refId": "A",
           "scenarioId": "csv_metric_values",
           "stringInput": "1,20,90,32",
@@ -162,80 +181,10 @@
       ],
       "title": "Status Panel Angular",
       "type": "vonage-status-panel"
-    },
-    {
-      "datasource": {
-        "type": "grafana-testdata-datasource",
-        "uid": "bdi86bi8f7zswc"
-      },
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "mode": "thresholds"
-          },
-          "mappings": [],
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "green",
-                "value": null
-              },
-              {
-                "color": "red",
-                "value": 80
-              }
-            ]
-          }
-        },
-        "overrides": []
-      },
-      "gridPos": {
-        "h": 8,
-        "w": 12,
-        "x": 0,
-        "y": 8
-      },
-      "id": 3,
-      "options": {
-        "colorMode": "Panel",
-        "colors": {
-          "crit": "#FF0000",
-          "disable": "#000000",
-          "ok": "#00FF00",
-          "warn": "#FFFF00"
-        }
-      },
-      "pluginVersion": "2.0.0",
-      "targets": [
-        {
-          "$$hashKey": "object:102",
-          "aggregation": "Last",
-          "alias": "results",
-          "crit": 30,
-          "datasource": {
-            "type": "grafana-testdata-datasource",
-            "uid": "bdi86bi8f7zswc"
-          },
-          "decimals": 2,
-          "displayAliasType": "Warning / Critical",
-          "displayType": "Regular",
-          "displayValueWithAlias": "Never",
-          "refId": "A",
-          "scenarioId": "csv_metric_values",
-          "stringInput": "1,20,90,32",
-          "units": "none",
-          "valueHandler": "Number Threshold",
-          "warn": 10
-        }
-      ],
-      "title": "Status Panel hjdsouza",
-      "type": "vonage-statushjdsouza-panel"
     }
   ],
   "refresh": "",
-  "schemaVersion": 34,
-  "style": "dark",
+  "schemaVersion": 39,
   "tags": [],
   "templating": {
     "list": []
@@ -248,6 +197,6 @@
   "timezone": "browser",
   "title": "status-panel",
   "uid": "adi86k7m8jksga",
-  "version": 1,
+  "version": 2,
   "weekStart": ""
 }
