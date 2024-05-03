@@ -85,7 +85,7 @@ export const statusPanelOptionsBuilder = (builder: PanelOptionsEditorBuilder<Sta
           { label: 'Disabled', value: 'Disabled', description: 'Do not apply any coloring' },
         ],
       },
-      category: ['Status Panel Threshold Options'],
+      category: ['Status Panel threshold options'],
     })
     // Default colors match Table Panel so colorised text is easier to read
     .addCustomEditor({
@@ -93,7 +93,7 @@ export const statusPanelOptionsBuilder = (builder: PanelOptionsEditorBuilder<Sta
       path: 'colors',
       name: 'Colors',
       editor: StatusColorOptionsEditor,
-      category: ['Status Panel Threshold Options'],
+      category: ['Status Panel threshold options'],
       defaultValue: {
         crit: config.theme2.visualization.getColorByName("red"),
         warn: config.theme2.visualization.getColorByName("orange"),
@@ -105,23 +105,23 @@ export const statusPanelOptionsBuilder = (builder: PanelOptionsEditorBuilder<Sta
       path: 'isAutoScrollOnOverflow',
       name: 'Auto scroll alerts on overflow',
       defaultValue: false,
-      category: ['Status Panel Other Options'],
+      category: ['Status Panel options'],
     })
     .addBooleanSwitch({
       path: 'isGrayOnNoData',
       name: "Use 'Disable' color if no data",
       defaultValue: false,
-      category: ['Status Panel Other Options'],
+      category: ['Status Panel options'],
     })
     .addBooleanSwitch({
       path: 'isIgnoreOKColors',
       name: 'Ignore color in OK state',
       defaultValue: false,
-      category: ['Status Panel Other Options'],
+      category: ['Status Panel options'],
     })
     .addBooleanSwitch({
       path: 'isHideAlertsOnDisable',
       name: 'Hide alerts in Disabled state',
       defaultValue: false,
-      category: ['Status Panel Other Options'],
+      category: ['Status Panel options'],
     });
