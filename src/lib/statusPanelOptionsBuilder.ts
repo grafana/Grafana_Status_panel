@@ -6,7 +6,7 @@ export interface StatusPanelOptions {
   clusterName: string;
   clusterUrl: string;
   clusterTargetBlank: boolean;
-  namePrefix: string;
+  // namePrefix: string;
   maxAlertNumber: number;
   cornerRadius: string;
   flipCard: boolean;
@@ -17,6 +17,10 @@ export interface StatusPanelOptions {
   isGrayOnNoData: boolean;
   isIgnoreOKColors: boolean;
   isHideAlertsOnDisable: boolean;
+  fieldConfig: {
+    defaults: {};
+    overrides: unknown[];
+  }
 }
 
 export const statusPanelOptionsBuilder = (builder: PanelOptionsEditorBuilder<StatusPanelOptions>) =>
