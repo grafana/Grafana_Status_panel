@@ -2,7 +2,7 @@
   "$schema": "https://raw.githubusercontent.com/grafana/grafana/master/docs/sources/developers/plugins/plugin.schema.json",
   "type": "panel",
   "name": "Status Panel",
-  "id": "vonage-status-panel-react",
+  "id": "vonage-status-panel",
   "info": {
     "description": "Status Panel for Grafana",
     "author": {
@@ -17,19 +17,19 @@
     "links": [
       {
         "name": "Github",
-        "url": "https://github.com/Vonage/Grafana_Status_panel"
+        "url": "https://github.com/Grafana/Grafana_Status_panel"
       },
       {
         "name": "License",
-        "url": "https://github.com/Vonage/Grafana_Status_panel/blob/master/LICENSE"
+        "url": "https://github.com/Grafana/Grafana_Status_panel/blob/master/LICENSE"
       }
     ],
     "screenshots": [],
     "version": "2.0.0",
-    "updated": "2022-08-19"
+    "updated": "2024-05-03"
   },
   "dependencies": {
-    "grafanaDependency": ">=7.0.0",
+    "grafanaDependency": ">=10.0.0",
     "plugins": []
   }
 }
