@@ -39,3 +39,8 @@ dist
 
 playwright
 playwright-report
+test-results
+
+.eslintcache
+
+.yarn/install-state.gz
