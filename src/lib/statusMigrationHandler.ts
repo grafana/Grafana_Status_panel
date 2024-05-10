@@ -46,7 +46,7 @@ const migrateFieldConfig = (panel: AngularPanelModel) => {
     return fieldConfig;
   }
   
-  for (const target of panel.targets){    
+  for (const target of panel.targets){
     if (target.alias) {
       const fieldConfigOverride = {
         matcher: {
@@ -101,7 +101,7 @@ const migrateFieldConfig = (panel: AngularPanelModel) => {
           value: target.decimals,
         });
       }
-      
+
       if (target.units) {
         fieldConfigOverride.properties.push({
           id: "unit",
@@ -110,23 +110,29 @@ const migrateFieldConfig = (panel: AngularPanelModel) => {
       }
 
       fieldConfig.overrides.push(fieldConfigOverride);
-    }    
+    }
   }
-    
 
   return fieldConfig;
-  
+
 };
 
 export const statusMigrationHandler: PanelMigrationHandler<StatusPanelOptions> = panel => {
   if (isAngularModel(panel)) {
-    const clusterLink = panel.links[0];
+    // DataLink cannot be null, create an empty one
+    let clusterLink: DataLink<any> = {
+      url: '',
+      title: '',
+    };
+    if (panel.links && panel.links.length > 0) {
+      clusterLink = panel.links[0];
+    }
     const options: StatusPanelOptions = {
       clusterName: panel.clusterName,
       clusterUrl: clusterLink?.url,
       clusterTargetBlank: !!clusterLink?.targetBlank,
       // namePrefix: panel.namePrefix,
-      maxAlertNumber: panel.maxAlertNumber,
+      maxAlertNumber: panel?.maxAlertNumber,
       cornerRadius: `${panel.cornerRadius}%`,
       flipCard: panel.flipCard,
       flipTime: panel.flipTime,
@@ -141,8 +147,39 @@ export const statusMigrationHandler: PanelMigrationHandler<StatusPanelOptions> =
 
     // migrate overrides
 
+    // remove old angular settings from panel json
+    cleanupPanel(panel);
     return options;
   } else {
     return {};
   }
 };
+
+const cleanupPanel = (panel: AngularPanelModel) => {
+  // @ts-ignore
+  delete panel.clusterName;
+  // @ts-ignore
+  delete panel.colorMode;
+  // @ts-ignore
+  delete panel.colors;
+  // @ts-ignore
+  delete panel.cornerRadius;
+  // @ts-ignore
+  delete panel.flipCard
+  // @ts-ignore
+  delete panel.flipTime
+  // @ts-ignore
+  delete panel.fontFormat
+  // @ts-ignore
+  delete panel.isAutoScrollOnOverflow
+  // @ts-ignore
+  delete panel.isGrayOnNoData
+  // @ts-ignore
+  delete panel.isHideAlertsOnDisable
+  // @ts-ignore
+  delete panel.isIgnoreOKColors
+  // @ts-ignore
+  delete panel.maxAlertNumber
+  // @ts-ignore
+  delete panel.namePrefix
+}
