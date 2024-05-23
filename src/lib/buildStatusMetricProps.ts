@@ -2,7 +2,7 @@ import {
   PanelData,
   FieldConfigSource,
   FieldConfig,
-  formattedValueToString,  
+  formattedValueToString,
   toFixed,
   dateTimeAsMoment,
   InterpolateFunction,
@@ -36,9 +36,9 @@ export function buildStatusMetricProps(
   let crits: StatusMetricProp[] = [];
   let warns: StatusMetricProp[] = [];
   let disables: StatusMetricProp[] = [];
-  data.series.forEach(df => {
+  data.series.forEach((df) => {
     // find first non-time column
-    const field = df.fields.find(field => field.name.toLowerCase() !== 'time')!;
+    const field = df.fields.find((field) => field.name.toLowerCase() !== 'time')!;
     if (!field?.state) {
       return;
     }
@@ -54,7 +54,7 @@ export function buildStatusMetricProps(
     // }
     // determine field status & handle formatting based on value handler
     let fieldStatus: StatusType = config.custom.displayAliasType === 'Always' ? 'ok' : 'hide';
-    let displayValue = '';    
+    let displayValue = '';
     switch (config.custom.thresholds.valueHandler) {
       case 'Number Threshold':
         let value: number = fieldCalcs[config.custom.aggregation];
@@ -68,7 +68,7 @@ export function buildStatusMetricProps(
 
         if (!_.isFinite(value)) {
           displayValue = 'Invalid Number';
-        } else if (config.unit) {          
+        } else if (config.unit) {
           displayValue = formattedValueToString(getValueFormat(config.unit)(value, config.decimals));
         } else {
           displayValue = toFixed(value, config.decimals);
