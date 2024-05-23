@@ -40,16 +40,16 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version-file: .nvmrc
-          cache: 'npm'
+          cache: 'yarn'
 
       - name: Install dependencies
-        run: npm ci
+        run: yarn install --frozen-lockfile
 
       - name: Build frontend
-        run: npm run build
+        run: yarn build
 
       - name: Install Playwright Browsers
-        run: npx playwright install --with-deps
+        run: yarn playwright install --with-deps
 
       - name: Start Grafana
         run: |
@@ -66,7 +66,7 @@ jobs:
 
       - name: Run Playwright tests
         id: run-tests
-        run: npx playwright test
+        run: yarn playwright test
 
       - name: Upload artifacts
         uses: actions/upload-artifact@v4
