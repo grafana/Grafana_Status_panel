@@ -66,6 +66,13 @@ export function buildStatusMetricProps(
           fieldStatus = 'warn';
         }
 
+
+
+
+
+
+        
+
         if (!_.isFinite(value)) {
           displayValue = 'Invalid Number';
         } else if (config.unit) {
