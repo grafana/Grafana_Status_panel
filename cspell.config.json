@@ -1,0 +1,5 @@
+{
+  "ignorePaths": ["node_modules/**", "dist/**", "src/external/**", "provisioning/**", "package.json"],
+  "words": ["grafana", "datasource", "datasources", "rgba", "countup", "Themeable", "Unthemed", "testid"],
+  "ignoreRegExpList": ["@[\\w]+"]
+}
