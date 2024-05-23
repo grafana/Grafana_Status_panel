@@ -63,15 +63,8 @@ export function buildStatusMetricProps(
         if ((warn <= crit && crit <= value) || (warn >= crit && crit >= value)) {
           fieldStatus = 'crit';
         } else if ((warn <= value && value <= crit) || (warn >= value && value >= crit)) {
-          fieldStatus = 'warn';
+          fieldStatus = 'warn';       
         }
-
-
-
-
-
-
-        
 
         if (!_.isFinite(value)) {
           displayValue = 'Invalid Number';
