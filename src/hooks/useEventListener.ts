@@ -1,3 +1,4 @@
+/* eslint-disable no-redeclare */
 import { RefObject, useEffect, useLayoutEffect, useRef } from 'react';
 
 // Window Event based useEventListener interface

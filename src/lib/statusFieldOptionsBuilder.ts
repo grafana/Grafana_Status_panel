@@ -49,7 +49,7 @@ export const statusFieldOptionsBuilder = (builder: FieldConfigEditorBuilder<Stat
           { label: 'Delta', value: 'delta' },
         ],
       },
-      category: ['Display Options'],
+      category: ['Status Panel display options'],
     })
     .addTextInput({
       path: 'valueDisplayRegex',
@@ -58,7 +58,7 @@ export const statusFieldOptionsBuilder = (builder: FieldConfigEditorBuilder<Stat
         "A regex which will decide the part of the value to be displayed. In case the regex is empty or it doesn't match any part of the metrics value, all the metric value will be displayed.",
       defaultValue: '',
       settings: {},
-      category: ['Display Options'],
+      category: ['Status Panel display options'],
     })
     .addSelect({
       path: 'fontFormat',
@@ -72,7 +72,7 @@ export const statusFieldOptionsBuilder = (builder: FieldConfigEditorBuilder<Stat
           { label: 'Italic', value: 'Italic' },
         ],
       },
-      category: ['Display Options'],
+      category: ['Status Panel display options'],
     })
     .addCustomEditor({
       path: 'thresholds',
@@ -82,7 +82,7 @@ export const statusFieldOptionsBuilder = (builder: FieldConfigEditorBuilder<Stat
       description: 'The type of data to show to the panel.',
       editor: StatusThresholdOptionsEditor,
       override: StatusThresholdOptionsEditor,
-      category: ['Threshold Options'],
+      category: ['Status Panel threshold options'],
       process: x => x,
       shouldApply: () => true,
     })
@@ -106,7 +106,7 @@ export const statusFieldOptionsBuilder = (builder: FieldConfigEditorBuilder<Stat
           },
         ],
       },
-      category: ['Display Options'],
+      category: ['Status Panel display options'],
       showIf: ({ thresholds }) => thresholds.valueHandler !== 'Disable Criteria',
     })
     .addTextInput({
@@ -114,7 +114,7 @@ export const statusFieldOptionsBuilder = (builder: FieldConfigEditorBuilder<Stat
       name: 'Date Format',
       defaultValue: 'YYYY-MM-DD HH:mm:ss',
       description: 'Specify the Date/Time format (Use "lll" for local date/time format)',
-      category: ['Display Options'],
+      category: ['Status Panel display options'],
       showIf: ({ thresholds }) => thresholds.valueHandler === 'Date Threshold',
     })
     .addSelect({
@@ -136,7 +136,7 @@ export const statusFieldOptionsBuilder = (builder: FieldConfigEditorBuilder<Stat
           },
         ],
       },
-      category: ['Display Options'],
+      category: ['Status Panel display options'],
       showIf: ({ thresholds }) => thresholds.valueHandler.slice(-9) === 'Threshold',
     })
     .addSelect({
@@ -164,13 +164,13 @@ export const statusFieldOptionsBuilder = (builder: FieldConfigEditorBuilder<Stat
           },
         ],
       },
-      category: ['Display Options'],
+      category: ['Status Panel display options'],
       showIf: ({ thresholds }) => thresholds.valueHandler.slice(-9) === 'Threshold',
     })
     .addTextInput({
       path: 'disabledValue',
       name: 'Disable Criteria',
       description: 'The exact value which will make this panel to be displayed as disabled',
-      category: ['Threshold Options'],
+      category: ['Status Panel threshold options'],
       showIf: ({ thresholds }) => thresholds.valueHandler === 'Disable Criteria',
     });

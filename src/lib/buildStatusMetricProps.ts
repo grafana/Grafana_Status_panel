@@ -3,13 +3,14 @@ import {
   FieldConfigSource,
   FieldConfig,
   formattedValueToString,
-  toFixedUnit,
   toFixed,
   dateTimeAsMoment,
   InterpolateFunction,
   LinkModel,
+  getValueFormat,
+  reduceField,
 } from '@grafana/data';
-import { css, cx } from 'emotion';
+import { css, cx } from '@emotion/css';
 import _ from 'lodash';
 
 import { StatusFieldOptions } from 'lib/statusFieldOptionsBuilder';
@@ -35,24 +36,28 @@ export function buildStatusMetricProps(
   let crits: StatusMetricProp[] = [];
   let warns: StatusMetricProp[] = [];
   let disables: StatusMetricProp[] = [];
-  data.series.forEach(df => {
+  data.series.forEach((df) => {
     // find first non-time column
-    const field = df.fields.find(field => field.name !== 'Time')!;
+    const field = df.fields.find((field) => field.name.toLowerCase() !== 'time')!;
     if (!field?.state) {
       return;
     }
+    const fieldCalcs = reduceField({ field: field!, reducers: ['bogus'] });
 
     const config: FieldConfig<StatusFieldOptions> = _.defaultsDeep({ ...field.config }, fieldConfig.defaults);
     if (!config.custom) {
       return;
     }
 
+    // if (!field.state?.calcs) {
+    //   return;
+    // }
     // determine field status & handle formatting based on value handler
     let fieldStatus: StatusType = config.custom.displayAliasType === 'Always' ? 'ok' : 'hide';
     let displayValue = '';
     switch (config.custom.thresholds.valueHandler) {
       case 'Number Threshold':
-        let value: number = field.state.calcs![config.custom.aggregation];
+        let value: number = fieldCalcs[config.custom.aggregation];
         const crit = +config.custom.thresholds.crit;
         const warn = +config.custom.thresholds.warn;
         if ((warn <= crit && crit <= value) || (warn >= crit && crit >= value)) {
@@ -64,13 +69,13 @@ export function buildStatusMetricProps(
         if (!_.isFinite(value)) {
           displayValue = 'Invalid Number';
         } else if (config.unit) {
-          displayValue = formattedValueToString(toFixedUnit(config.unit)(value, config.decimals));
+          displayValue = formattedValueToString(getValueFormat(config.unit)(value, config.decimals));
         } else {
           displayValue = toFixed(value, config.decimals);
         }
         break;
       case 'String Threshold':
-        displayValue = field.state.calcs![config.custom.aggregation];
+        displayValue = fieldCalcs[config.custom.aggregation];
         if (displayValue === undefined || displayValue === null || displayValue !== displayValue) {
           displayValue = 'Invalid String';
         }
@@ -82,7 +87,7 @@ export function buildStatusMetricProps(
         }
         break;
       case 'Date Threshold':
-        const val: string = field.state.calcs![config.custom.aggregation];
+        const val: string = fieldCalcs[config.custom.aggregation];
         let date = dateTimeAsMoment(val);
         if (timeZone === 'utc') {
           date = date.utc();
@@ -97,7 +102,7 @@ export function buildStatusMetricProps(
         }
         break;
       case 'Disable Criteria':
-        if (field.state.calcs![config.custom.aggregation] === config.custom.disabledValue) {
+        if (fieldCalcs[config.custom.aggregation] === config.custom.disabledValue) {
           fieldStatus = 'disable';
         }
         break;
@@ -159,5 +164,6 @@ export function buildStatusMetricProps(
     }
   });
 
+  console.log(crits);
   return { annotations, disables, crits, warns, displays };
 }

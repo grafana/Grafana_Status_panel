@@ -1,6 +1,6 @@
 import { PanelProps } from '@grafana/data';
 import { IconButton } from '@grafana/ui';
-import { css } from 'emotion';
+import { css } from '@emotion/css';
 import _ from 'lodash';
 import React from 'react';
 import ReactCardFlip from 'react-card-flip';
@@ -71,6 +71,8 @@ export const StatusPanel: React.FC<Props> = ({
     ? 'noData'
     : 'ok';
 
+
+
   return (
     <div
       ref={wrapper}
@@ -84,7 +86,7 @@ export const StatusPanel: React.FC<Props> = ({
           zIndex: 10,
         },
         !(panelStatus === 'ok' && options.isIgnoreOKColors) &&
-          options.colorMode === 'Panel' && { backgroundColor: (options.colors as any)[panelStatus] }
+          options.colorMode === 'Panel' && { backgroundColor: (options.colors as any)[panelStatus === "noData" ? "disable": panelStatus] }
       )}
     >
       <ReactCardFlip isFlipped={flipped}>
@@ -151,8 +153,8 @@ export const StatusPanel: React.FC<Props> = ({
           >
             <ReactMarquee hover={isHover} autoScroll={options.isAutoScrollOnOverflow}>
               <div>
-                {alerts.map(({ alias, link, className, displayValue }) => (
-                  <div className={className} style={{ color: 'inherit' }}>
+                {alerts.map(({ alias, link, className, displayValue }, index) => (
+                  <div key={index} className={className} style={{ color: 'inherit' }}>
                     <MaybeAnchor href={link?.href} target={link?.target} title={alias} style={{ color: 'inherit' }}>
                       {displayValue ? alias + ' - ' + displayValue : alias}
                     </MaybeAnchor>
@@ -178,8 +180,8 @@ export const StatusPanel: React.FC<Props> = ({
           >
             <ReactMarquee hover={isHover} autoScroll={options.isAutoScrollOnOverflow}>
               <div className={css({ fontSize: '0.85rem' })}>
-                {annotations.map(({ alias, link, className, displayValue }) => (
-                  <div className={className} style={{ color: 'inherit' }}>
+                {annotations.map(({ alias, link, className, displayValue }, index) => (
+                  <div key={index} className={className} style={{ color: 'inherit' }}>
                     <MaybeAnchor href={link?.href} target={link?.target} title={alias} style={{ color: 'inherit' }}>
                       {displayValue ? alias + ' - ' + displayValue : alias}
                     </MaybeAnchor>
@@ -195,6 +197,7 @@ export const StatusPanel: React.FC<Props> = ({
           name={'exchange-alt'}
           onClick={() => setFlipped(!flipped)}
           className={css({ position: 'absolute', bottom: '2rem', right: '2rem' })}
+          aria-label='Flip Card'
         ></IconButton>
       )}
     </div>

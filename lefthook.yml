@@ -1,0 +1,11 @@
+pre-commit:
+  parallel: true
+  commands:
+    eslint:
+      glob: "*.{js,ts,jsx,tsx}"
+      run: npm run lint {staged_files}
+      stage_fixed: true
+    prettier:
+      glob: "*.{js,ts,jsx,tsx,css,scss,json,md}"
+      run: npm run prettier --check {staged_files}    
+      stage_fixed: true

@@ -33,5 +33,14 @@ profile.cov
 grafana
 .notouch
 .sass-cache/
-/dist/src/
 .sass-cache
+dist_*
+dist
+
+playwright
+playwright-report
+test-results
+
+.eslintcache
+
+.yarn/install-state.gz
