@@ -1,5 +1,12 @@
 {
-  "ignorePaths": ["node_modules/**", "dist/**", "src/external/**", "provisioning/**", "package.json"],
+  "ignorePaths": [
+    "node_modules/**",
+    "dist/**",
+    "src/external/**",
+    "provisioning/**",
+    "package.json",
+    "docker-compose.yaml"
+  ],
   "words": [
     "grafana",
     "datasource",
