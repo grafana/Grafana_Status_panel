@@ -20,7 +20,7 @@ export interface StatusPanelOptions {
   fieldConfig: {
     defaults: {};
     overrides: unknown[];
-  }
+  };
 }
 
 export const statusPanelOptionsBuilder = (builder: PanelOptionsEditorBuilder<StatusPanelOptions>) =>
@@ -91,7 +91,7 @@ export const statusPanelOptionsBuilder = (builder: PanelOptionsEditorBuilder<Sta
       },
       category: ['Status Panel threshold options'],
     })
-    // Default colors match Table Panel so colorised text is easier to read
+    // Default colors match Table Panel so colorized text is easier to read
     .addCustomEditor({
       id: 'colors',
       path: 'colors',
@@ -99,11 +99,11 @@ export const statusPanelOptionsBuilder = (builder: PanelOptionsEditorBuilder<Sta
       editor: StatusColorOptionsEditor,
       category: ['Status Panel threshold options'],
       defaultValue: {
-        crit: config.theme2.visualization.getColorByName("red"),
-        warn: config.theme2.visualization.getColorByName("orange"),
-        ok: config.theme2.visualization.getColorByName("green"),
-        disable: config.theme2.visualization.getColorByName("gray"),
-      }
+        crit: config.theme2.visualization.getColorByName('red'),
+        warn: config.theme2.visualization.getColorByName('orange'),
+        ok: config.theme2.visualization.getColorByName('green'),
+        disable: config.theme2.visualization.getColorByName('gray'),
+      },
     })
     .addBooleanSwitch({
       path: 'isAutoScrollOnOverflow',
