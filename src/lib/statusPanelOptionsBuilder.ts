@@ -1,6 +1,4 @@
 import { PanelOptionsEditorBuilder } from '@grafana/data';
-import { config } from '@grafana/runtime';
-import { StatusColorOptionsEditor } from 'components/StatusColorOptionsEditor';
 
 export interface StatusPanelOptions {
   clusterName: string;
@@ -77,34 +75,7 @@ export const statusPanelOptionsBuilder = (builder: PanelOptionsEditorBuilder<Sta
       category: ['Status Panel options'],
       showIf: ({ flipCard }) => flipCard,
     })
-    .addSelect({
-      path: 'colorMode',
-      name: 'Coloring Mode',
-      description: '',
-      defaultValue: 'Panel',
-      settings: {
-        options: [
-          { label: 'Panel', value: 'Panel', description: 'Apply color to the panel background' },
-          { label: 'Metric', value: 'Metric', description: 'Apply color to the metric text' },
-          { label: 'Disabled', value: 'Disabled', description: 'Do not apply any coloring' },
-        ],
-      },
-      category: ['Status Panel threshold options'],
-    })
     // Default colors match Table Panel so colorized text is easier to read
-    .addCustomEditor({
-      id: 'colors',
-      path: 'colors',
-      name: 'Colors',
-      editor: StatusColorOptionsEditor,
-      category: ['Status Panel threshold options'],
-      defaultValue: {
-        crit: config.theme2.visualization.getColorByName('red'),
-        warn: config.theme2.visualization.getColorByName('orange'),
-        ok: config.theme2.visualization.getColorByName('green'),
-        disable: config.theme2.visualization.getColorByName('gray'),
-      },
-    })
     .addBooleanSwitch({
       path: 'isAutoScrollOnOverflow',
       name: 'Auto scroll alerts on overflow',

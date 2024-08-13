@@ -77,13 +77,12 @@ export const statusFieldOptionsBuilder = (builder: FieldConfigEditorBuilder<Stat
     .addCustomEditor({
       path: 'thresholds',
       id: 'thresholds',
-      name: 'Threshold Type',
+      name: 'Thresholds',
       defaultValue: { valueHandler: 'Number Threshold', warn: 70, crit: 90 },
-      description: 'The type of data to show to the panel.',
       editor: StatusThresholdOptionsEditor,
       override: StatusThresholdOptionsEditor,
       category: ['Status Panel threshold options'],
-      process: x => x,
+      process: (x) => x,
       shouldApply: () => true,
     })
     .addSelect({
