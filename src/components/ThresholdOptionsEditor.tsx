@@ -17,14 +17,17 @@ export const ThresholdOptionsEditor: React.FC<PanelOptionsEditorProps<StatusPane
 
   const [thresholdsList, setThresholdsList] = useState<ThresholdConf[]>(value || []);
 
+  let thresholdId = thresholdsList.length;
+
   useEffect(() => {
     setThresholdsList(value || []);
   }, [value]);
 
   // Handlers
   const handleAddThreshold = () => {
+    thresholdId = thresholdId + 1;
     const newThreshold: ThresholdConf = {
-      id: Math.floor(Math.random() * 1000000),
+      id: thresholdId,
       color: defaultThresholdConf.color,
       value: undefined,
       severity: undefined,
@@ -35,7 +38,7 @@ export const ThresholdOptionsEditor: React.FC<PanelOptionsEditorProps<StatusPane
   };
 
   const handleRemoveThreshold = (index: number) => () => {
-    const newThresholdsList = thresholdsList.filter((_, i) => i !== index);
+    const newThresholdsList = thresholdsList.filter((obj) => obj.id !== index);
     setThresholdsList(newThresholdsList);
     onChange(newThresholdsList);
   };
@@ -56,8 +59,8 @@ export const ThresholdOptionsEditor: React.FC<PanelOptionsEditorProps<StatusPane
         {thresholdsList.map((threshold, index) => (
           <ThresholdSetComponent
             threshold={threshold}
-            handleDeleteThreshold={handleRemoveThreshold(index)}
-            key={index}
+            handleDeleteThreshold={handleRemoveThreshold(threshold.id)}
+            key={threshold.id}
           />
         ))}
       </VerticalGroup>

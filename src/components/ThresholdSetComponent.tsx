@@ -21,10 +21,17 @@ export const ThresholdSetComponent: React.FC<ThresholdSetProps> = (props) => {
         placeholder={'severity'}
         prefix={<ColorPicker color={props.threshold.color} onChange={() => {}} />}
         onChange={(event) => {
-          props.threshold.value = parseFloat(event.currentTarget.value);
+          props.threshold.severity = event.currentTarget.value;
         }}
       />
-      <Input defaultValue={props.threshold.value} placeholder={'value'} />
+      <Input
+        defaultValue={props.threshold.value}
+        placeholder={'value'}
+        type={'number'}
+        onChange={(event) => {
+          props.threshold.value = Number(event.currentTarget.value);
+        }}
+      />
       {/* Button remove this threshold */}
       <Button
         icon={'trash-alt'}
