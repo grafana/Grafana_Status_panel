@@ -1,34 +1,37 @@
 import { PanelOptionsEditorProps } from '@grafana/data';
-import React, { useEffect, useState } from 'react';
-import { Button, Input, VerticalGroup, ColorPicker } from '@grafana/ui';
-
-export interface ThresholdConf {
-  color: string;
-  value: number;
-}
+import React, { useState } from 'react';
+import { Button, VerticalGroup } from '@grafana/ui';
+import { ThresholdConf, ThresholdSetComponent } from './ThresholdSetComponent';
 
 export const ThresholdOptionsEditor: React.FC<PanelOptionsEditorProps<any>> = ({ value, onChange }) => {
   const defaultThresholdConf: ThresholdConf = {
+    id: Math.floor(Math.random() * 1000000),
     color: '#00ff00',
     value: 0,
+    severity: 'base',
   };
 
   const [thresholdsList, setThresholdsList] = useState([defaultThresholdConf]);
 
   // Handlers
   const handleAddThreshold = () => {
-    // reuse defaultThresholdConf and update id
-    setThresholdsList([...thresholdsList, defaultThresholdConf]);
+    const newThreshold: ThresholdConf = {
+      id: Math.floor(Math.random() * 1000000),
+      color: defaultThresholdConf.color,
+      value: undefined,
+      severity: undefined,
+    };
+    setThresholdsList([...thresholdsList, newThreshold]);
   };
 
-  const handleRemoveThreshold = (id: number) => {
-    console.log('Removing threshold at index', id);
-    setThresholdsList(thresholdsList.filter((threshold) => threshold.id !== id));
+  const handleRemoveThreshold = (index: number) => () => {
+    console.log('issou');
+    console.log(thresholdsList);
+    thresholdsList.splice(index, 1);
+    console.log(thresholdsList);
+    setThresholdsList(thresholdsList);
+    console.log('set');
   };
-
-  useEffect(() => {
-    console.log('Updated thresholdsList:', thresholdsList);
-  }, [thresholdsList]);
 
   return (
     <>
@@ -43,26 +46,10 @@ export const ThresholdOptionsEditor: React.FC<PanelOptionsEditorProps<any>> = ({
         >
           Add threshold
         </Button>
-
-        {thresholdsList.map((thresholdConf, index) => (
-          <Input
-            defaultValue={thresholdConf.value}
-            prefix={<ColorPicker color={thresholdConf.color} onChange={() => {}} />}
-            suffix={
-              <Button
-                icon={'trash-alt'}
-                variant={'secondary'}
-                fill={'text'}
-                size={'sm'}
-                onClick={() => handleRemoveThreshold(index)}
-                tooltip={'Remove threshold'}
-              />
-            }
-            onChange={(event) => {
-              thresholdConf.value = parseFloat(event.currentTarget.value);
-              onChange(thresholdsList);
-            }}
-            aria-label={index.toString()}
+        {thresholdsList.map((threshold, index) => (
+          <ThresholdSetComponent
+            threshold={threshold}
+            handleDeleteThreshold={handleRemoveThreshold(index)}
             key={index}
           />
         ))}
