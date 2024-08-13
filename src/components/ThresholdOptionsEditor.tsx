@@ -1,9 +1,13 @@
 import { PanelOptionsEditorProps } from '@grafana/data';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Button, VerticalGroup } from '@grafana/ui';
 import { ThresholdConf, ThresholdSetComponent } from './ThresholdSetComponent';
+import { StatusPanelOptions } from '../lib/statusPanelOptionsBuilder';
 
-export const ThresholdOptionsEditor: React.FC<PanelOptionsEditorProps<any>> = ({ value, onChange }) => {
+export const ThresholdOptionsEditor: React.FC<PanelOptionsEditorProps<StatusPanelOptions['threshold']>> = ({
+  value,
+  onChange,
+}) => {
   const defaultThresholdConf: ThresholdConf = {
     id: Math.floor(Math.random() * 1000000),
     color: '#00ff00',
@@ -11,7 +15,11 @@ export const ThresholdOptionsEditor: React.FC<PanelOptionsEditorProps<any>> = ({
     severity: 'base',
   };
 
-  const [thresholdsList, setThresholdsList] = useState([defaultThresholdConf]);
+  const [thresholdsList, setThresholdsList] = useState<ThresholdConf[]>(value || []);
+
+  useEffect(() => {
+    setThresholdsList(value || []);
+  }, [value]);
 
   // Handlers
   const handleAddThreshold = () => {
@@ -21,16 +29,15 @@ export const ThresholdOptionsEditor: React.FC<PanelOptionsEditorProps<any>> = ({
       value: undefined,
       severity: undefined,
     };
-    setThresholdsList([...thresholdsList, newThreshold]);
+    const newThresholdsList = [...thresholdsList, newThreshold];
+    setThresholdsList(newThresholdsList);
+    onChange(newThresholdsList);
   };
 
   const handleRemoveThreshold = (index: number) => () => {
-    console.log('issou');
-    console.log(thresholdsList);
-    thresholdsList.splice(index, 1);
-    console.log(thresholdsList);
-    setThresholdsList(thresholdsList);
-    console.log('set');
+    const newThresholdsList = thresholdsList.filter((_, i) => i !== index);
+    setThresholdsList(newThresholdsList);
+    onChange(newThresholdsList);
   };
 
   return (

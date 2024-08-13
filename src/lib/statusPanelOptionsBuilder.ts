@@ -1,4 +1,5 @@
 import { PanelOptionsEditorBuilder } from '@grafana/data';
+import { ThresholdConf } from '../components/ThresholdSetComponent';
 
 export interface StatusPanelOptions {
   clusterName: string;
@@ -15,6 +16,7 @@ export interface StatusPanelOptions {
   isGrayOnNoData: boolean;
   isIgnoreOKColors: boolean;
   isHideAlertsOnDisable: boolean;
+  threshold: ThresholdConf[];
   fieldConfig: {
     defaults: {};
     overrides: unknown[];
@@ -67,7 +69,12 @@ export const statusPanelOptionsBuilder = (builder: PanelOptionsEditorBuilder<Sta
       description: 'The corner radius to apply the panel. Values are used for the border-radius CSS attribute.',
       category: ['Status Panel options'],
     })
-    .addBooleanSwitch({ path: 'flipCard', name: 'Flip Panel', defaultValue: false, category: ['Status Panel options'] })
+    .addBooleanSwitch({
+      path: 'flipCard',
+      name: 'Flip Panel',
+      defaultValue: false,
+      category: ['Status Panel options'],
+    })
     .addNumberInput({
       path: 'flipTime',
       name: 'Flip interval',

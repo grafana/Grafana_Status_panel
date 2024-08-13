@@ -1,8 +1,9 @@
 import { PanelOptionsEditorBuilder } from '@grafana/data';
 import { ThresholdOptionsEditor } from '../components/ThresholdOptionsEditor';
+import { StatusPanelOptions } from './statusPanelOptionsBuilder';
 
 // Represent a Option part
-export const statusPanelThresholdBuilder = (builder: PanelOptionsEditorBuilder<any>) =>
+export const statusPanelThresholdBuilder = (builder: PanelOptionsEditorBuilder<StatusPanelOptions>) =>
   builder.addCustomEditor({
     id: 'thresholds',
     name: '',
