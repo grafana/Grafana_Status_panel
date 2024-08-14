@@ -1,6 +1,6 @@
 import { PanelOptionsEditorProps } from '@grafana/data';
 import React, { useEffect, useState } from 'react';
-import { Button, VerticalGroup } from '@grafana/ui';
+import { Button, useTheme2, VerticalGroup } from '@grafana/ui';
 import { ThresholdConf, ThresholdSet } from './ThresholdSetComponent';
 import { StatusPanelOptions } from '../interfaces/statusPanelOptions';
 
@@ -8,22 +8,11 @@ export const ThresholdOptionsEditor: React.FC<PanelOptionsEditorProps<StatusPane
   value,
   onChange,
 }) => {
+  const theme = useTheme2();
+
   const [thresholdsList, setThresholdsList] = useState<ThresholdConf[]>(value || []);
 
   let thresholdId = thresholdsList.length;
-
-  // Init thresholdsList with base threshold if empty
-  if (thresholdsList.length === 0) {
-    thresholdId = thresholdId + 1;
-    let baseThreshold: ThresholdConf = {
-      id: thresholdId,
-      color: '#73bf69',
-      value: undefined,
-      severity: 'Base',
-    };
-    setThresholdsList([baseThreshold]);
-    onChange(thresholdsList);
-  }
 
   useEffect(() => {
     setThresholdsList(value || []);
@@ -34,7 +23,7 @@ export const ThresholdOptionsEditor: React.FC<PanelOptionsEditorProps<StatusPane
     thresholdId = thresholdId + 1;
     const newThreshold: ThresholdConf = {
       id: thresholdId,
-      color: '#73bf69',
+      color: theme.visualization.getColorByName('green'),
       value: undefined,
       severity: undefined,
     };

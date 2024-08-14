@@ -88,4 +88,12 @@ export const statusPanelOptionsBuilder = (builder: PanelOptionsEditorBuilder<Sta
       path: 'thresholds',
       category: ['Status Panel - thresholds'],
       editor: ThresholdOptionsEditor,
+      defaultValue: [
+        {
+          id: 1,
+          color: '#73bf69',
+          value: undefined,
+          severity: 'Base',
+        },
+      ],
     });

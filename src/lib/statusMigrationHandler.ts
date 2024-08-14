@@ -129,10 +129,9 @@ export const statusMigrationHandler: PanelMigrationHandler<StatusPanelOptions> =
       colors: panel.colors,
       isAutoScrollOnOverflow: panel.isAutoScrollOnOverflow,
       isGrayOnNoData: panel.isGrayOnNoData,
-      isIgnoreOKColors: panel.isIgnoreOKColors,
       isHideAlertsOnDisable: panel.isHideAlertsOnDisable,
       fieldConfig: migrateFieldConfig(panel),
-      threshold: [],
+      thresholds: [],
     };
 
     // migrate overrides

@@ -10,7 +10,6 @@ import { buildStatusMetricProps } from 'lib/buildStatusMetricProps';
 import { MaybeAnchor } from './MaybeAnchor';
 import { ThresholdConf } from './ThresholdSetComponent';
 
-type StatusType = 'ok' | 'hide' | 'warn' | 'crit' | 'disable' | 'noData';
 type Props = PanelProps<StatusPanelOptions>;
 
 export const StatusPanel: React.FC<Props> = ({
@@ -75,19 +74,9 @@ export const StatusPanel: React.FC<Props> = ({
   const isHover = useHover(wrapper);
   useInterval(() => options.flipCard && !isHover && setFlipped(!flipped), 1000 * options.flipTime);
 
-  // set panel status and render
-  const panelStatus: StatusType = disables.length
-    ? 'disable'
-    : crits.length
-    ? 'crit'
-    : warns.length
-    ? 'warn'
-    : !data.series.length && options.isGrayOnNoData
-    ? 'noData'
-    : 'ok';
-
   // Retrieve colors
   const backgroundColor = actualThreshold.color;
+  //const backgroundColor = "#ffffff";
 
   return (
     <div
@@ -121,15 +110,7 @@ export const StatusPanel: React.FC<Props> = ({
           })}
         >
           <MaybeAnchor href={options.url} target={options.urlTargetBlank ? '_blank' : '_self'} title={options.title}>
-            {panelStatus === 'crit'
-              ? 'Critical'
-              : panelStatus === 'disable'
-              ? 'Disabled'
-              : panelStatus === 'noData'
-              ? 'No Data'
-              : panelStatus === 'ok'
-              ? 'OK'
-              : 'Warn'}
+            {actualThreshold.severity}
           </MaybeAnchor>
         </div>
         <div className={css({ height, display: 'flex', flexDirection: 'column' })}>

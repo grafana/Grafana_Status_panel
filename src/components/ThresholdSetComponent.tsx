@@ -15,7 +15,7 @@ export interface ThresholdSetProps {
 }
 
 export const ThresholdSet: React.FC<ThresholdSetProps> = (props) => {
-  const isBaseThreshold = props.threshold.id === 1 && props.threshold.severity === 'base';
+  const isBaseThreshold = props.threshold.id === 1 && props.threshold.severity === 'Base';
 
   return (
     <>
