@@ -1,5 +1,5 @@
 import { PanelData, FieldConfigSource, FieldConfig, InterpolateFunction, LinkModel } from '@grafana/data';
-import { css, cx } from '@emotion/css';
+import { css } from '@emotion/css';
 import _ from 'lodash';
 import { StatusFieldOptions } from 'interfaces/statusFieldOptions';
 import { StatusPanelOptions } from 'interfaces/statusPanelOptions';
@@ -16,7 +16,6 @@ export function buildStatusMetricProps(
   data: PanelData,
   fieldConfig: FieldConfigSource,
   options: StatusPanelOptions,
-  colorClasses: { ok: string; warn: string; crit: string; disable: string; noData: string; hide: string },
   replaceVariables: InterpolateFunction,
   timeZone: string
 ) {
@@ -75,10 +74,6 @@ export function buildStatusMetricProps(
       } else if (config.custom.fontFormat === 'Italic') {
         props.className = css({ fontStyle: 'italic' });
       }
-    }
-    // set color for field when colormode is Metric
-    if (options.colorMode === 'Metric') {
-      props.className = cx(props.className, colorClasses[fieldStatus]);
     }
 
     // add to appropriate section

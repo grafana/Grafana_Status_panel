@@ -16,9 +16,8 @@ export interface StatusPanelOptions {
   colors: { crit: string; warn: string; ok: string; disable: string };
   isAutoScrollOnOverflow: boolean;
   isGrayOnNoData: boolean;
-  isIgnoreOKColors: boolean;
   isHideAlertsOnDisable: boolean;
-  threshold: ThresholdConf[];
+  thresholds: ThresholdConf[];
   fieldConfig: {
     defaults: {};
     overrides: unknown[];

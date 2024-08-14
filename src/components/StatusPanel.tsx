@@ -1,7 +1,6 @@
 import { PanelProps } from '@grafana/data';
 import { IconButton } from '@grafana/ui';
 import { css } from '@emotion/css';
-import _ from 'lodash';
 import React from 'react';
 import ReactCardFlip from 'react-card-flip';
 import { ReactMarquee } from 'components/Marquee';
@@ -9,9 +8,11 @@ import { useHover, useInterval } from 'hooks/index';
 import { StatusPanelOptions } from 'interfaces/statusPanelOptions';
 import { buildStatusMetricProps } from 'lib/buildStatusMetricProps';
 import { MaybeAnchor } from './MaybeAnchor';
+import { ThresholdConf } from './ThresholdSetComponent';
 
 type StatusType = 'ok' | 'hide' | 'warn' | 'crit' | 'disable' | 'noData';
 type Props = PanelProps<StatusPanelOptions>;
+
 export const StatusPanel: React.FC<Props> = ({
   data,
   options,
@@ -21,14 +22,9 @@ export const StatusPanel: React.FC<Props> = ({
   replaceVariables,
   timeZone,
 }) => {
-  // build styles
-  const statusColorClasses = {
-    ok: options.isIgnoreOKColors ? '' : css({ color: options.colors.ok }),
-    warn: css({ color: options.colors.warn }),
-    crit: css({ color: options.colors.crit }),
-    disable: css({ color: options.colors.disable }),
-    noData: css({ color: options.colors.disable }),
-    hide: css({ display: 'none' }),
+  // Get color via defined thresholds from data
+  const getColors = (data: any, thresholds: ThresholdConf[]) => {
+    return '#ffffffff';
   };
 
   // build props
@@ -36,7 +32,6 @@ export const StatusPanel: React.FC<Props> = ({
     data,
     fieldConfig,
     options,
-    statusColorClasses,
     replaceVariables,
     timeZone
   );
@@ -71,6 +66,9 @@ export const StatusPanel: React.FC<Props> = ({
     ? 'noData'
     : 'ok';
 
+  // Retrieve colors
+  const backgroundColor = getColors(data, options.thresholds);
+
   return (
     <div
       ref={wrapper}
@@ -83,28 +81,24 @@ export const StatusPanel: React.FC<Props> = ({
           overflow: 'hidden',
           zIndex: 10,
         },
-        !(panelStatus === 'ok' && options.isIgnoreOKColors) &&
-          options.colorMode === 'Panel' && {
-            backgroundColor: (options.colors as any)[panelStatus === 'noData' ? 'disable' : panelStatus],
-          }
+        !options.isGrayOnNoData && {
+          backgroundColor: backgroundColor,
+        }
       )}
     >
       <ReactCardFlip isFlipped={flipped}>
         <div
-          className={css(
-            {
-              width,
-              height,
-              overflow: 'hidden',
-              position: 'relative',
-              display: 'flex',
-              flexDirection: 'column',
-              justifyContent: 'center',
-              alignItems: 'center',
-              fontSize: '2rem',
-            },
-            options.colorMode === 'Metric' && statusColorClasses[panelStatus]
-          )}
+          className={css({
+            width,
+            height,
+            overflow: 'hidden',
+            position: 'relative',
+            display: 'flex',
+            flexDirection: 'column',
+            justifyContent: 'center',
+            alignItems: 'center',
+            fontSize: '2rem',
+          })}
         >
           <MaybeAnchor href={options.url} target={options.urlTargetBlank ? '_blank' : '_self'} title={options.title}>
             {panelStatus === 'crit'

@@ -75,12 +75,6 @@ export const statusPanelOptionsBuilder = (builder: PanelOptionsEditorBuilder<Sta
       category: ['Status Panel - options'],
     })
     .addBooleanSwitch({
-      path: 'isIgnoreOKColors',
-      name: 'Ignore color in OK state',
-      defaultValue: false,
-      category: ['Status Panel - options'],
-    })
-    .addBooleanSwitch({
       path: 'isHideAlertsOnDisable',
       name: 'Hide alerts in Disabled state',
       defaultValue: false,
