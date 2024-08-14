@@ -12,6 +12,62 @@ import { ThresholdConf } from './ThresholdSetComponent';
 
 type Props = PanelProps<StatusPanelOptions>;
 
+/* ---- Functions ---- */
+
+/*
+    Get the query value with selected aggregation (last, min, max, etc)
+ */
+const getQueryValueAggregation = (data: any, aggregation: string) => {
+  const frame = data.series[data.series.length - 1]; // Get the last Expression query result
+  const rows = frame.fields.find((field: { type: string }) => field.type === 'number');
+
+  switch (aggregation) {
+    case 'last':
+      return rows.values[rows.values.length - 1];
+    case 'first':
+      return rows.values[0];
+    case 'max':
+      return rows.values.reduce((prev: number, curr: number) => {
+        return prev > curr ? prev : curr;
+      });
+    case 'min':
+      return rows.values.reduce((prev: number, curr: number) => {
+        return prev > curr ? curr : prev;
+      });
+    case 'sum':
+      return rows.values.reduce((prev: number, curr: number) => prev + curr, 0);
+    case 'mean':
+      const sum = rows.values.reduce((prev: number, curr: number) => prev + curr, 0);
+      return sum / rows.values.length;
+    case 'delta':
+      const orderedValues = rows.values.sort((a: number, b: number) => a - b);
+      return Math.abs(orderedValues[orderedValues.length - 1] - orderedValues[0]);
+  }
+};
+
+/*
+    Get actual threshold depending on the query data
+*/
+const getActualThreshold = (data: any, thresholds: ThresholdConf[], aggregation: string): ThresholdConf => {
+  const baseThreshold = thresholds[0];
+  const queryValue = getQueryValueAggregation(data, aggregation);
+
+  // Remove base threshold from the list (no used in actual threshold computing)
+  thresholds = thresholds.slice(1);
+
+  // Order thresholds by value from lowest to highest (make sure to handle null and wrong value before)
+  let sortedThresholds = thresholds.sort((a, b) => (a.value || 0) - (b.value || 0));
+
+  // Compare thresholds with data and return threshold that data is on the slice
+  const reverSortedThresholds = sortedThresholds.slice().reverse();
+  for (let i = 0; i < reverSortedThresholds.length; i++) {
+    if (queryValue >= (reverSortedThresholds[i].value || 0)) {
+      return sortedThresholds[i];
+    }
+  }
+  return baseThreshold;
+};
+
 export const StatusPanel: React.FC<Props> = ({
   data,
   options,
@@ -21,30 +77,7 @@ export const StatusPanel: React.FC<Props> = ({
   replaceVariables,
   timeZone,
 }) => {
-  // Get actual threshold depending on the query data
-  const getActualThreshold = (data: any, thresholds: ThresholdConf[]): ThresholdConf => {
-    const baseThreshold = thresholds[0];
-    const frame = data.series[data.series.length - 1];
-    const row = frame.fields.find((field: { type: string }) => field.type === 'number');
-    const queryValue = row.values[row.values.length - 1];
-
-    // Remove base threshold from the list (no used in actual threshold computing)
-    thresholds = thresholds.slice(1);
-
-    // Order thresholds by value from lowest to highest (make sure to handle null and wrong value before)
-    let sortedThresholds = thresholds.sort((a, b) => (a.value || 0) - (b.value || 0));
-
-    // Compare thresholds with data and return threshold that data is on the slice
-    const reverSortedThresholds = sortedThresholds.slice().reverse();
-    for (let i = 0; i < reverSortedThresholds.length; i++) {
-      if (queryValue >= (reverSortedThresholds[i].value || 0)) {
-        return sortedThresholds[i];
-      }
-    }
-    return baseThreshold;
-  };
-
-  const actualThreshold = getActualThreshold(data, options.thresholds);
+  const actualThreshold = getActualThreshold(data, options.thresholds, fieldConfig.defaults.custom.aggregation);
 
   // build props
   let { annotations, disables, crits, warns, displays } = buildStatusMetricProps(
@@ -76,7 +109,6 @@ export const StatusPanel: React.FC<Props> = ({
 
   // Retrieve colors
   const backgroundColor = actualThreshold.color;
-  //const backgroundColor = "#ffffff";
 
   return (
     <div
@@ -128,6 +160,7 @@ export const StatusPanel: React.FC<Props> = ({
                 display: 'flex',
                 justifyContent: 'center',
                 fontSize: '1.5rem',
+                color: 'white',
               })}
             >
               <MaybeAnchor

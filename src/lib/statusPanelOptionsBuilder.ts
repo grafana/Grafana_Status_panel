@@ -18,7 +18,7 @@ export const statusPanelOptionsBuilder = (builder: PanelOptionsEditorBuilder<Sta
       description: '',
       defaultValue: '',
       category: ['Status Panel - options'],
-      settings: { expandTemplateVars: true },
+      settings: { expandTemplateVars: true, placeholder: 'https://' },
     })
     .addBooleanSwitch({
       path: 'urlTargetBlank',
