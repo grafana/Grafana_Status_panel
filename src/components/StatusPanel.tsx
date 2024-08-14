@@ -1,7 +1,7 @@
 import { PanelProps } from '@grafana/data';
 import { IconButton } from '@grafana/ui';
 import { css } from '@emotion/css';
-import React from 'react';
+import React, { useState } from 'react';
 import ReactCardFlip from 'react-card-flip';
 import { ReactMarquee } from 'components/Marquee';
 import { useHover, useInterval } from 'hooks/index';
@@ -17,7 +17,7 @@ type Props = PanelProps<StatusPanelOptions>;
 /*
     Get the query value with selected aggregation (last, min, max, etc)
  */
-const getQueryValueAggregation = (data: any, aggregation: string) => {
+const getQueryValueAggregation = (data: any, aggregation: string): number => {
   const frame = data.series[data.series.length - 1]; // Get the last Expression query result
   const rows = frame.fields.find((field: { type: string }) => field.type === 'number');
 
@@ -43,6 +43,7 @@ const getQueryValueAggregation = (data: any, aggregation: string) => {
       const orderedValues = rows.values.sort((a: number, b: number) => a - b);
       return Math.abs(orderedValues[orderedValues.length - 1] - orderedValues[0]);
   }
+  return 0;
 };
 
 /*
@@ -59,10 +60,10 @@ const getActualThreshold = (data: any, thresholds: ThresholdConf[], aggregation:
   let sortedThresholds = thresholds.sort((a, b) => (a.value || 0) - (b.value || 0));
 
   // Compare thresholds with data and return threshold that data is on the slice
-  const reverSortedThresholds = sortedThresholds.slice().reverse();
-  for (let i = 0; i < reverSortedThresholds.length; i++) {
-    if (queryValue >= (reverSortedThresholds[i].value || 0)) {
-      return sortedThresholds[i];
+  const reverseSortedThresholds = sortedThresholds.slice().reverse();
+  for (let i = 0; i < reverseSortedThresholds.length; i++) {
+    if (queryValue >= (reverseSortedThresholds[i].value || 0)) {
+      return reverseSortedThresholds[i];
     }
   }
   return baseThreshold;
