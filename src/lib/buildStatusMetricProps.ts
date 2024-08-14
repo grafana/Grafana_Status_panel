@@ -1,22 +1,11 @@
-import {
-  PanelData,
-  FieldConfigSource,
-  FieldConfig,
-  formattedValueToString,
-  toFixed,
-  dateTimeAsMoment,
-  InterpolateFunction,
-  LinkModel,
-  getValueFormat,
-  reduceField,
-} from '@grafana/data';
+import { PanelData, FieldConfigSource, FieldConfig, InterpolateFunction, LinkModel } from '@grafana/data';
 import { css, cx } from '@emotion/css';
 import _ from 'lodash';
-
-import { StatusFieldOptions } from 'lib/statusFieldOptionsBuilder';
-import { StatusPanelOptions } from 'lib/statusPanelOptionsBuilder';
+import { StatusFieldOptions } from 'interfaces/statusFieldOptions';
+import { StatusPanelOptions } from 'interfaces/statusPanelOptions';
 
 type StatusType = 'ok' | 'hide' | 'warn' | 'crit' | 'disable' | 'noData';
+
 interface StatusMetricProp extends Omit<React.HTMLAttributes<HTMLDivElement>, 'children'> {
   alias: string;
   displayValue?: string | number;
@@ -42,7 +31,6 @@ export function buildStatusMetricProps(
     if (!field?.state) {
       return;
     }
-    const fieldCalcs = reduceField({ field: field!, reducers: ['bogus'] });
 
     const config: FieldConfig<StatusFieldOptions> = _.defaultsDeep({ ...field.config }, fieldConfig.defaults);
     if (!config.custom) {
@@ -55,65 +43,10 @@ export function buildStatusMetricProps(
     // determine field status & handle formatting based on value handler
     let fieldStatus: StatusType = config.custom.displayAliasType === 'Always' ? 'ok' : 'hide';
     let displayValue = '';
-    switch (config.custom.thresholds.valueHandler) {
-      case 'Number Threshold':
-        let value: number = fieldCalcs[config.custom.aggregation];
-        const crit = +config.custom.thresholds.crit;
-        const warn = +config.custom.thresholds.warn;
-        if ((warn <= crit && crit <= value) || (warn >= crit && crit >= value)) {
-          fieldStatus = 'crit';
-        } else if ((warn <= value && value <= crit) || (warn >= value && value >= crit)) {
-          fieldStatus = 'warn';
-        }
-
-        if (!_.isFinite(value)) {
-          displayValue = 'Invalid Number';
-        } else if (config.unit) {
-          displayValue = formattedValueToString(getValueFormat(config.unit)(value, config.decimals));
-        } else {
-          displayValue = toFixed(value, config.decimals);
-        }
-        break;
-      case 'String Threshold':
-        displayValue = fieldCalcs[config.custom.aggregation];
-        if (displayValue === undefined || displayValue === null || displayValue !== displayValue) {
-          displayValue = 'Invalid String';
-        }
-
-        if (displayValue === config.custom.thresholds.crit) {
-          fieldStatus = 'crit';
-        } else if (displayValue === config.custom.thresholds.warn) {
-          fieldStatus = 'warn';
-        }
-        break;
-      case 'Date Threshold':
-        const val: string = fieldCalcs[config.custom.aggregation];
-        let date = dateTimeAsMoment(val);
-        if (timeZone === 'utc') {
-          date = date.utc();
-        }
-
-        displayValue = date.format(config.custom.dateFormat);
-
-        if (val === config.custom.thresholds.crit) {
-          fieldStatus = 'crit';
-        } else if (val === config.custom.thresholds.warn) {
-          fieldStatus = 'warn';
-        }
-        break;
-      case 'Disable Criteria':
-        if (fieldCalcs[config.custom.aggregation] === config.custom.disabledValue) {
-          fieldStatus = 'disable';
-        }
-        break;
-    }
 
     // only display value when appropriate
     const withAlias = config.custom.displayValueWithAlias;
-    const isDisplayValue =
-      withAlias === 'When Alias Displayed' ||
-      (fieldStatus === 'warn' && withAlias === 'Warning / Critical') ||
-      (fieldStatus === 'crit' && (withAlias === 'Warning / Critical' || withAlias === 'Critical Only'));
+    const isDisplayValue = withAlias === 'When Alias Displayed';
 
     // apply RegEx if value will be displayed
     if (isDisplayValue && config.custom.valueDisplayRegex) {
@@ -155,12 +88,6 @@ export function buildStatusMetricProps(
       } else {
         annotations.push(props);
       }
-    } else if (fieldStatus === 'warn') {
-      warns.push(props);
-    } else if (fieldStatus === 'crit') {
-      crits.push(props);
-    } else if (fieldStatus === 'disable') {
-      disables.push(props);
     }
   });
 

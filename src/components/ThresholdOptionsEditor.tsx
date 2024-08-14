@@ -2,7 +2,7 @@ import { PanelOptionsEditorProps } from '@grafana/data';
 import React, { useEffect, useState } from 'react';
 import { Button, VerticalGroup } from '@grafana/ui';
 import { ThresholdConf, ThresholdSetComponent } from './ThresholdSetComponent';
-import { StatusPanelOptions } from '../lib/statusPanelOptionsBuilder';
+import { StatusPanelOptions } from '../interfaces/statusPanelOptions';
 
 export const ThresholdOptionsEditor: React.FC<PanelOptionsEditorProps<StatusPanelOptions['threshold']>> = ({
   value,

@@ -1,8 +1,7 @@
 import { DataLink, PanelMigrationHandler, PanelModel } from '@grafana/data';
-import { StatusPanelOptions } from './statusPanelOptionsBuilder';
-import { StatusThresholdOptions } from 'components/StatusThresholdOptionsEditor';
-import { StatusFieldOptions } from './statusFieldOptionsBuilder';
+import { StatusPanelOptions } from '../interfaces/statusPanelOptions';
 import { ThresholdConf } from '../components/ThresholdSetComponent';
+import { StatusFieldOptions } from '../interfaces/statusFieldOptions';
 
 interface AngularPanelModel extends Omit<PanelModel, 'targets'> {
   clusterName: string;
@@ -30,7 +29,6 @@ interface AngularPanelModel extends Omit<PanelModel, 'targets'> {
       displayValueWithAlias?: Pick<StatusFieldOptions, 'displayValueWithAlias'>;
       units?: string;
       warn?: number;
-      valueHandler?: Pick<StatusThresholdOptions, 'valueHandler'>;
       url?: string;
     }
   ];
@@ -63,17 +61,6 @@ const migrateFieldConfig = (panel: AngularPanelModel) => {
         fieldConfigOverride.properties.push({
           id: 'custom.aggregation',
           value: target.aggregation,
-        });
-      }
-
-      if (target.crit || target.warn || target.valueHandler) {
-        fieldConfigOverride.properties.push({
-          id: 'custom.thresholds',
-          value: {
-            valueHandler: target.valueHandler,
-            crit: target.crit,
-            warn: target.warn,
-          },
         });
       }
 
@@ -130,9 +117,9 @@ export const statusMigrationHandler: PanelMigrationHandler<StatusPanelOptions> =
       clusterLink = panel.links[0];
     }
     const options: StatusPanelOptions = {
-      clusterName: panel.clusterName,
-      clusterUrl: clusterLink?.url,
-      clusterTargetBlank: !!clusterLink?.targetBlank,
+      title: panel.clusterName,
+      url: clusterLink?.url,
+      urlTargetBlank: !!clusterLink?.targetBlank,
       // namePrefix: panel.namePrefix,
       maxAlertNumber: panel?.maxAlertNumber,
       cornerRadius: `${panel.cornerRadius}%`,

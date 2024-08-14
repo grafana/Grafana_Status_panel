@@ -1,35 +1,5 @@
 import { FieldConfigEditorBuilder } from '@grafana/data';
-import { StatusThresholdOptionsEditor, StatusThresholdOptions } from 'components/StatusThresholdOptionsEditor';
-
-export interface StatusFieldOptions {
-  aggregation:
-    | 'sum'
-    | 'max'
-    | 'min'
-    | 'logmin'
-    | 'mean'
-    | 'last'
-    | 'first'
-    | 'lastNotNull'
-    | 'firstNotNull'
-    | 'count'
-    | 'nonNullCount'
-    | 'allIsNull'
-    | 'allIsZero'
-    | 'range'
-    | 'diff'
-    | 'delta'
-    | 'step'
-    | 'previousDeltaUp';
-  valueDisplayRegex: string;
-  thresholds: StatusThresholdOptions;
-  displayType: 'Regular' | 'Annotation';
-  fontFormat: 'Regular' | 'Bold' | 'Italic';
-  dateFormat: string;
-  displayAliasType: 'Warning / Critical' | 'Always';
-  displayValueWithAlias: 'Never' | 'When Alias Displayed' | 'Warning / Critical' | 'Critical Only';
-  disabledValue: string;
-}
+import { StatusFieldOptions } from '../interfaces/statusFieldOptions';
 
 export const statusFieldOptionsBuilder = (builder: FieldConfigEditorBuilder<StatusFieldOptions>) =>
   builder
@@ -49,7 +19,7 @@ export const statusFieldOptionsBuilder = (builder: FieldConfigEditorBuilder<Stat
           { label: 'Delta', value: 'delta' },
         ],
       },
-      category: ['Status Panel display options'],
+      category: ['Status Panel - display options'],
     })
     .addTextInput({
       path: 'valueDisplayRegex',
@@ -58,7 +28,7 @@ export const statusFieldOptionsBuilder = (builder: FieldConfigEditorBuilder<Stat
         "A regex which will decide the part of the value to be displayed. In case the regex is empty or it doesn't match any part of the metrics value, all the metric value will be displayed.",
       defaultValue: '',
       settings: {},
-      category: ['Status Panel display options'],
+      category: ['Status Panel - display options'],
     })
     .addSelect({
       path: 'fontFormat',
@@ -72,18 +42,7 @@ export const statusFieldOptionsBuilder = (builder: FieldConfigEditorBuilder<Stat
           { label: 'Italic', value: 'Italic' },
         ],
       },
-      category: ['Status Panel display options'],
-    })
-    .addCustomEditor({
-      path: 'thresholds',
-      id: 'thresholds',
-      name: 'Thresholds',
-      defaultValue: { valueHandler: 'Number Threshold', warn: 70, crit: 90 },
-      editor: StatusThresholdOptionsEditor,
-      override: StatusThresholdOptionsEditor,
-      category: ['Status Panel threshold options'],
-      process: (x) => x,
-      shouldApply: () => true,
+      category: ['Status Panel - display options'],
     })
     .addSelect({
       path: 'displayType',
@@ -105,16 +64,14 @@ export const statusFieldOptionsBuilder = (builder: FieldConfigEditorBuilder<Stat
           },
         ],
       },
-      category: ['Status Panel display options'],
-      showIf: ({ thresholds }) => thresholds.valueHandler !== 'Disable Criteria',
+      category: ['Status Panel - display options'],
     })
     .addTextInput({
       path: 'dateFormat',
       name: 'Date Format',
       defaultValue: 'YYYY-MM-DD HH:mm:ss',
       description: 'Specify the Date/Time format (Use "lll" for local date/time format)',
-      category: ['Status Panel display options'],
-      showIf: ({ thresholds }) => thresholds.valueHandler === 'Date Threshold',
+      category: ['Status Panel - display options'],
     })
     .addSelect({
       path: 'displayAliasType',
@@ -135,8 +92,7 @@ export const statusFieldOptionsBuilder = (builder: FieldConfigEditorBuilder<Stat
           },
         ],
       },
-      category: ['Status Panel display options'],
-      showIf: ({ thresholds }) => thresholds.valueHandler.slice(-9) === 'Threshold',
+      category: ['Status Panel - display options'],
     })
     .addSelect({
       path: 'displayValueWithAlias',
@@ -163,13 +119,5 @@ export const statusFieldOptionsBuilder = (builder: FieldConfigEditorBuilder<Stat
           },
         ],
       },
-      category: ['Status Panel display options'],
-      showIf: ({ thresholds }) => thresholds.valueHandler.slice(-9) === 'Threshold',
-    })
-    .addTextInput({
-      path: 'disabledValue',
-      name: 'Disable Criteria',
-      description: 'The exact value which will make this panel to be displayed as disabled',
-      category: ['Status Panel threshold options'],
-      showIf: ({ thresholds }) => thresholds.valueHandler === 'Disable Criteria',
+      category: ['Status Panel - display options'],
     });

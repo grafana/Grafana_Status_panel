@@ -6,7 +6,7 @@ import React from 'react';
 import ReactCardFlip from 'react-card-flip';
 import { ReactMarquee } from 'components/Marquee';
 import { useHover, useInterval } from 'hooks/index';
-import { StatusPanelOptions } from 'lib/statusPanelOptionsBuilder';
+import { StatusPanelOptions } from 'interfaces/statusPanelOptions';
 import { buildStatusMetricProps } from 'lib/buildStatusMetricProps';
 import { MaybeAnchor } from './MaybeAnchor';
 
@@ -71,8 +71,6 @@ export const StatusPanel: React.FC<Props> = ({
     ? 'noData'
     : 'ok';
 
-
-
   return (
     <div
       ref={wrapper}
@@ -86,7 +84,9 @@ export const StatusPanel: React.FC<Props> = ({
           zIndex: 10,
         },
         !(panelStatus === 'ok' && options.isIgnoreOKColors) &&
-          options.colorMode === 'Panel' && { backgroundColor: (options.colors as any)[panelStatus === "noData" ? "disable": panelStatus] }
+          options.colorMode === 'Panel' && {
+            backgroundColor: (options.colors as any)[panelStatus === 'noData' ? 'disable' : panelStatus],
+          }
       )}
     >
       <ReactCardFlip isFlipped={flipped}>
@@ -106,11 +106,7 @@ export const StatusPanel: React.FC<Props> = ({
             options.colorMode === 'Metric' && statusColorClasses[panelStatus]
           )}
         >
-          <MaybeAnchor
-            href={options.clusterUrl}
-            target={options.clusterTargetBlank ? '_blank' : '_self'}
-            title={options.clusterName}
-          >
+          <MaybeAnchor href={options.url} target={options.urlTargetBlank ? '_blank' : '_self'} title={options.title}>
             {panelStatus === 'crit'
               ? 'Critical'
               : panelStatus === 'disable'
@@ -131,13 +127,20 @@ export const StatusPanel: React.FC<Props> = ({
               justifyContent: 'center',
             })}
           >
-            <div className={css({ minHeight: '1px', display: 'flex', justifyContent: 'center', fontSize: '1.5rem' })}>
+            <div
+              className={css({
+                minHeight: '1px',
+                display: 'flex',
+                justifyContent: 'center',
+                fontSize: '1.5rem',
+              })}
+            >
               <MaybeAnchor
-                href={options.clusterUrl}
-                target={options.clusterTargetBlank ? '_blank' : '_self'}
-                title={options.clusterName}
+                href={options.url}
+                target={options.urlTargetBlank ? '_blank' : '_self'}
+                title={options.title}
               >
-                {replaceVariables(options.clusterName)}
+                {replaceVariables(options.title)}
               </MaybeAnchor>
             </div>
           </div>
@@ -161,7 +164,14 @@ export const StatusPanel: React.FC<Props> = ({
                   </div>
                 ))}
                 {extraMoreAlerts && (
-                  <span className={css({ paddingTop: '2px', fontSize: '0.85rem' })}>+ {extraMoreAlerts} more</span>
+                  <span
+                    className={css({
+                      paddingTop: '2px',
+                      fontSize: '0.85rem',
+                    })}
+                  >
+                    + {extraMoreAlerts} more
+                  </span>
                 )}
               </div>
             </ReactMarquee>
@@ -197,7 +207,7 @@ export const StatusPanel: React.FC<Props> = ({
           name={'exchange-alt'}
           onClick={() => setFlipped(!flipped)}
           className={css({ position: 'absolute', bottom: '2rem', right: '2rem' })}
-          aria-label='Flip Card'
+          aria-label="Flip Card"
         ></IconButton>
       )}
     </div>
