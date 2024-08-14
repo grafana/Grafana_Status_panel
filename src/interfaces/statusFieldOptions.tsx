@@ -21,11 +21,7 @@ export interface StatusFieldOptions {
     | 'delta'
     | 'step'
     | 'previousDeltaUp';
-  valueDisplayRegex: string;
-  displayType: 'Regular' | 'Annotation';
   fontFormat: 'Regular' | 'Bold' | 'Italic';
-  dateFormat: string;
-  displayAliasType: 'Warning / Critical' | 'Always';
   displayValueWithAlias: 'Never' | 'When Alias Displayed' | 'Warning / Critical' | 'Critical Only';
   disabledValue: string;
 }

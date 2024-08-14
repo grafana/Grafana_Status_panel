@@ -4,8 +4,6 @@ import _ from 'lodash';
 import { StatusFieldOptions } from 'interfaces/statusFieldOptions';
 import { StatusPanelOptions } from 'interfaces/statusPanelOptions';
 
-type StatusType = 'ok' | 'hide' | 'warn' | 'crit' | 'disable' | 'noData';
-
 interface StatusMetricProp extends Omit<React.HTMLAttributes<HTMLDivElement>, 'children'> {
   alias: string;
   displayValue?: string | number;
@@ -16,8 +14,7 @@ export function buildStatusMetricProps(
   data: PanelData,
   fieldConfig: FieldConfigSource,
   options: StatusPanelOptions,
-  replaceVariables: InterpolateFunction,
-  timeZone: string
+  replaceVariables: InterpolateFunction
 ) {
   let annotations: StatusMetricProp[] = [];
   let displays: StatusMetricProp[] = [];
@@ -36,23 +33,11 @@ export function buildStatusMetricProps(
       return;
     }
 
-    // if (!field.state?.calcs) {
-    //   return;
-    // }
-    // determine field status & handle formatting based on value handler
-    let fieldStatus: StatusType = config.custom.displayAliasType === 'Always' ? 'ok' : 'hide';
     let displayValue = '';
 
     // only display value when appropriate
     const withAlias = config.custom.displayValueWithAlias;
     const isDisplayValue = withAlias === 'When Alias Displayed';
-
-    // apply RegEx if value will be displayed
-    if (isDisplayValue && config.custom.valueDisplayRegex) {
-      try {
-        displayValue = displayValue.replace(new RegExp(config.custom.valueDisplayRegex), '');
-      } catch {}
-    }
 
     // get first link and interpolate variables
     const link = ((field.getLinks && field.getLinks({})) ?? [])[0];
@@ -68,24 +53,12 @@ export function buildStatusMetricProps(
     };
 
     // set font format for field
-    if (fieldStatus !== 'ok') {
-      if (config.custom.fontFormat === 'Bold') {
-        props.className = css({ fontWeight: 'bold' });
-      } else if (config.custom.fontFormat === 'Italic') {
-        props.className = css({ fontStyle: 'italic' });
-      }
-    }
-
-    // add to appropriate section
-    if (fieldStatus === 'ok') {
-      if (config.custom.displayType === 'Regular') {
-        displays.push(props);
-      } else {
-        annotations.push(props);
-      }
+    if (config.custom.fontFormat === 'Bold') {
+      props.className = css({ fontWeight: 'bold' });
+    } else if (config.custom.fontFormat === 'Italic') {
+      props.className = css({ fontStyle: 'italic' });
     }
   });
 
-  console.log(crits);
   return { annotations, disables, crits, warns, displays };
 }

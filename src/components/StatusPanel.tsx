@@ -1,7 +1,7 @@
 import { PanelProps } from '@grafana/data';
 import { IconButton } from '@grafana/ui';
 import { css } from '@emotion/css';
-import React, { useState } from 'react';
+import React from 'react';
 import ReactCardFlip from 'react-card-flip';
 import { ReactMarquee } from 'components/Marquee';
 import { useHover, useInterval } from 'hooks/index';
@@ -85,8 +85,7 @@ export const StatusPanel: React.FC<Props> = ({
     data,
     fieldConfig,
     options,
-    replaceVariables,
-    timeZone
+    replaceVariables
   );
 
   // clear other metrics when disabled and hide on disable
