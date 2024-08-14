@@ -49,6 +49,17 @@ export const ThresholdOptionsEditor: React.FC<PanelOptionsEditorProps<StatusPane
     onChange(newThresholdsList);
   };
 
+  const handleChangeThresholdColor = (index: number) => (color: string) => {
+    const newThresholdsList = thresholdsList.map((threshold) => {
+      if (threshold.id === index) {
+        threshold.color = color;
+      }
+      return threshold;
+    });
+    setThresholdsList(newThresholdsList);
+    onChange(newThresholdsList);
+  };
+
   return (
     <>
       <VerticalGroup>
@@ -62,13 +73,17 @@ export const ThresholdOptionsEditor: React.FC<PanelOptionsEditorProps<StatusPane
         >
           Add threshold
         </Button>
-        {thresholdsList.reverse().map((threshold, index) => (
-          <ThresholdSetComponent
-            threshold={threshold}
-            handleDeleteThreshold={handleRemoveThreshold(threshold.id)}
-            key={threshold.id}
-          />
-        ))}
+        {thresholdsList
+          .slice()
+          .reverse()
+          .map((threshold, index) => (
+            <ThresholdSetComponent
+              threshold={threshold}
+              handleDeleteThreshold={handleRemoveThreshold(threshold.id)}
+              handleChangeColor={handleChangeThresholdColor(threshold.id)}
+              key={threshold.id}
+            />
+          ))}
       </VerticalGroup>
     </>
   );

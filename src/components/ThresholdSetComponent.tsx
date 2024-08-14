@@ -11,6 +11,7 @@ export interface ThresholdConf {
 export interface ThresholdSetProps {
   threshold: ThresholdConf;
   handleDeleteThreshold: (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => void;
+  handleChangeColor: (color: string) => void;
 }
 
 export const ThresholdSetComponent: React.FC<ThresholdSetProps> = (props) => {
@@ -19,7 +20,7 @@ export const ThresholdSetComponent: React.FC<ThresholdSetProps> = (props) => {
       <Input
         defaultValue={props.threshold.severity}
         placeholder={'severity'}
-        prefix={<ColorPicker color={props.threshold.color} onChange={() => {}} />}
+        prefix={<ColorPicker color={props.threshold.color} onChange={props.handleChangeColor} />}
         onChange={(event) => {
           props.threshold.severity = event.currentTarget.value;
         }}
