@@ -14,34 +14,41 @@ export interface ThresholdSetProps {
   handleChangeColor: (color: string) => void;
 }
 
-export const ThresholdSetComponent: React.FC<ThresholdSetProps> = (props) => {
+export const ThresholdSet: React.FC<ThresholdSetProps> = (props) => {
+  const isBaseThreshold = props.threshold.id === 1 && props.threshold.severity === 'base';
+
   return (
     <>
       <Input
         defaultValue={props.threshold.severity}
-        placeholder={'severity'}
+        placeholder={'Severity'}
         prefix={<ColorPicker color={props.threshold.color} onChange={props.handleChangeColor} />}
         onChange={(event) => {
           props.threshold.severity = event.currentTarget.value;
         }}
+        disabled={isBaseThreshold}
       />
-      <Input
-        defaultValue={props.threshold.value}
-        placeholder={'value'}
-        type={'number'}
-        onChange={(event) => {
-          props.threshold.value = Number(event.currentTarget.value);
-        }}
-      />
+      {isBaseThreshold ? null : (
+        <Input
+          defaultValue={props.threshold.value}
+          placeholder={'value'}
+          type={'number'}
+          onChange={(event) => {
+            props.threshold.value = Number(event.currentTarget.value);
+          }}
+        />
+      )}
       {/* Button remove this threshold */}
-      <Button
-        icon={'trash-alt'}
-        variant={'secondary'}
-        fill={'text'}
-        size={'md'}
-        onClick={props.handleDeleteThreshold}
-        tooltip={'Remove threshold'}
-      />
+      {isBaseThreshold ? null : (
+        <Button
+          icon={'trash-alt'}
+          variant={'secondary'}
+          fill={'text'}
+          size={'md'}
+          onClick={props.handleDeleteThreshold}
+          tooltip={'Remove threshold'}
+        />
+      )}
     </>
   );
 };

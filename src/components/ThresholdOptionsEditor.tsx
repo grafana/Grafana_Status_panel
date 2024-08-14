@@ -1,7 +1,7 @@
 import { PanelOptionsEditorProps } from '@grafana/data';
 import React, { useEffect, useState } from 'react';
 import { Button, VerticalGroup } from '@grafana/ui';
-import { ThresholdConf, ThresholdSetComponent } from './ThresholdSetComponent';
+import { ThresholdConf, ThresholdSet } from './ThresholdSetComponent';
 import { StatusPanelOptions } from '../interfaces/statusPanelOptions';
 
 export const ThresholdOptionsEditor: React.FC<PanelOptionsEditorProps<StatusPanelOptions['thresholds']>> = ({
@@ -12,16 +12,16 @@ export const ThresholdOptionsEditor: React.FC<PanelOptionsEditorProps<StatusPane
 
   let thresholdId = thresholdsList.length;
 
-  // Init thresholdsList with default if empty
+  // Init thresholdsList with base threshold if empty
   if (thresholdsList.length === 0) {
     thresholdId = thresholdId + 1;
-    let defaultThreshold: ThresholdConf = {
+    let baseThreshold: ThresholdConf = {
       id: thresholdId,
-      color: '#00ff00',
-      value: 0,
-      severity: 'base',
+      color: '#73bf69',
+      value: undefined,
+      severity: 'Base',
     };
-    setThresholdsList([defaultThreshold]);
+    setThresholdsList([baseThreshold]);
     onChange(thresholdsList);
   }
 
@@ -34,7 +34,7 @@ export const ThresholdOptionsEditor: React.FC<PanelOptionsEditorProps<StatusPane
     thresholdId = thresholdId + 1;
     const newThreshold: ThresholdConf = {
       id: thresholdId,
-      color: '#00ff00',
+      color: '#73bf69',
       value: undefined,
       severity: undefined,
     };
@@ -77,7 +77,7 @@ export const ThresholdOptionsEditor: React.FC<PanelOptionsEditorProps<StatusPane
           .slice()
           .reverse()
           .map((threshold, index) => (
-            <ThresholdSetComponent
+            <ThresholdSet
               threshold={threshold}
               handleDeleteThreshold={handleRemoveThreshold(threshold.id)}
               handleChangeColor={handleChangeThresholdColor(threshold.id)}
