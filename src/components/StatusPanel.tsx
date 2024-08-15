@@ -16,10 +16,23 @@ export const StatusPanel: React.FC<Props> = ({ data, options, fieldConfig, width
   const actualThreshold = getActualThreshold(data, options.thresholds, queryValue);
 
   // setup flipper
-  const [flipped, setFlipped] = React.useState(true);
+  // True for the metrics page, False for the severity page
+  const [flipped, setFlipped] = React.useState(() => {
+    // Retrieve the flip state from localStorage
+    const savedFlipState = localStorage.getItem('statusPanelFlipState');
+    return savedFlipState ? JSON.parse(savedFlipState) : true;
+  });
   const wrapper = React.useRef<HTMLDivElement>(null);
   const isHover = useHover(wrapper);
-  useInterval(() => options.flipCard && !isHover && setFlipped(!flipped), 1000 * options.flipTime);
+  useInterval(() => {
+    if (options.flipCard && !isHover) {
+      setFlipped((prevFlipped: boolean) => {
+        const newFlipped = !prevFlipped;
+        localStorage.setItem('statusPanelFlipState', JSON.stringify(newFlipped));
+        return newFlipped;
+      });
+    }
+  }, 1000 * options.flipTime);
 
   // Retrieve colors
   const backgroundColor = actualThreshold.color;
