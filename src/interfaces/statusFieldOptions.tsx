@@ -21,7 +21,8 @@ export interface StatusFieldOptions {
     | 'delta'
     | 'step'
     | 'previousDeltaUp';
-  fontFormat: 'Regular' | 'Bold' | 'Italic';
-  displayValueWithAlias: 'Never' | 'When Alias Displayed' | 'Warning / Critical' | 'Critical Only';
   disabledValue: string;
+  displayValueMetric: boolean;
+  fontFormat: 'Regular' | 'Bold' | 'Italic';
+  metricUnit: string;
 }

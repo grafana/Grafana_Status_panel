@@ -13,6 +13,13 @@ export const statusPanelOptionsBuilder = (builder: PanelOptionsEditorBuilder<Sta
       settings: { expandTemplateVars: true },
     })
     .addTextInput({
+      path: 'subtitle',
+      name: 'Subtitle',
+      description: '',
+      defaultValue: '',
+      category: ['Status Panel - options'],
+    })
+    .addTextInput({
       path: 'url',
       name: 'URL',
       description: '',
@@ -34,13 +41,6 @@ export const statusPanelOptionsBuilder = (builder: PanelOptionsEditorBuilder<Sta
     //   description: 'A prefix to remove from the name (helpful when repeating panel over a template)',
     //   category: ['Status Panel - Options'],
     // })
-    .addNumberInput({
-      path: 'maxAlertNumber',
-      name: 'Max Alerts',
-      defaultValue: -1,
-      description: 'Max alerts number to show in the panel. In case value is less than zero, show all alerts',
-      category: ['Status Panel - options'],
-    })
     .addTextInput({
       path: 'cornerRadius',
       name: 'Corner Radius',
@@ -60,13 +60,6 @@ export const statusPanelOptionsBuilder = (builder: PanelOptionsEditorBuilder<Sta
       defaultValue: 5,
       category: ['Status Panel - options'],
       showIf: ({ flipCard }) => flipCard,
-    })
-    // Default colors match Table Panel so colorized text is easier to read
-    .addBooleanSwitch({
-      path: 'isAutoScrollOnOverflow',
-      name: 'Auto scroll alerts on overflow',
-      defaultValue: false,
-      category: ['Status Panel - options'],
     })
     .addBooleanSwitch({
       path: 'isGrayOnNoData',

@@ -5,18 +5,15 @@ import { ThresholdConf } from '../components/ThresholdSetComponent';
  */
 export interface StatusPanelOptions {
   title: string;
+  subtitle: string;
   url: string;
   urlTargetBlank: boolean;
   // namePrefix: string;
-  maxAlertNumber: number;
   cornerRadius: string;
   flipCard: boolean;
   flipTime: number;
   colorMode: 'Panel' | 'Metric' | 'Disabled';
-  colors: { crit: string; warn: string; ok: string; disable: string };
-  isAutoScrollOnOverflow: boolean;
   isGrayOnNoData: boolean;
-  isHideAlertsOnDisable: boolean;
   thresholds: ThresholdConf[];
   fieldConfig: {
     defaults: {};

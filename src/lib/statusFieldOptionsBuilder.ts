@@ -1,12 +1,13 @@
 import { FieldConfigEditorBuilder } from '@grafana/data';
 import { StatusFieldOptions } from '../interfaces/statusFieldOptions';
+import { MetricUnitOptionsEditor } from '../components/MetricUnitOptionsEditor';
 
 export const statusFieldOptionsBuilder = (builder: FieldConfigEditorBuilder<StatusFieldOptions>) =>
   builder
     .addSelect({
       path: 'aggregation',
       name: 'Aggregation',
-      description: 'What to do if the query returns multiple data points.',
+      description: 'What to do if the query returns multiple data points. Used for threshold calculation',
       defaultValue: 'last',
       settings: {
         options: [
@@ -21,10 +22,17 @@ export const statusFieldOptionsBuilder = (builder: FieldConfigEditorBuilder<Stat
       },
       category: ['Status Panel - display options'],
     })
+    .addBooleanSwitch({
+      path: 'displayValueMetric',
+      name: 'Display value metric',
+      description: '',
+      defaultValue: true,
+      category: ['Status Panel - display options'],
+    })
     .addSelect({
       path: 'fontFormat',
-      name: 'Font Format',
-      description: 'The metric text font format in disable, warning or critical state',
+      name: 'Metric font format',
+      description: 'The metric text font format',
       defaultValue: 'Regular',
       settings: {
         options: [
@@ -34,31 +42,16 @@ export const statusFieldOptionsBuilder = (builder: FieldConfigEditorBuilder<Stat
         ],
       },
       category: ['Status Panel - display options'],
+      showIf: ({ displayValueMetric }) => displayValueMetric,
     })
-    .addSelect({
-      path: 'displayValueWithAlias',
-      name: 'Display Value',
-      description: 'When to display the value along with the alias',
-      defaultValue: 'When Alias Displayed',
-      settings: {
-        options: [
-          { label: 'Never', value: 'Never', description: 'The value will never be displayed' },
-          {
-            label: 'When Alias Displayed',
-            value: 'When Alias Displayed',
-            description: 'The value will be displayed always when alias is displayed',
-          },
-          {
-            label: 'Warning / Critical',
-            value: 'Warning / Critical',
-            description: 'The value will be displayed in warning or critical state',
-          },
-          {
-            label: 'Critical Only',
-            value: 'Critical Only',
-            description: 'The value will be displayed in critical only',
-          },
-        ],
-      },
+    .addCustomEditor({
+      path: 'metricUnit',
+      id: 'metricUnit',
+      name: 'Metric unit',
+      editor: MetricUnitOptionsEditor,
+      override: MetricUnitOptionsEditor,
       category: ['Status Panel - display options'],
+      process: (x) => x,
+      shouldApply: () => true,
+      showIf: ({ displayValueMetric }) => displayValueMetric,
     });

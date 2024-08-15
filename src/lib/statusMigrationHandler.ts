@@ -24,8 +24,6 @@ interface AngularPanelModel extends Omit<PanelModel, 'targets'> {
       alias?: string;
       crit?: number;
       decimals?: number;
-      displayType?: Pick<StatusFieldOptions, 'displayType'>;
-      displayAliasType?: Pick<StatusFieldOptions, 'displayAliasType'>;
       displayValueWithAlias?: Pick<StatusFieldOptions, 'displayValueWithAlias'>;
       units?: string;
       warn?: number;
@@ -61,20 +59,6 @@ const migrateFieldConfig = (panel: AngularPanelModel) => {
         fieldConfigOverride.properties.push({
           id: 'custom.aggregation',
           value: target.aggregation,
-        });
-      }
-
-      if (target.displayType) {
-        fieldConfigOverride.properties.push({
-          id: 'custom.displayType',
-          value: target.displayType,
-        });
-      }
-
-      if (target.displayAliasType) {
-        fieldConfigOverride.properties.push({
-          id: 'custom.displayAliasType',
-          value: target.displayAliasType,
         });
       }
 
