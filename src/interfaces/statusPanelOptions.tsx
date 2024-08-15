@@ -12,7 +12,6 @@ export interface StatusPanelOptions {
   cornerRadius: string;
   flipCard: boolean;
   flipTime: number;
-  colorMode: 'Panel' | 'Metric' | 'Disabled';
   isGrayOnNoData: boolean;
   thresholds: ThresholdConf[];
   fieldConfig: {

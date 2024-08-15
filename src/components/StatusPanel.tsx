@@ -7,6 +7,7 @@ import { useHover, useInterval } from 'hooks/index';
 import { StatusPanelOptions } from 'interfaces/statusPanelOptions';
 import { MaybeAnchor } from './MaybeAnchor';
 import { getActualThreshold, getQueryValueAggregation } from '../lib/thresholdCalulationFunc';
+import { StatusMetric } from './buildStatusMetric';
 
 type Props = PanelProps<StatusPanelOptions>;
 
@@ -30,6 +31,7 @@ export const StatusPanel: React.FC<Props> = ({
 
   // Retrieve colors
   const backgroundColor = actualThreshold.color;
+  const textColor = css({ color: 'white' });
 
   return (
     <div
@@ -51,32 +53,37 @@ export const StatusPanel: React.FC<Props> = ({
       <ReactCardFlip isFlipped={flipped}>
         {/* view 2 (severity) */}
         <div
-          className={css({
-            width,
-            height,
-            overflow: 'hidden',
-            position: 'relative',
-            display: 'flex',
-            flexDirection: 'column',
-            justifyContent: 'center',
-            alignItems: 'center',
-            fontSize: '2rem',
-          })}
+          className={css(
+            {
+              width,
+              height,
+              overflow: 'hidden',
+              position: 'relative',
+              display: 'flex',
+              flexDirection: 'column',
+              justifyContent: 'center',
+              alignItems: 'center',
+              fontSize: '2rem',
+            },
+            textColor
+          )}
         >
           <MaybeAnchor href={options.url} target={options.urlTargetBlank ? '_blank' : '_self'} title={options.title}>
-            {actualThreshold.severity}
+            <span>{actualThreshold.severity}</span>
           </MaybeAnchor>
         </div>
         {/* view 1 (metrics) */}
         <div className={css({ height, display: 'flex', flexDirection: 'column' })}>
           <div
-            className={css({
-              flex: '1 0 0',
-              display: 'flex',
-              flexDirection: 'column',
-              justifyContent: 'center',
-              color: 'white',
-            })}
+            className={css(
+              {
+                flex: '1 0 0',
+                display: 'flex',
+                flexDirection: 'column',
+                justifyContent: 'center',
+              },
+              textColor
+            )}
           >
             {/* Pane title */}
             {options.title !== '' && (
@@ -88,7 +95,7 @@ export const StatusPanel: React.FC<Props> = ({
                   fontSize: '2rem',
                 })}
               >
-                {replaceVariables(options.title)}
+                <span>{replaceVariables(options.title)}</span>
               </div>
             )}
             {/* Pane subtitle */}
@@ -101,7 +108,7 @@ export const StatusPanel: React.FC<Props> = ({
                   fontSize: '1.5rem',
                 })}
               >
-                {replaceVariables(options.subtitle)}
+                <span>{replaceVariables(options.subtitle)}</span>
               </div>
             )}
             {/* Pane metric */}
@@ -115,7 +122,10 @@ export const StatusPanel: React.FC<Props> = ({
                   marginTop: '1rem',
                 })}
               >
-                {queryValue}
+                <StatusMetric fontStyle={fieldConfig.defaults.custom.fontFormat}>
+                  {queryValue}
+                  {fieldConfig.defaults.custom.metricUnit}
+                </StatusMetric>
               </div>
             )}
           </div>
