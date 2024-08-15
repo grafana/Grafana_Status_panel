@@ -67,12 +67,6 @@ export const statusPanelOptionsBuilder = (builder: PanelOptionsEditorBuilder<Sta
       defaultValue: false,
       category: ['Status Panel - options'],
     })
-    .addBooleanSwitch({
-      path: 'isHideAlertsOnDisable',
-      name: 'Hide alerts in Disabled state',
-      defaultValue: false,
-      category: ['Status Panel - options'],
-    })
     /* ---- Thresholds options ---- */
     .addCustomEditor({
       id: 'thresholds',

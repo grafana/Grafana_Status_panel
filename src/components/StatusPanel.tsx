@@ -60,7 +60,7 @@ export const StatusPanel: React.FC<Props> = ({ data, options, fieldConfig, width
             textColor
           )}
         >
-          <MaybeAnchor href={options.url} target={options.urlTargetBlank ? '_blank' : '_self'} title={options.title}>
+          <MaybeAnchor href={options.url} target={options.urlTargetBlank ? '_blank' : '_self'} className={textColor}>
             <span>{actualThreshold.severity}</span>
           </MaybeAnchor>
         </div>
@@ -77,49 +77,51 @@ export const StatusPanel: React.FC<Props> = ({ data, options, fieldConfig, width
               textColor
             )}
           >
-            {/* Pane title */}
-            {options.title !== '' && (
-              <div
-                className={css({
-                  minHeight: '1px',
-                  display: 'flex',
-                  justifyContent: 'center',
-                  fontSize: '2rem',
-                })}
-              >
-                <span>{replaceVariables(options.title)}</span>
-              </div>
-            )}
-            {/* Pane subtitle */}
-            {options.subtitle !== '' && (
-              <div
-                className={css({
-                  minHeight: '1px',
-                  display: 'flex',
-                  justifyContent: 'center',
-                  fontSize: '1.5rem',
-                })}
-              >
-                <span>{replaceVariables(options.subtitle)}</span>
-              </div>
-            )}
-            {/* Pane metric */}
-            {fieldConfig.defaults.custom.displayValueMetric && (
-              <div
-                className={css({
-                  minHeight: '1px',
-                  display: 'flex',
-                  justifyContent: 'center',
-                  fontSize: '2.1rem',
-                  marginTop: '1rem',
-                })}
-              >
-                <StatusMetric fontStyle={fieldConfig.defaults.custom.fontFormat}>
-                  {queryValue}
-                  {fieldConfig.defaults.custom.metricUnit}
-                </StatusMetric>
-              </div>
-            )}
+            <MaybeAnchor href={options.url} target={options.urlTargetBlank ? '_blank' : '_self'} className={textColor}>
+              {/* Pane title */}
+              {options.title !== '' && (
+                <div
+                  className={css({
+                    minHeight: '1px',
+                    display: 'flex',
+                    justifyContent: 'center',
+                    fontSize: '2rem',
+                  })}
+                >
+                  <span>{replaceVariables(options.title)}</span>
+                </div>
+              )}
+              {/* Pane subtitle */}
+              {options.subtitle !== '' && (
+                <div
+                  className={css({
+                    minHeight: '1px',
+                    display: 'flex',
+                    justifyContent: 'center',
+                    fontSize: '1.5rem',
+                  })}
+                >
+                  <span>{replaceVariables(options.subtitle)}</span>
+                </div>
+              )}
+              {/* Pane metric */}
+              {fieldConfig.defaults.custom.displayValueMetric && (
+                <div
+                  className={css({
+                    minHeight: '1px',
+                    display: 'flex',
+                    justifyContent: 'center',
+                    fontSize: '2.1rem',
+                    marginTop: '1rem',
+                  })}
+                >
+                  <StatusMetric fontStyle={fieldConfig.defaults.custom.fontFormat}>
+                    {queryValue}
+                    {fieldConfig.defaults.custom.metricUnit}
+                  </StatusMetric>
+                </div>
+              )}
+            </MaybeAnchor>
           </div>
         </div>
       </ReactCardFlip>
@@ -127,7 +129,7 @@ export const StatusPanel: React.FC<Props> = ({ data, options, fieldConfig, width
         <IconButton
           name={'exchange-alt'}
           onClick={() => setFlipped(!flipped)}
-          className={css({ position: 'absolute', bottom: '2rem', right: '2rem' })}
+          className={css({ position: 'absolute', bottom: '2rem', right: '2rem' }, textColor)}
           aria-label="Flip Card"
         ></IconButton>
       )}
