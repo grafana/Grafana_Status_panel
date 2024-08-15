@@ -1,6 +1,5 @@
 import { FieldConfigEditorBuilder } from '@grafana/data';
 import { StatusFieldOptions } from '../interfaces/statusFieldOptions';
-import { MetricUnitOptionsEditor } from '../components/MetricUnitOptionsEditor';
 
 export const statusFieldOptionsBuilder = (builder: FieldConfigEditorBuilder<StatusFieldOptions>) =>
   builder
@@ -44,14 +43,11 @@ export const statusFieldOptionsBuilder = (builder: FieldConfigEditorBuilder<Stat
       category: ['Status Panel - display options'],
       showIf: ({ displayValueMetric }) => displayValueMetric,
     })
-    .addCustomEditor({
-      id: 'metricUnit',
+    .addUnitPicker({
       path: 'metricUnit',
       name: 'Metric Unit',
-      editor: MetricUnitOptionsEditor,
-      override: MetricUnitOptionsEditor,
+      defaultValue: '',
+      settings: undefined,
       category: ['Status Panel - display options'],
-      process: (x) => x,
-      shouldApply: () => true,
       showIf: ({ displayValueMetric }) => displayValueMetric,
     });
