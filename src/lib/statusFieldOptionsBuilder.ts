@@ -1,5 +1,6 @@
 import { FieldConfigEditorBuilder } from '@grafana/data';
 import { StatusFieldOptions } from '../interfaces/statusFieldOptions';
+import { MetricUnitOptionsEditor } from '../components/MetricUnitOptionsEditor';
 
 export const statusFieldOptionsBuilder = (builder: FieldConfigEditorBuilder<StatusFieldOptions>) =>
   builder
@@ -43,14 +44,14 @@ export const statusFieldOptionsBuilder = (builder: FieldConfigEditorBuilder<Stat
       category: ['Status Panel - display options'],
       showIf: ({ displayValueMetric }) => displayValueMetric,
     })
-    // Dev comment : I try to use a customEditor with a cascader GrafanaUI component like standard options Unit selector, but some trouble. I can't make what I want
-    .addTextInput({
+    .addCustomEditor({
+      id: 'metricUnit',
       path: 'metricUnit',
-      name: 'Metric unit',
-      defaultValue: '',
-      settings: {
-        placeholder: 'ms, Gbits/s CPU usage...',
-      },
+      name: 'Metric Unit',
+      editor: MetricUnitOptionsEditor,
+      override: MetricUnitOptionsEditor,
       category: ['Status Panel - display options'],
+      process: (x) => x,
+      shouldApply: () => true,
       showIf: ({ displayValueMetric }) => displayValueMetric,
     });

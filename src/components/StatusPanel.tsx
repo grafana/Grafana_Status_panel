@@ -11,15 +11,7 @@ import { StatusMetric } from './buildStatusMetric';
 
 type Props = PanelProps<StatusPanelOptions>;
 
-export const StatusPanel: React.FC<Props> = ({
-  data,
-  options,
-  fieldConfig,
-  width,
-  height,
-  replaceVariables,
-  timeZone,
-}) => {
+export const StatusPanel: React.FC<Props> = ({ data, options, fieldConfig, width, height, replaceVariables }) => {
   const queryValue = getQueryValueAggregation(data, fieldConfig.defaults.custom.aggregation);
   const actualThreshold = getActualThreshold(data, options.thresholds, queryValue);
 

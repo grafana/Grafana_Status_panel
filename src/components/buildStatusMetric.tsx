@@ -27,7 +27,7 @@ export const StatusMetric: React.FC<StatusMetricProps> = ({ fontStyle, children 
 };
 
 function formatString(value: any, unit: any) {
-  if (unit === undefined) {
+  if (unit === undefined || unit === 'none') {
     unit = ' ';
   }
   return `${value} ${unit}`.trim();
