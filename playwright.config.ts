@@ -32,6 +32,9 @@ export default defineConfig<PluginOptions>({
 
     /* Collect trace when retrying the failed test. See https://playwright.dev/docs/trace-viewer */
     trace: 'on-first-retry',
+
+    /* Display the web browser UI. (true to hidden) */
+    headless: true,
   },
 
   /* Configure projects for major browsers */
