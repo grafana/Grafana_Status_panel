@@ -4,6 +4,11 @@ import { Button, useTheme2, VerticalGroup } from '@grafana/ui';
 import { ThresholdConf, ThresholdSet } from './ThresholdSetComponent';
 import { StatusPanelOptions } from '../interfaces/statusPanelOptions';
 
+/**
+ * Custom editor for set the thresholds
+ * @param value Thresholds list from StatusPanelOptions
+ * @param onChange Update the thresholds list
+ */
 export const ThresholdOptionsEditor: React.FC<PanelOptionsEditorProps<StatusPanelOptions['thresholds']>> = ({
   value,
   onChange,

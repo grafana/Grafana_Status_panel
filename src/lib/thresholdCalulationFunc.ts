@@ -1,7 +1,9 @@
 import { ThresholdConf } from '../components/ThresholdSetComponent';
 
-/*
-    Get the query value with selected aggregation (last, min, max, etc)
+/**
+ * Get the query value with selected aggregation (last, min, max, etc)
+ * @param data Data from the query
+ * @param aggregation Type of chosen aggregation
  */
 export const getQueryValueAggregation = (data: any, aggregation: string): number => {
   const frame = data.series[data.series.length - 1]; // Get the last Expression query result
@@ -32,10 +34,12 @@ export const getQueryValueAggregation = (data: any, aggregation: string): number
   return 0;
 };
 
-/*
-    Get actual threshold depending on the query data
-*/
-export const getActualThreshold = (data: any, thresholds: ThresholdConf[], value: number): ThresholdConf => {
+/**
+ * Get actual threshold depending on the query data
+ * @param thresholds List of thresholds
+ * @param value query value
+ */
+export const getActualThreshold = (thresholds: ThresholdConf[], value: number): ThresholdConf => {
   const baseThreshold = thresholds[0];
 
   // Remove base threshold from the list (no used in actual threshold computing)

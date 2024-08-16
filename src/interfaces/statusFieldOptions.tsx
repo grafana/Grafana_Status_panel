@@ -1,5 +1,5 @@
-/*
-    Represent field options of the status panel (stored and shared between panel and options editor)
+/**
+ * Represent field options of the status panel (stored and shared between panel and options editor)
  */
 export interface StatusFieldOptions {
   aggregation:

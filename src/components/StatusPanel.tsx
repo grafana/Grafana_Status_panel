@@ -13,7 +13,7 @@ type Props = PanelProps<StatusPanelOptions>;
 
 export const StatusPanel: React.FC<Props> = ({ data, options, fieldConfig, width, height, replaceVariables }) => {
   const queryValue = getQueryValueAggregation(data, fieldConfig.defaults.custom.aggregation);
-  const actualThreshold = getActualThreshold(data, options.thresholds, queryValue);
+  const actualThreshold = getActualThreshold(options.thresholds, queryValue);
 
   // setup flipper
   // True for the metrics page, False for the severity page
