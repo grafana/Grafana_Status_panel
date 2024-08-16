@@ -1,111 +1,135 @@
 # Grafana Status Panel
 
->This project was originally contributed by [Vonage](https://github.com/Vonage/Grafana_Status_panel) - thanks for all your great work!
+> This project was originally contributed by [Vonage](https://github.com/Vonage/Grafana_Status_panel) - thanks for all
+> your great work!
 >
->The previous published version of the plugin relied on AngularJS which is [deprecated](https://grafana.com/docs/grafana/latest/developers/angular_deprecation/). We reached out to Vonage to support publishing an updated version based on the changes made in the source repo, but they were unable to pursue this at the time. 
+> The previous published version of the plugin relied on AngularJS which
+> is [deprecated](https://grafana.com/docs/grafana/latest/developers/angular_deprecation/). We reached out to Vonage to
+> support publishing an updated version based on the changes made in the source repo, but they were unable to pursue
+> this
+> at the time.
 >
->We have stepped up for the time being to minimize disruption, but would be happy to hand maintainership back at any point in the future.
+> We have stepped up for the time being to minimize disruption, but would be happy to hand maintainership back at any
+> point in the future.
 >
->We have republished under the same plugin ID, but with the Grafana signature. This means you can simply update your plugin version. A new ID would have required manual updates to your dashboards. We changed the signature to Grafana to reflect the change in publisher and so that it is clear we are not impersonating the original authors. For additional information on the changes, see the [Notices](/NOTICES).
+> We have republished under the same plugin ID, but with the Grafana signature. This means you can simply update your
+> plugin version. A new ID would have required manual updates to your dashboards. We changed the signature to Grafana to
+> reflect the change in publisher and so that it is clear we are not impersonating the original authors. For additional
+> information on the changes, see the [Notices](/NOTICES).
 
-⚠️ This project is not actively maintained by Grafana Labs. Pull requests are welcome and will be reviewed on a best-effort basis. Contact integrations@grafana.com if you are interested in taking on this project longer term. We will be happy to work with and eventually hand over to people who are interested in maintaining it again.
+⚠️ This project is not actively maintained by Grafana Labs. Pull requests are welcome and will be reviewed on a
+best-effort basis. Contact integrations@grafana.com if you are interested in taking on this project longer term. We will
+be happy to work with and eventually hand over to people who are interested in maintaining it again.
 
 This is a plugin meant to be used as a centralized view for the status of component in a glance.
 It is very similar to the Single Stat panel, but it can hold multiple values from the same data source.
-Each value can be used to customize the panel in different ways: 
+Each value can be used to customize the panel in different ways:
 
-* Mark the severity of the component
-* Mark if the component is disabled
-* Show extra data in the panel about the component  
+- Mark the severity of the component
+- Mark if the component is disabled
+- Show extra data in the panel about the component
 
 ## The General Idea
-Lets say that you want to monitor a bunch of servers, and you want to keep track of multiple stats for each of them, and see in a glance the status of all of them.
 
-This plugin will make it easier to do. You just add all the metrics you want to track, and choose how you want their values to be treated:
+Let's say you want to monitor the healthcheck of an application or a group of containers and want to see the health
+status.
 
-1. Component severity marker - Set the threshold for each and you get an overview that will report to you if there is anything wrong with any of the metrics. This means that if all the metrics are in the OK state, the panel will be green. If even one of the metrics is in the WARNING state, it will be yellow, and red if any of them is CRITICAL.
-2. Component disable marker - Set the exact value that represents if the component is disabled, the panel will be grey.
-3. Display as text - show extra information about the component in the panel.
+This plugin will make it easier to do. You just add a metric or log query and depending on the number obtained, you can
+display some thresholds of severity.
 
-Severity and text values can be shown in 2 modes:
+You can also personalize the panel to show extra information about the component :
 
-1. Regular - under the panel title.
-2. Annotation - In the top left side of the panel.
-
-**Note:** The disable markers are prioritized over the severity ones. 
+1. Define thresholds - Set the thresholds (if the query value is between), set the severity (like: OK, Warning,
+   Critical) and chose a panel color background to represent the severity.
+2. Add custom extra information - If you want to show extra information about the component, you can add a title and
+   subtitle at the panel (like pod name, app, instance ...).
+3. Set flip card - If you want, the panel can flip to show either extra information or severity.
+4. Open Link - You can add a link to the panel to redirect the user to a specific page when the panel is clicked.
 
 You can also repeat the panel on a template if you have multiple instances that you want to watch.
 
 ## How to install (for debugging purposes only)
 
 1. Copy the contents of "Grafana_Status_panel" to the "/var/lib/grafana/plugins" folder
-2. Restart grafana by using "service grafana-server restart"
+2. Restart grafana by using `service grafana-server restart`
 3. Now this panel should be installed.
 
 ## How to use
 
-1. Add the queries you want to the panel and give each of them a unique alias
-2. Choose the name of the panel to be displayed in the `Panel Title` field.
-  **Note:** this field supports Grafana templates, so if you repeat the panel the correct name will show
-3. Go to the Options tab, and choose how to treat each metric. 
-	1. For severity display, select one of the `Threshold` option types (`Number Threshold` / `String Threshold` / `Date Threshold`) under `Handler Type`. Enter the `Warning` and `Critical` thresholds for each of your queries.
-		* You can configure when the alias name and its value will be displayed in the dashboard panel by changing the fields: `Display Alias`, `Display Value`
-		* `String Threshold` option makes equality check to the values
-		* `Number Threshold` and `Date Threshold` options make range check with the values. The plugin automatically detects if higher values are good, or lower values are good by checking which threshold is higher/lower. i.e. if in your metric higher values are better, put a lower value in the `critical` threshold than the `warning` threshold.
-	2. For disable display, select the `Disable Criteria` option type under `Handler Type`. Enter the `Disable Value` for each of your queries.
-	3. For display the text without any condition, select the `Text Only` option type under `Handler Type`. The alias + the value of the metric will be shown on the panel by the `Display Type` value.
-4. If the query returns multiple values, choose the type of aggregation you want to be used (`None` will use first item from the result)
+1. Add the query you want to the panel. Make it to return only number values.
+2. Chose the visualization type to be `Status Panel` plugin.
+3. Setup Status Panel option in the option container
+   - Add a title to the panel (not required)
+   - Add a subtitle to the panel (not required)
+   - Add a link to the panel (not required)
+   - Set the panel border radius (not required, just for style)
+   - Set the panel flip card. If you want to flip the panel or stay on a view
+4. Setup thresholds in the option container
+   - Add a threshold to the panel
+   - Set a severity color to this threshold
+   - Set a severity name to this threshold
+   - set a threshold value
+5. Change display option
+   - Select the aggregation type (used to calculate the threshold)
+   - Select the font type (regular, bold, or italic)
+   - Select the unit to be displayed (not required)
 
 ## Other Features
 
-### Remove Prefix
+### Metric Unit display
 
-The plugins has a 'Remove Prefix' field in the configuration. This field is meant for easier renaming of the panels when you repeat them from a Grafana template.
-
-i.e. you recognize your servers by domain, and they are all named in the following way `www.general-prefix.server.com`, and you would like to remove the prefix from the display, then you enter `www.general-prefix.` and all the panels will only display the `server.com` part.
-
-### Display Value by Regex
-
-When you want to display just part of the value for a specific metric in the screen, you can pass a regex in the `Value Regex` field, and if there is match, Only the first match will be displayed. Otherwise, the original value will be displayed.
-
-### Measurement URL
-
-Lets say that you want your user to be able to get instructions on what to do when a certain metric is at Warning or Critical levels. Just put a link in this field and the name will become clickable, and send your user to the URL (like an internal wiki).
+You can choose a metric unit to be displayed in the panel. The unit will be displayed next to the metric value.
 
 ### Threshold preferences
 
-Panel display tuning is available when metric value gets to different states (`ok` / `warning` / `critical` / `disabled`):
+You can add as much as you need thresholds. You can define threshold preferences like:
 
-1. You can change the relevant color for each state.
-2. You can configure if the color will change the panel background or the metric text.
-3. You can change the text format (`bold` / `italic`) for metric text in `warning` / `critical` / `disabled` states.
+- Severity color - Set the color of the panel background when the threshold is reached
+- Severity text - Set the text to be displayed when the threshold is reached
+- Value threshold - Set the value that will trigger the threshold (computation: `query value >= threshold value`)
+  \
+  How thresholds works:
+  \
+  Query value: 68
+  \
+  Thresholds: Base ; threshold_1: 0 ; threshold_2: 50 ; threshold_3 70 ; threshold_4 90
+  \
+  The selected threshold is threshold_2, because the query value is between 50 and 70 (query value >= threshold_2 but <
+  threshold_3).
 
 ### Show disable for no data
 
-If there is not data from any of the metrics, you can show the panel as disabled (in Grey), by checking the value `Make panel gray when no data` on the top of the options tab
+If there is no data from any of the metrics, you can show the panel as disabled (in Grey), by checking the
+value `Make panel gray when no data` on the top of the options tab
+
 ## Supported Data Sources
-Currently the plugin was tested with **influxDB** and **Graphite**. Support for other data sources could be added by demand
+
+Maybe all datasources are supported. **Make sure to return number in the query**. You can use some technics to get
+number values from string.
 
 ## Release Notes
 
+[see release notes](./CHANGELOG.md)
+
 ### Upgrading Tips
 
-When upgrading there might be some changes in the data the plugin uses and saves, so some of the configurations you made might be removed by accident.
-To prevent this loss of configuration you should save the panel JSON of all panels you have (by exporting the panel or dashboards) and keep them somewhere safe until you made sure everything is working after the upgrade.
+> ⚠ **Warning**: the version **3.0.0** are breaking changes ! And aren't compatible with the previous versions.
 
-### Version 1.0.8 - What's new?
-
-* Adding support for Grafana 5.0.x:
-    - Added option to auto scroll the alerts in case the text overflows the panel view
-	- Fix header padding when title is absent
+When upgrading there might be some changes in the data the plugin uses and saves, so some of the configurations you made
+might be removed by accident.
+To prevent this loss of configuration you should save the panel JSON of all panels you have (by exporting the panel or
+dashboards) and keep them somewhere safe until you made sure everything is working after the upgrade.
 
 # Screenshots
 
 ### Panel States
 
-![ok](https://github.com/Vonage/Grafana_Status_panel/blob/develop/src/img/ok.png?raw=true)
-![warning](https://github.com/Vonage/Grafana_Status_panel/blob/develop/src/img/warning.png?raw=true)
-![error](https://github.com/Vonage/Grafana_Status_panel/blob/develop/src/img/error.png?raw=true)
+Examples of the panel:
+
+|       | status OK                     | status Warning                          | status Critical                     |
+| :---- | :---------------------------- | :-------------------------------------- | :---------------------------------- |
+| front | ![ok](./src/img/ok-front.png) | ![warning](./src/img/warning-front.png) | ![error](./src/img/error-front.png) |
+| back  | ![ok](./src/img/ok.png)       | ![warning](./src/img/warning.png)       | ![error](./src/img/error.png)       |
 
 ### The end result should look like this
 
@@ -113,4 +137,5 @@ To prevent this loss of configuration you should save the panel JSON of all pane
 
 # License
 
-See the [LICENSE](https://github.com/Vonage/Grafana_Status_panel/blob/master/LICENSE.txt) file for license rights and limitations (Apache License, Version 2.0)
+See the [LICENSE](https://github.com/Vonage/Grafana_Status_panel/blob/master/LICENSE.txt) file for license rights and
+limitations (Apache License, Version 2.0)
