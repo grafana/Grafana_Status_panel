@@ -28,6 +28,7 @@ export const StatusPanel: React.FC<Props> = ({ data, options, fieldConfig, width
   // Retrieve colors
   const backgroundColor = actualThreshold.color;
   const textColor = css({ color: 'white' });
+  const noBackgroundColor = options.isGrayOnNoData && queryValue === undefined;
 
   return (
     <div
@@ -41,7 +42,7 @@ export const StatusPanel: React.FC<Props> = ({ data, options, fieldConfig, width
           overflow: 'hidden',
           zIndex: 10,
         },
-        !options.isGrayOnNoData && {
+        !noBackgroundColor && {
           backgroundColor: backgroundColor,
         }
       )}

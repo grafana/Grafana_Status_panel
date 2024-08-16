@@ -1,13 +1,21 @@
 import { ThresholdConf } from '../components/ThresholdSetComponent';
 
 /**
- * Get the query value with selected aggregation (last, min, max, etc)
+ * Get the query value with selected aggregation (last, min, max, etc.)
  * @param data Data from the query
  * @param aggregation Type of chosen aggregation
+ * @returns Value of the query with selected aggregation. Undefined if no data
  */
-export const getQueryValueAggregation = (data: any, aggregation: string): number => {
+export const getQueryValueAggregation = (data: any, aggregation: string): number | undefined => {
   const frame = data.series[data.series.length - 1]; // Get the last Expression query result
+  if (!frame) {
+    return undefined;
+  }
+
   const rows = frame.fields.find((field: { type: string }) => field.type === 'number');
+  if (!rows) {
+    return undefined;
+  }
 
   switch (aggregation) {
     case 'last':
@@ -30,8 +38,9 @@ export const getQueryValueAggregation = (data: any, aggregation: string): number
     case 'delta':
       const orderedValues = rows.values.sort((a: number, b: number) => a - b);
       return Math.abs(orderedValues[orderedValues.length - 1] - orderedValues[0]);
+    default:
+      return rows.values[rows.values.length - 1];
   }
-  return 0;
 };
 
 /**
@@ -39,8 +48,11 @@ export const getQueryValueAggregation = (data: any, aggregation: string): number
  * @param thresholds List of thresholds
  * @param value query value
  */
-export const getActualThreshold = (thresholds: ThresholdConf[], value: number): ThresholdConf => {
+export const getActualThreshold = (thresholds: ThresholdConf[], value: number | undefined): ThresholdConf => {
   const baseThreshold = thresholds[0];
+  if (!value) {
+    return baseThreshold;
+  }
 
   // Remove base threshold from the list (no used in actual threshold computing)
   thresholds = thresholds.slice(1);
