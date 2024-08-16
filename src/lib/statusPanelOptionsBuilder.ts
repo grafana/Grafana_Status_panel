@@ -64,19 +64,21 @@ export const statusPanelOptionsBuilder = (builder: PanelOptionsEditorBuilder<Sta
     .addRadio({
       path: 'flipState',
       name: 'Stay on',
+      defaultValue: false,
       settings: {
         options: [
           {
             label: 'Front',
-            value: true,
+            value: false,
           },
           {
             label: 'Back',
-            value: false,
+            value: true,
           },
         ],
       },
       category: ['Status Panel - options'],
+      showIf: ({ flipCard }) => !flipCard,
     })
     .addBooleanSwitch({
       path: 'isGrayOnNoData',
