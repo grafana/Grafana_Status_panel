@@ -50,7 +50,7 @@ export const getQueryValueAggregation = (data: any, aggregation: string): number
  */
 export const getActualThreshold = (thresholds: ThresholdConf[], value: number | undefined): ThresholdConf => {
   const baseThreshold = thresholds[0];
-  if (!value) {
+  if (value === undefined) {
     return baseThreshold;
   }
 
