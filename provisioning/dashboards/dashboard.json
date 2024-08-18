@@ -11,12 +11,6 @@
         "hide": true,
         "iconColor": "rgba(0, 211, 255, 1)",
         "name": "Annotations & Alerts",
-        "target": {
-          "limit": 100,
-          "matchAny": false,
-          "tags": [],
-          "type": "dashboard"
-        },
         "type": "dashboard"
       }
     ]
@@ -24,8 +18,8 @@
   "editable": true,
   "fiscalYearStartMonth": 0,
   "graphTooltip": 0,
+  "id": 3,
   "links": [],
-  "liveNow": false,
   "panels": [
     {
       "datasource": {
@@ -39,17 +33,9 @@
           },
           "custom": {
             "aggregation": "last",
-            "dateFormat": "YYYY-MM-DD HH:mm:ss",
-            "displayAliasType": "Warning / Critical",
-            "displayType": "Regular",
-            "displayValueWithAlias": "When Alias Displayed",
-            "fontFormat": "Regular",
-            "thresholds": {
-              "crit": 90,
-              "valueHandler": "Number Threshold",
-              "warn": 70
-            },
-            "valueDisplayRegex": ""
+            "displayValueMetric": true,
+            "fontFormat": "Bold",
+            "metricUnit": "%"
           },
           "mappings": [],
           "thresholds": {
@@ -58,77 +44,271 @@
               {
                 "color": "green",
                 "value": null
-              },
-              {
-                "color": "red",
-                "value": 80
               }
             ]
-          },
-          "unitScale": true
+          }
         },
         "overrides": []
       },
       "gridPos": {
-        "h": 8,
-        "w": 12,
+        "h": 9,
+        "w": 5,
         "x": 0,
+        "y": 0
+      },
+      "id": 1,
+      "options": {
+        "cornerRadius": "0rem",
+        "flipCard": true,
+        "flipState": false,
+        "flipTime": 5,
+        "isGrayOnNoData": false,
+        "subtitle": "CPU usage",
+        "thresholds": [
+          {
+            "color": "#5794F2",
+            "id": 1,
+            "severity": "Base"
+          },
+          {
+            "color": "#73BF69",
+            "id": 2,
+            "severity": "Normal",
+            "value": 10
+          },
+          {
+            "color": "#F2CC0C",
+            "id": 3,
+            "severity": "High",
+            "value": 75
+          },
+          {
+            "color": "#F2495C",
+            "id": 4,
+            "severity": "Very high",
+            "value": 90
+          }
+        ],
+        "title": "my_app",
+        "url": "",
+        "urlTargetBlank": false
+      },
+      "pluginVersion": "3.0.0",
+      "targets": [
+        {
+          "alias": "",
+          "datasource": {
+            "type": "grafana-testdata-datasource",
+            "uid": "bdi86bi8f7zswc"
+          },
+          "refId": "A",
+          "scenarioId": "csv_metric_values",
+          "stringInput": "24,31,59,91,77"
+        }
+      ],
+      "title": "Metrics",
+      "type": "vonage-status-panel"
+    },
+    {
+      "datasource": {
+        "type": "grafana-testdata-datasource",
+        "uid": "bdi86bi8f7zswc"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "custom": {
+            "aggregation": "last",
+            "displayValueMetric": false,
+            "fontFormat": "Regular",
+            "metricUnit": ""
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 9,
+        "w": 5,
+        "x": 5,
+        "y": 0
+      },
+      "id": 2,
+      "options": {
+        "cornerRadius": "0rem",
+        "flipCard": false,
+        "flipState": false,
+        "flipTime": 5,
+        "isGrayOnNoData": false,
+        "subtitle": "backend api",
+        "thresholds": [
+          {
+            "color": "#73bf69",
+            "id": 1,
+            "severity": "Base"
+          },
+          {
+            "color": "#73BF69",
+            "id": 2,
+            "severity": "success",
+            "value": 1
+          },
+          {
+            "color": "#FADE2A",
+            "id": 3,
+            "severity": "warning",
+            "value": 2
+          },
+          {
+            "color": "#F2495C",
+            "id": 4,
+            "severity": "critical",
+            "value": 3
+          }
+        ],
+        "title": "my_app health",
+        "url": "",
+        "urlTargetBlank": false
+      },
+      "pluginVersion": "3.0.0",
+      "targets": [
+        {
+          "alias": "",
+          "csvContent": "\"time\",\"stateName\",\"state\"\r\n\"2024-08-18 12:30:00\",\"success\",1\r\n\"2024-08-18 12:35:00\",\"sucess\",1\r\n\"2024-08-18 12:40:00\",\"warning\",2\r\n\"2024-08-18 12:45:00\",\"critial\",3\r\n\"2024-08-18 12:50:00\",\"success\",1",
+          "datasource": {
+            "type": "grafana-testdata-datasource",
+            "uid": "bdi86bi8f7zswc"
+          },
+          "refId": "A",
+          "scenarioId": "csv_content"
+        }
+      ],
+      "title": "Healthcheck",
+      "type": "vonage-status-panel"
+    },
+    {
+      "datasource": {
+        "type": "grafana-testdata-datasource",
+        "uid": "bdi86bi8f7zswc"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "custom": {
+            "aggregation": "last",
+            "displayValueMetric": false,
+            "fontFormat": "Regular",
+            "metricUnit": ""
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 9,
+        "w": 5,
+        "x": 10,
         "y": 0
       },
       "id": 3,
       "options": {
-        "clusterName": "Prod Results",
-        "clusterTargetBlank": false,
-        "clusterUrl": "",
-        "colorMode": "Panel",
-        "colors": {
-          "crit": "#F2495C",
-          "disable": "#808080",
-          "ok": "#73BF69",
-          "warn": "#FF9830"
-        },
-        "cornerRadius": "0rem",
-        "flipCard": false,
+        "cornerRadius": "3rem",
+        "flipCard": true,
+        "flipState": false,
         "flipTime": 5,
-        "isAutoScrollOnOverflow": false,
         "isGrayOnNoData": false,
-        "isHideAlertsOnDisable": false,
-        "isIgnoreOKColors": false,
-        "maxAlertNumber": -1
+        "subtitle": "",
+        "thresholds": [
+          {
+            "color": "#73bf69",
+            "id": 1,
+            "severity": "Base"
+          },
+          {
+            "color": "#3274D9",
+            "id": 2,
+            "severity": "Monday",
+            "value": 0
+          },
+          {
+            "color": "#ff12ea",
+            "id": 3,
+            "severity": "Thusday",
+            "value": 1
+          },
+          {
+            "color": "#F2495C",
+            "id": 4,
+            "severity": "Wednesday",
+            "value": 2
+          },
+          {
+            "color": "#73BF69",
+            "id": 5,
+            "severity": "Thursday",
+            "value": 3
+          },
+          {
+            "color": "#A352CC",
+            "id": 6,
+            "severity": "Friday",
+            "value": 4
+          },
+          {
+            "color": "#FA6400",
+            "id": 7,
+            "severity": "Saturday",
+            "value": 5
+          },
+          {
+            "color": "#FADE2A",
+            "id": 8,
+            "severity": "Sunday",
+            "value": 6
+          }
+        ],
+        "title": "Day of week",
+        "url": "",
+        "urlTargetBlank": false
       },
-      "pluginVersion": "2.0.0",
+      "pluginVersion": "3.0.0",
       "targets": [
         {
-          "alias": "Current",
-          "csvContent": "\"time\",\"Current\"\n\"2024-04-02 00:30:00\", 83561\n\"2024-04-02 00:36:00\", 82875",
           "datasource": {
             "type": "grafana-testdata-datasource",
             "uid": "bdi86bi8f7zswc"
           },
-          "displayType": "Regular",
           "refId": "A",
-          "scenarioId": "csv_content",
-          "valueHandler": "Number Threshold"
-        },
-        {
-          "alias": "Peak",
-          "csvContent": "\"time\",\"Peak\"\n\"2024-04-02 00:30:00\", 83561\n\"2024-04-02 00:36:00\", 82875",
-          "datasource": {
-            "type": "grafana-testdata-datasource",
-            "uid": "bdi86bi8f7zswc"
-          },
-          "displayType": "Regular",
-          "hide": false,
-          "refId": "B",
-          "scenarioId": "csv_content",
-          "valueHandler": "Number Threshold"
+          "scenarioId": "csv_metric_values",
+          "stringInput": "4"
         }
       ],
-      "title": "Total",
+      "title": "Custom",
       "type": "vonage-status-panel"
-    }    
+    }
   ],
-  "refresh": "",
   "schemaVersion": 39,
   "tags": [],
   "templating": {
@@ -141,7 +321,7 @@
   "timepicker": {},
   "timezone": "browser",
   "title": "status-panel",
-  "uid": "adi86k7m8jksga",
-  "version": 2,
+  "uid": "ddv54djwm1zi8e",
+  "version": 29,
   "weekStart": ""
 }
