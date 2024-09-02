@@ -1,6 +1,7 @@
 import { PanelOptionsEditorBuilder } from '@grafana/data';
 import { ThresholdOptionsEditor } from '../components/ThresholdOptionsEditor';
 import { StatusPanelOptions } from '../interfaces/statusPanelOptions';
+import { FormattedStringHelpEditor } from '../components/FormattedStringHelpEditor';
 
 export const statusPanelOptionsBuilder = (builder: PanelOptionsEditorBuilder<StatusPanelOptions>) =>
   builder
@@ -33,6 +34,14 @@ export const statusPanelOptionsBuilder = (builder: PanelOptionsEditorBuilder<Sta
       defaultValue: false,
       category: ['Status Panel - options'],
       showIf: ({ url }) => !!url,
+    })
+    .addCustomEditor({
+      id: 'formatted string help',
+      name: '',
+      description: 'In above text fields, you can use formatted string to include variables. Useful for multi panes',
+      path: 'string_help',
+      category: ['Status Panel - options'],
+      editor: FormattedStringHelpEditor,
     })
     // .addTextInput({
     //   path: 'namePrefix',

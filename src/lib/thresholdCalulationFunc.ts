@@ -1,22 +1,35 @@
 import { ThresholdConf } from '../components/ThresholdSetComponent';
 
 /**
- * Get the query value with selected aggregation (last, min, max, etc.)
+ * Get queries (if there are multiple queries) values with selected aggregation (last, min, max, etc.)
  * @param data Data from the query
  * @param aggregation Type of chosen aggregation
- * @returns Value of the query with selected aggregation. Undefined if no data
+ * @returns Values of the queries with selected aggregation
  */
-export const getQueryValueAggregation = (data: any, aggregation: string): number | undefined => {
-  const frame = data.series[data.series.length - 1]; // Get the last Expression query result
-  if (!frame) {
-    return undefined;
-  }
+export const getQueriesValuesAggregation = (data: any, aggregation: string): number[] => {
+  let queriesValues: number[] = [];
 
-  const rows = frame.fields.find((field: { type: string }) => field.type === 'number');
-  if (!rows) {
-    return undefined;
-  }
+  // Browse series
+  data.series.forEach((frame: any) => {
+    if (!frame) {
+      return;
+    }
+    const rows = frame.fields.find((field: { type: string }) => field.type === 'number');
+    if (rows) {
+      queriesValues.push(AggregationFunctions(rows, aggregation));
+    }
+  });
 
+  return queriesValues;
+};
+
+/**
+ * Return the value of the query with selected aggregation
+ * @param rows Data from series of a query
+ * @param aggregation Aggregation type
+ * @returns Value of the query with selected aggregation
+ */
+const AggregationFunctions = (rows: any, aggregation: string): number => {
   switch (aggregation) {
     case 'last':
       return rows.values[rows.values.length - 1];
@@ -44,14 +57,17 @@ export const getQueryValueAggregation = (data: any, aggregation: string): number
 };
 
 /**
- * Get actual threshold depending on the query data
+ * Get actual threshold depending on the query data (where the magic happens)
  * @param thresholds List of thresholds
  * @param value query value
  */
 export const getActualThreshold = (thresholds: ThresholdConf[], value: number | undefined): ThresholdConf => {
   const baseThreshold = thresholds[0];
-  if (value === undefined) {
-    return baseThreshold;
+  if (value === undefined || value === null) {
+    return {
+      ...baseThreshold,
+      severity: undefined,
+    };
   }
 
   // Remove base threshold from the list (no used in actual threshold computing)
