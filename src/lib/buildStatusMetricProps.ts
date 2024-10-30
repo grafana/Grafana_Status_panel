@@ -163,7 +163,5 @@ export function buildStatusMetricProps(
       disables.push(props);
     }
   });
-
-  console.log(crits);
   return { annotations, disables, crits, warns, displays };
 }
