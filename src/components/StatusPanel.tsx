@@ -136,7 +136,15 @@ export const StatusPanel: React.FC<Props> = ({
               flexWrap: 'wrap',
             })}
           >
-            <div className={css({ minHeight: '1px', display: 'flex', justifyContent: 'center', fontSize: '1.5rem' })}>
+            <div
+              className={css({
+                minHeight: '1px',
+                display: 'flex',
+                justifyContent: 'center',
+                fontSize: '1.5rem',
+                marginBottom: '0.5rem',
+              })}
+            >
               <MaybeAnchor
                 href={options.clusterUrl}
                 target={options.clusterTargetBlank ? '_blank' : '_self'}
