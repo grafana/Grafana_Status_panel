@@ -1,5 +1,10 @@
 # Changelog
 
+## v2.0.1
+
+- Improving styling to center elements properly
+- Prevent card flipping if interval is not greater than 0
+
 ## v2.0.0
 
 Migrating Status Panel from Angular to react. This release includes automatic migrations for Angular panels, but please make sure to have backups and test this migrations in a staging environment first as we can not guarantee that they will all be translated properly.

@@ -58,7 +58,10 @@ export const StatusPanel: React.FC<Props> = ({
   const [flipped, setFlipped] = React.useState(true);
   const wrapper = React.useRef<HTMLDivElement>(null);
   const isHover = useHover(wrapper);
-  useInterval(() => options.flipCard && !isHover && setFlipped(!flipped), 1000 * options.flipTime);
+  useInterval(
+    () => options.flipCard && !isHover && options.flipTime > 0 && setFlipped(!flipped),
+    1000 * options.flipTime
+  );
 
   // set panel status and render
   const panelStatus: StatusType = disables.length
@@ -70,8 +73,6 @@ export const StatusPanel: React.FC<Props> = ({
     : !data.series.length && options.isGrayOnNoData
     ? 'noData'
     : 'ok';
-
-
 
   return (
     <div
@@ -86,7 +87,9 @@ export const StatusPanel: React.FC<Props> = ({
           zIndex: 10,
         },
         !(panelStatus === 'ok' && options.isIgnoreOKColors) &&
-          options.colorMode === 'Panel' && { backgroundColor: (options.colors as any)[panelStatus === "noData" ? "disable": panelStatus] }
+          options.colorMode === 'Panel' && {
+            backgroundColor: (options.colors as any)[panelStatus === 'noData' ? 'disable' : panelStatus],
+          }
       )}
     >
       <ReactCardFlip isFlipped={flipped}>
@@ -128,7 +131,9 @@ export const StatusPanel: React.FC<Props> = ({
               flex: '1 0 0',
               display: 'flex',
               flexDirection: 'column',
-              justifyContent: 'center',
+              placeContent: 'center',
+              alignContent: 'center',
+              flexWrap: 'wrap',
             })}
           >
             <div className={css({ minHeight: '1px', display: 'flex', justifyContent: 'center', fontSize: '1.5rem' })}>
@@ -140,17 +145,6 @@ export const StatusPanel: React.FC<Props> = ({
                 {replaceVariables(options.clusterName)}
               </MaybeAnchor>
             </div>
-          </div>
-          <div
-            className={css({
-              display: 'flex',
-              flexDirection: 'column',
-              alignItems: 'center',
-              overflow: 'scroll',
-              flex: '0 1 auto',
-              '::-webkit-scrollbar': { background: 'transparent', width: '0px', display: 'none' },
-            })}
-          >
             <ReactMarquee hover={isHover} autoScroll={options.isAutoScrollOnOverflow}>
               <div>
                 {alerts.map(({ alias, link, className, displayValue }, index) => (
@@ -166,7 +160,16 @@ export const StatusPanel: React.FC<Props> = ({
               </div>
             </ReactMarquee>
           </div>
-          <div className={css({ fontSize: '1.5rem', minHeight: '1px', flex: '1 1 0' })}></div>
+          <div
+            className={css({
+              display: 'flex',
+              flexDirection: 'column',
+              alignItems: 'center',
+              overflow: 'scroll',
+              flex: '0 1 auto',
+              '::-webkit-scrollbar': { background: 'transparent', width: '0px', display: 'none' },
+            })}
+          ></div>
           <div
             className={css({
               position: 'absolute',
@@ -197,7 +200,7 @@ export const StatusPanel: React.FC<Props> = ({
           name={'exchange-alt'}
           onClick={() => setFlipped(!flipped)}
           className={css({ position: 'absolute', bottom: '2rem', right: '2rem' })}
-          aria-label='Flip Card'
+          aria-label="Flip Card"
         ></IconButton>
       )}
     </div>
