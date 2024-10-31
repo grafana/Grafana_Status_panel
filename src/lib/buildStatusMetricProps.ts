@@ -164,6 +164,5 @@ export function buildStatusMetricProps(
     }
   });
 
-  console.log(crits);
   return { annotations, disables, crits, warns, displays };
 }

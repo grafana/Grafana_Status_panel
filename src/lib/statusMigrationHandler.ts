@@ -3,7 +3,7 @@ import { StatusPanelOptions } from './statusPanelOptionsBuilder';
 import { StatusThresholdOptions } from 'components/StatusThresholdOptionsEditor';
 import { StatusFieldOptions } from './statusFieldOptionsBuilder';
 
-interface AngularPanelModel extends Omit<PanelModel, "targets">{
+interface AngularPanelModel extends Omit<PanelModel, 'targets'> {
   clusterName: string;
   namePrefix: string;
   maxAlertNumber: number;
@@ -17,55 +17,57 @@ interface AngularPanelModel extends Omit<PanelModel, "targets">{
   isIgnoreOKColors: boolean;
   isHideAlertsOnDisable: boolean;
   links: DataLink[];
-  targets?: [{
-    aggregation?: Pick<StatusFieldOptions, 'aggregation'>;
-    alias?: string;
-    crit?: number;    
-    decimals?: number;
-    displayType?: Pick<StatusFieldOptions, 'displayType'>;
-    displayAliasType?: Pick<StatusFieldOptions, 'displayAliasType'>;
-    displayValueWithAlias?: Pick<StatusFieldOptions, 'displayValueWithAlias'>;
-    units?: string;
-    warn?: number;
-    valueHandler?: Pick<StatusThresholdOptions, 'valueHandler'>;
-    url?: string;
-  }];
+  targets?: [
+    {
+      aggregation?: Pick<StatusFieldOptions, 'aggregation'>;
+      alias?: string;
+      crit?: number;
+      decimals?: number;
+      displayType?: Pick<StatusFieldOptions, 'displayType'>;
+      displayAliasType?: Pick<StatusFieldOptions, 'displayAliasType'>;
+      displayValueWithAlias?: Pick<StatusFieldOptions, 'displayValueWithAlias'>;
+      units?: string;
+      warn?: number;
+      valueHandler?: Pick<StatusThresholdOptions, 'valueHandler'>;
+      url?: string;
+      refId?: string;
+    }
+  ];
 }
 
-const isAngularModel = (panel: Omit<PanelModel, "targets">): panel is AngularPanelModel => !!panel.options && 'clusterName' in panel;
-
+const isAngularModel = (panel: Omit<PanelModel, 'targets'>): panel is AngularPanelModel =>
+  !!panel.options && 'clusterName' in panel;
 
 const migrateFieldConfig = (panel: AngularPanelModel) => {
-
   const fieldConfig = {
     defaults: {},
-    overrides: [] as any[], 
-  }
+    overrides: [] as any[],
+  };
 
   if (!panel.targets) {
     return fieldConfig;
   }
-  
-  for (const target of panel.targets){
-    if (target.alias) {
+
+  for (const target of panel.targets) {
+    if (target.refId) {
       const fieldConfigOverride = {
         matcher: {
-          id: "byName",
-          options: target.alias,
+          id: 'byFrameRefID',
+          options: target.refId,
         },
         properties: [] as any[],
       };
 
       if (target.aggregation) {
         fieldConfigOverride.properties.push({
-          id: "custom.aggregation",
+          id: 'custom.aggregation',
           value: target.aggregation,
         });
       }
 
       if (target.crit || target.warn || target.valueHandler) {
         fieldConfigOverride.properties.push({
-          id: "custom.thresholds",
+          id: 'custom.thresholds',
           value: {
             valueHandler: target.valueHandler,
             crit: target.crit,
@@ -76,35 +78,35 @@ const migrateFieldConfig = (panel: AngularPanelModel) => {
 
       if (target.displayType) {
         fieldConfigOverride.properties.push({
-          id: "custom.displayType",
+          id: 'custom.displayType',
           value: target.displayType,
         });
       }
 
       if (target.displayAliasType) {
         fieldConfigOverride.properties.push({
-          id: "custom.displayAliasType",
+          id: 'custom.displayAliasType',
           value: target.displayAliasType,
         });
       }
 
       if (target.displayValueWithAlias) {
         fieldConfigOverride.properties.push({
-          id: "custom.displayValueWithAlias",
+          id: 'custom.displayValueWithAlias',
           value: target.displayValueWithAlias,
         });
       }
 
       if (target.decimals) {
         fieldConfigOverride.properties.push({
-          id: "decimals",
+          id: 'decimals',
           value: target.decimals,
         });
       }
 
       if (target.units) {
         fieldConfigOverride.properties.push({
-          id: "unit",
+          id: 'unit',
           value: target.units,
         });
       }
@@ -114,10 +116,9 @@ const migrateFieldConfig = (panel: AngularPanelModel) => {
   }
 
   return fieldConfig;
-
 };
 
-export const statusMigrationHandler: PanelMigrationHandler<StatusPanelOptions> = panel => {
+export const statusMigrationHandler: PanelMigrationHandler<StatusPanelOptions> = (panel) => {
   if (isAngularModel(panel)) {
     // DataLink cannot be null, create an empty one
     let clusterLink: DataLink<any> = {
@@ -142,10 +143,10 @@ export const statusMigrationHandler: PanelMigrationHandler<StatusPanelOptions> =
       isGrayOnNoData: panel.isGrayOnNoData,
       isIgnoreOKColors: panel.isIgnoreOKColors,
       isHideAlertsOnDisable: panel.isHideAlertsOnDisable,
-      fieldConfig: migrateFieldConfig(panel),
     };
 
-    // migrate overrides
+    // migrate overwrites
+    panel.fieldConfig = migrateFieldConfig(panel);
 
     // remove old angular settings from panel json
     cleanupPanel(panel);
@@ -165,21 +166,28 @@ const cleanupPanel = (panel: AngularPanelModel) => {
   // @ts-ignore
   delete panel.cornerRadius;
   // @ts-ignore
-  delete panel.flipCard
+  delete panel.flipCard;
   // @ts-ignore
-  delete panel.flipTime
+  delete panel.flipTime;
   // @ts-ignore
-  delete panel.fontFormat
+  delete panel.fontFormat;
   // @ts-ignore
-  delete panel.isAutoScrollOnOverflow
+  delete panel.isAutoScrollOnOverflow;
   // @ts-ignore
-  delete panel.isGrayOnNoData
+  delete panel.isGrayOnNoData;
   // @ts-ignore
-  delete panel.isHideAlertsOnDisable
+  delete panel.isHideAlertsOnDisable;
   // @ts-ignore
-  delete panel.isIgnoreOKColors
+  delete panel.isIgnoreOKColors;
   // @ts-ignore
-  delete panel.maxAlertNumber
+  delete panel.maxAlertNumber;
   // @ts-ignore
-  delete panel.namePrefix
-}
+  delete panel.namePrefix;
+
+  if (panel.targets) {
+    for (const target of panel.targets) {
+      // @ts-ignore
+      delete target['$$hashKey'];
+    }
+  }
+};
