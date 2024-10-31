@@ -9,7 +9,7 @@
       "name": "Grafana",
       "url": "https://github.com/grafana/Grafana_Status_panel"
     },
-    "keywords": ["status", "panel"],
+    "keywords": ["status", "panel", "healthcheck", "severity"],
     "logos": {
       "small": "img/logo.svg",
       "large": "img/logo.svg"
