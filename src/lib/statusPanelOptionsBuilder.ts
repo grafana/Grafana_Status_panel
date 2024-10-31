@@ -17,10 +17,6 @@ export interface StatusPanelOptions {
   isGrayOnNoData: boolean;
   isIgnoreOKColors: boolean;
   isHideAlertsOnDisable: boolean;
-  fieldConfig: {
-    defaults: {};
-    overrides: unknown[];
-  };
 }
 
 export const statusPanelOptionsBuilder = (builder: PanelOptionsEditorBuilder<StatusPanelOptions>) =>
