@@ -151,9 +151,8 @@ export const statusMigrationHandler: PanelMigrationHandler<StatusPanelOptions> =
     // remove old angular settings from panel json
     cleanupPanel(panel);
     return options;
-  } else {
-    return {};
   }
+  return panel.options;
 };
 
 const cleanupPanel = (panel: AngularPanelModel) => {
