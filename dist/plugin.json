@@ -1,0 +1,35 @@
+{
+  "$schema": "https://raw.githubusercontent.com/grafana/grafana/master/docs/sources/developers/plugins/plugin.schema.json",
+  "type": "panel",
+  "name": "Status Panel",
+  "id": "vonage-status-panel",
+  "info": {
+    "description": "Status Panel for Grafana",
+    "author": {
+      "name": "Grafana",
+      "url": "https://github.com/grafana/Grafana_Status_panel"
+    },
+    "keywords": ["status", "panel"],
+    "logos": {
+      "small": "img/logo.svg",
+      "large": "img/logo.svg"
+    },
+    "links": [
+      {
+        "name": "Github",
+        "url": "https://github.com/grafana/Grafana_Status_panel"
+      },
+      {
+        "name": "License",
+        "url": "https://github.com/grafana/Grafana_Status_panel/blob/master/LICENSE"
+      }
+    ],
+    "screenshots": [],
+    "version": "2.0.2",
+    "updated": "2024-11-06"
+  },
+  "dependencies": {
+    "grafanaDependency": ">=10.4.0",
+    "plugins": []
+  }
+}
