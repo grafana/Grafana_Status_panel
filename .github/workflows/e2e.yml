@@ -32,7 +32,7 @@ jobs:
           cache: 'yarn'
 
       - name: Install dependencies
-        run: yarn install
+        run: yarn install --immutable --prefer-offline
 
       - name: Check types
         run: yarn run typecheck
@@ -80,7 +80,7 @@ jobs:
           fi
 
       - name: Sign plugin
-        run: run run sign
+        run: yarn run sign
         if: ${{ env.GRAFANA_ACCESS_POLICY_TOKEN != '' }}
 
       - name: Get plugin metadata
@@ -154,7 +154,7 @@ jobs:
           cache: 'yarn'
 
       - name: Install dev dependencies
-        run: yarn install
+        run: yarn install --immutable --prefer-offline
 
       - name: Start Grafana
         run: |
@@ -174,7 +174,7 @@ jobs:
       - name: Docker logs
         if: ${{ always() && steps.run-tests.outcome == 'failure' }}
         run: |
-          docker logs academo-test-panel >& grafana-server.log
+          docker logs academo-test3-panel >& grafana-server.log
 
       - name: Stop grafana docker
         run: docker compose down
