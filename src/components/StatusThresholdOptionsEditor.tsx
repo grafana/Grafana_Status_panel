@@ -1,4 +1,4 @@
-import { FieldOverrideEditorProps, SelectableValue } from '@grafana/data';
+import { SelectableValue, StandardEditorProps } from '@grafana/data';
 import { Input, Label, Select } from '@grafana/ui';
 import React from 'react';
 
@@ -39,7 +39,7 @@ const valueHandlerOptions: Array<SelectableValue<StatusThresholdOptions['valueHa
   },
 ];
 
-export const StatusThresholdOptionsEditor: React.FC<FieldOverrideEditorProps<StatusThresholdOptions, any>> = ({
+export const StatusThresholdOptionsEditor: React.FC<StandardEditorProps<StatusThresholdOptions, any>> = ({
   value,
   onChange,
 }) => {
