@@ -29,19 +29,19 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: '20'
-          cache: 'yarn'
+          cache: 'npm'
 
       - name: Install dependencies
-        run: yarn install
+        run: npm install
 
       - name: Check types
-        run: yarn run typecheck
+        run: npm run typecheck
       - name: Lint
-        run: yarn run lint
+        run: npm run lint
       - name: Unit tests
-        run: yarn run test:ci
+        run: npm run test:ci
       - name: Build frontend
-        run: yarn run build
+        run: npm run build
 
       - name: Check for backend
         id: check-for-backend
@@ -151,10 +151,10 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: '20'
-          cache: 'yarn'
+          cache: 'npm'
 
       - name: Install dev dependencies
-        run: yarn install
+        run: npm install
 
       - name: Start Grafana
         run: |
@@ -165,11 +165,11 @@ jobs:
         uses: grafana/plugin-actions/wait-for-grafana@main
 
       - name: Install Playwright Browsers
-        run: yarn exec playwright install chromium --with-deps
+        run: npm exec playwright install chromium --with-deps
 
       - name: Run Playwright tests
         id: run-tests
-        run: yarn run e2e
+        run: npm run e2e
 
       - name: Docker logs
         if: ${{ always() && steps.run-tests.outcome == 'failure' }}
