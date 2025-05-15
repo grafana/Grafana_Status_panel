@@ -35,6 +35,16 @@ interface AngularPanelModel extends Omit<PanelModel, 'targets'> {
   ];
 }
 
+const aggregationMigrationMap = {
+  Last: 'last',
+  First: 'first',
+  Max: 'max',
+  Min: 'min',
+  Sum: 'sum',
+  Avg: 'mean',
+  Delta: 'delta',
+};
+
 const isAngularModel = (panel: Omit<PanelModel, 'targets'>): panel is AngularPanelModel =>
   !!panel.options && 'clusterName' in panel;
 
@@ -59,9 +69,14 @@ const migrateFieldConfig = (panel: AngularPanelModel) => {
       };
 
       if (target.aggregation) {
+        let newAggregationName =
+          aggregationMigrationMap[String(target.aggregation) as keyof typeof aggregationMigrationMap];
+        if (newAggregationName?.length === 0) {
+          newAggregationName = String(target.aggregation);
+        }
         fieldConfigOverride.properties.push({
           id: 'custom.aggregation',
-          value: target.aggregation,
+          value: newAggregationName,
         });
       }
 
