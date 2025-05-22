@@ -15,6 +15,7 @@ import _ from 'lodash';
 
 import { StatusFieldOptions } from 'lib/statusFieldOptionsBuilder';
 import { StatusPanelOptions } from 'lib/statusPanelOptionsBuilder';
+import { DataQuery } from '@grafana/schema';
 
 type StatusType = 'ok' | 'hide' | 'warn' | 'crit' | 'disable' | 'noData';
 interface StatusMetricProp extends Omit<React.HTMLAttributes<HTMLDivElement>, 'children'> {
@@ -128,9 +129,13 @@ export function buildStatusMetricProps(
       link.href = replaceVariables(link.href);
     }
 
+    const target: (DataQuery & { alias?: string }) | undefined = data.request?.targets?.find(
+      (target) => target.refId === df.refId
+    );
+
     // build props and place in correct bucket
     let props: StatusMetricProp = {
-      alias: config.displayName || df.name || df.refId || '',
+      alias: config.displayName || target?.alias || df.name || df.refId || '',
       displayValue: isDisplayValue ? displayValue : undefined,
       link,
     };
