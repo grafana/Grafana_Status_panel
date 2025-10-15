@@ -9,15 +9,21 @@
     },
     {
       "matchManagers": ["npm"],
-      "matchPackagePatterns": ["^@grafana/"],
       "groupName": "Grafana dependencies",
-      "description": "Group Grafana dependencies"
+      "description": "Group Grafana dependencies",
+      "matchPackageNames": ["/^@grafana//"]
     },
     {
       "matchManagers": ["npm"],
-      "excludePackagePatterns": ["^@grafana/", "^react$", "^react-dom$", "^@types/react$", "^@types/react-dom$"],
       "groupName": "npm dependencies",
-      "description": "Group all other npm dependencies"
+      "description": "Group all other npm dependencies",
+      "matchPackageNames": [
+        "!/^@grafana//",
+        "!/^react$/",
+        "!/^react-dom$/",
+        "!/^@types/react$/",
+        "!/^@types/react-dom$/"
+      ]
     },
     {
       "matchManagers": ["docker-compose"],
