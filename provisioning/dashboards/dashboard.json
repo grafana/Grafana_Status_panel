@@ -1,0 +1,147 @@
+{
+  "annotations": {
+    "list": [
+      {
+        "builtIn": 1,
+        "datasource": {
+          "type": "grafana",
+          "uid": "-- Grafana --"
+        },
+        "enable": true,
+        "hide": true,
+        "iconColor": "rgba(0, 211, 255, 1)",
+        "name": "Annotations & Alerts",
+        "target": {
+          "limit": 100,
+          "matchAny": false,
+          "tags": [],
+          "type": "dashboard"
+        },
+        "type": "dashboard"
+      }
+    ]
+  },
+  "editable": true,
+  "fiscalYearStartMonth": 0,
+  "graphTooltip": 0,
+  "links": [],
+  "liveNow": false,
+  "panels": [
+    {
+      "datasource": {
+        "type": "grafana-testdata-datasource",
+        "uid": "bdi86bi8f7zswc"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "custom": {
+            "aggregation": "last",
+            "dateFormat": "YYYY-MM-DD HH:mm:ss",
+            "displayAliasType": "Warning / Critical",
+            "displayType": "Regular",
+            "displayValueWithAlias": "When Alias Displayed",
+            "fontFormat": "Regular",
+            "thresholds": {
+              "crit": 90,
+              "valueHandler": "Number Threshold",
+              "warn": 70
+            },
+            "valueDisplayRegex": ""
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          },
+          "unitScale": true
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 0,
+        "y": 0
+      },
+      "id": 3,
+      "options": {
+        "clusterName": "Prod Results",
+        "clusterTargetBlank": false,
+        "clusterUrl": "",
+        "colorMode": "Panel",
+        "colors": {
+          "crit": "#F2495C",
+          "disable": "#808080",
+          "ok": "#73BF69",
+          "warn": "#FF9830"
+        },
+        "cornerRadius": "0rem",
+        "flipCard": false,
+        "flipTime": 5,
+        "isAutoScrollOnOverflow": false,
+        "isGrayOnNoData": false,
+        "isHideAlertsOnDisable": false,
+        "isIgnoreOKColors": false,
+        "maxAlertNumber": -1
+      },
+      "pluginVersion": "2.0.0",
+      "targets": [
+        {
+          "alias": "Current",
+          "csvContent": "\"time\",\"Current\"\n\"2024-04-02 00:30:00\", 83561\n\"2024-04-02 00:36:00\", 82875",
+          "datasource": {
+            "type": "grafana-testdata-datasource",
+            "uid": "bdi86bi8f7zswc"
+          },
+          "displayType": "Regular",
+          "refId": "A",
+          "scenarioId": "csv_content",
+          "valueHandler": "Number Threshold"
+        },
+        {
+          "alias": "Peak",
+          "csvContent": "\"time\",\"Peak\"\n\"2024-04-02 00:30:00\", 83561\n\"2024-04-02 00:36:00\", 82875",
+          "datasource": {
+            "type": "grafana-testdata-datasource",
+            "uid": "bdi86bi8f7zswc"
+          },
+          "displayType": "Regular",
+          "hide": false,
+          "refId": "B",
+          "scenarioId": "csv_content",
+          "valueHandler": "Number Threshold"
+        }
+      ],
+      "title": "Total",
+      "type": "vonage-status-panel"
+    }    
+  ],
+  "refresh": "",
+  "schemaVersion": 39,
+  "tags": [],
+  "templating": {
+    "list": []
+  },
+  "time": {
+    "from": "now-6h",
+    "to": "now"
+  },
+  "timepicker": {},
+  "timezone": "browser",
+  "title": "status-panel",
+  "uid": "adi86k7m8jksga",
+  "version": 2,
+  "weekStart": ""
+}

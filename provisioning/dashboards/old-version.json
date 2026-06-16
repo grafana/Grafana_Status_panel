@@ -1,0 +1,135 @@
+{
+  "annotations": {
+    "list": [
+      {
+        "builtIn": 1,
+        "datasource": {
+          "type": "grafana",
+          "uid": "-- Grafana --"
+        },
+        "enable": true,
+        "hide": true,
+        "iconColor": "rgba(0, 211, 255, 1)",
+        "name": "Annotations & Alerts",
+        "type": "dashboard"
+      }
+    ]
+  },
+  "editable": true,
+  "fiscalYearStartMonth": 0,
+  "graphTooltip": 0,
+  "id": 1,
+  "links": [],
+  "liveNow": false,
+  "panels": [
+    {
+      "clusterName": "Status Panel test 1.0.11",
+      "colorMode": "Panel",
+      "colors": {
+        "crit": "rgba(245, 54, 54, 0.9)",
+        "disable": "rgba(128, 128, 128, 0.9)",
+        "ok": "rgba(50, 128, 45, 0.9)",
+        "warn": "rgba(237, 129, 40, 0.9)"
+      },
+      "cornerRadius": 3,
+      "datasource": {
+        "type": "datasource",
+        "uid": "grafana"
+      },
+      "displayName": "Status Panel test 1.0.11",
+      "flipCard": true,
+      "flipTime": "3",
+      "fontFormat": "Bold",
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 0,
+        "y": 0
+      },
+      "id": 1,
+      "isAutoScrollOnOverflow": false,
+      "isGrayOnNoData": false,
+      "isHideAlertsOnDisable": false,
+      "isIgnoreOKColors": false,
+      "maxAlertNumber": 11,
+      "namePrefix": "prefixo",
+      "targets": [
+        {
+          "$$hashKey": "object:49",
+          "aggregation": "Avg",
+          "alias": "TheAWithAvg",
+          "datasource": {
+            "type": "datasource",
+            "uid": "grafana"
+          },
+          "decimals": 2,
+          "displayAliasType": "Warning / Critical",
+          "displayType": "Regular",
+          "displayValueWithAlias": "Never",
+          "hide": false,
+          "queryType": "randomWalk",
+          "refId": "A",
+          "units": "none",
+          "url": "https://themetrica.com",
+          "valueHandler": "Number Threshold"
+        },
+        {
+          "$$hashKey": "object:50",
+          "aggregation": "Last",
+          "alias": "TheBWithLast",
+          "datasource": {
+            "type": "datasource",
+            "uid": "grafana"
+          },
+          "decimals": 2,
+          "displayAliasType": "Warning / Critical",
+          "displayType": "Regular",
+          "displayValueWithAlias": "Never",
+          "hide": false,
+          "queryType": "randomWalk",
+          "refId": "B",
+          "units": "none",
+          "url": "https://themetricb.com",
+          "valueHandler": "Number Threshold"
+        },
+        {
+          "$$hashKey": "object:51",
+          "aggregation": "Sum",
+          "alias": "TheCWithSum",
+          "datasource": {
+            "type": "datasource",
+            "uid": "grafana"
+          },
+          "decimals": 2,
+          "displayAliasType": "Warning / Critical",
+          "displayType": "Regular",
+          "displayValueWithAlias": "Never",
+          "hide": false,
+          "queryType": "randomWalk",
+          "refId": "C",
+          "units": "none",
+          "url": "https://themetricc.com",
+          "valueHandler": "Number Threshold"
+        }
+      ],
+      "title": "Panel Title",
+      "type": "vonage-status-panel"
+    }
+  ],
+  "refresh": "",
+  "schemaVersion": 39,
+  "tags": [],
+  "templating": {
+    "list": []
+  },
+  "time": {
+    "from": "now-6h",
+    "to": "now"
+  },
+  "timepicker": {},
+  "timezone": "",
+  "title": "Status Panel 1.0.11",
+  "uid": "ad646d2d-4588-4633-bd73-97e9cf5c49a9",
+  "version": 1,
+  "weekStart": ""
+}

@@ -1,0 +1,25 @@
+{
+  "ignorePaths": [
+    "node_modules/**",
+    "dist/**",
+    "src/external/**",
+    "provisioning/**",
+    "package.json",
+    "docker-compose.yaml"
+  ],
+  "words": [
+    "grafana",
+    "datasource",
+    "datasources",
+    "rgba",
+    "countup",
+    "Themeable",
+    "Unthemed",
+    "testid",
+    "vonage",
+    "maintainership",
+    "crits",
+    "logmin"
+  ],
+  "ignoreRegExpList": ["@[\\w]+"]
+}
