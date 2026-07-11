@@ -124,6 +124,11 @@ export function buildStatusMetricProps(
           fieldStatus = 'disable';
         }
         break;
+      case 'Text Only':
+        // Always show the metric, with no threshold condition.
+        fieldStatus = 'ok';
+        displayValue = String(fieldCalcs[config.custom.aggregation]);
+        break;
     }
 
     // only display value when appropriate

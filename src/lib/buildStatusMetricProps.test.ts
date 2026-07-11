@@ -105,3 +105,20 @@ describe('Value Regex — keeps the match, not the remainder (regression #1)', (
     expect(res.displays[0].displayValue).toBe('12345');
   });
 });
+
+describe('Text Only handler (regression #5)', () => {
+  test('displays the metric value unconditionally', () => {
+    const res = run([42], { thresholds: { valueHandler: 'Text Only', crit: '', warn: '' } });
+    expect(res.displays).toHaveLength(1);
+    expect(res.displays[0].displayValue).toBe('42');
+  });
+
+  test('routes to annotations when displayType is Annotation', () => {
+    const res = run([42], {
+      thresholds: { valueHandler: 'Text Only', crit: '', warn: '' },
+      displayType: 'Annotation',
+    });
+    expect(res.annotations).toHaveLength(1);
+    expect(res.displays).toHaveLength(0);
+  });
+});
