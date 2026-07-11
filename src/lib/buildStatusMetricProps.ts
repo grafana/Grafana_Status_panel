@@ -103,8 +103,8 @@ export function buildStatusMetricProps(
           fieldStatus = 'warn';
         }
         break;
-      case 'Date Threshold':
-        const val: string = fieldCalcs[config.custom.aggregation];
+      case 'Date Threshold': {
+        const val = fieldCalcs[config.custom.aggregation];
         let date = dateTimeAsMoment(val);
         if (timeZone === 'utc') {
           date = date.utc();
@@ -112,12 +112,30 @@ export function buildStatusMetricProps(
 
         displayValue = date.format(config.custom.dateFormat);
 
-        if (val === config.custom.thresholds.crit) {
-          fieldStatus = 'crit';
-        } else if (val === config.custom.thresholds.warn) {
-          fieldStatus = 'warn';
+        // Compare chronologically (epoch millis), like the numeric handler —
+        // an empty bound means "not set" and falls back to exact equality.
+        const value = date.valueOf();
+        const critRaw = config.custom.thresholds.crit;
+        const warnRaw = config.custom.thresholds.warn;
+        const crit = critRaw ? dateTimeAsMoment(critRaw).valueOf() : NaN;
+        const warn = warnRaw ? dateTimeAsMoment(warnRaw).valueOf() : NaN;
+        const critIsNum = _.isFinite(crit);
+        const warnIsNum = _.isFinite(warn);
+        if (critIsNum && warnIsNum) {
+          if ((warn <= crit && crit <= value) || (warn >= crit && crit >= value)) {
+            fieldStatus = 'crit';
+          } else if ((warn <= value && value <= crit) || (warn >= value && value >= crit)) {
+            fieldStatus = 'warn';
+          }
+        } else {
+          if (critIsNum && value === crit) {
+            fieldStatus = 'crit';
+          } else if (warnIsNum && value === warn) {
+            fieldStatus = 'warn';
+          }
         }
         break;
+      }
       case 'Disable Criteria':
         // Compare as strings so a numeric metric (e.g. 0) matches a text disabledValue ("0").
         if (String(fieldCalcs[config.custom.aggregation]) === config.custom.disabledValue) {

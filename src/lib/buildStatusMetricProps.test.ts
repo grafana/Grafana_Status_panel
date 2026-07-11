@@ -122,3 +122,28 @@ describe('Text Only handler (regression #5)', () => {
     expect(res.displays).toHaveLength(0);
   });
 });
+
+describe('Date Threshold — chronological range comparison (regression #2)', () => {
+  const epoch = (iso: string) => new Date(iso).getTime();
+  const dateThresholds = {
+    valueHandler: 'Date Threshold' as const,
+    warn: '2024-05-01T00:00:00Z',
+    crit: '2024-06-01T00:00:00Z',
+  };
+
+  test('flags crit when the date is at/after the crit bound', () => {
+    const res = run([epoch('2024-06-15T00:00:00Z')], { thresholds: dateThresholds });
+    expect(res.crits).toHaveLength(1);
+  });
+
+  test('flags warn when the date is between the warn and crit bounds', () => {
+    const res = run([epoch('2024-05-15T00:00:00Z')], { thresholds: dateThresholds });
+    expect(res.warns).toHaveLength(1);
+  });
+
+  test('stays OK before the warn bound', () => {
+    const res = run([epoch('2024-04-15T00:00:00Z')], { thresholds: dateThresholds });
+    expect(res.crits).toHaveLength(0);
+    expect(res.warns).toHaveLength(0);
+  });
+});
