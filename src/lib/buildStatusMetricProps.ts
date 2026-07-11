@@ -57,14 +57,29 @@ export function buildStatusMetricProps(
     let fieldStatus: StatusType = config.custom.displayAliasType === 'Always' ? 'ok' : 'hide';
     let displayValue = '';
     switch (config.custom.thresholds.valueHandler) {
-      case 'Number Threshold':
+      case 'Number Threshold': {
         let value: number = fieldCalcs[config.custom.aggregation];
-        const crit = +config.custom.thresholds.crit;
-        const warn = +config.custom.thresholds.warn;
-        if ((warn <= crit && crit <= value) || (warn >= crit && crit >= value)) {
-          fieldStatus = 'crit';
-        } else if ((warn <= value && value <= crit) || (warn >= value && value >= crit)) {
-          fieldStatus = 'warn';
+        const critRaw: any = config.custom.thresholds.crit;
+        const warnRaw: any = config.custom.thresholds.warn;
+        // A threshold left empty (or non-numeric) means "not set" — never coerce it to 0.
+        const critIsNum = critRaw !== '' && critRaw != null && _.isFinite(+critRaw);
+        const warnIsNum = warnRaw !== '' && warnRaw != null && _.isFinite(+warnRaw);
+        const crit = +critRaw;
+        const warn = +warnRaw;
+        if (critIsNum && warnIsNum) {
+          // Both thresholds numeric → range check (direction auto-detected).
+          if ((warn <= crit && crit <= value) || (warn >= crit && crit >= value)) {
+            fieldStatus = 'crit';
+          } else if ((warn <= value && value <= crit) || (warn >= value && value >= crit)) {
+            fieldStatus = 'warn';
+          }
+        } else {
+          // Single-sided threshold → exact-equality on whichever bound is set.
+          if (critIsNum && value === crit) {
+            fieldStatus = 'crit';
+          } else if (warnIsNum && value === warn) {
+            fieldStatus = 'warn';
+          }
         }
 
         if (!_.isFinite(value)) {
@@ -75,6 +90,7 @@ export function buildStatusMetricProps(
           displayValue = toFixed(value, config.decimals);
         }
         break;
+      }
       case 'String Threshold':
         displayValue = fieldCalcs[config.custom.aggregation];
         if (displayValue === undefined || displayValue === null || displayValue !== displayValue) {
@@ -103,7 +119,8 @@ export function buildStatusMetricProps(
         }
         break;
       case 'Disable Criteria':
-        if (fieldCalcs[config.custom.aggregation] === config.custom.disabledValue) {
+        // Compare as strings so a numeric metric (e.g. 0) matches a text disabledValue ("0").
+        if (String(fieldCalcs[config.custom.aggregation]) === config.custom.disabledValue) {
           fieldStatus = 'disable';
         }
         break;
@@ -119,7 +136,11 @@ export function buildStatusMetricProps(
     // apply RegEx if value will be displayed
     if (isDisplayValue && config.custom.valueDisplayRegex) {
       try {
-        displayValue = displayValue.replace(new RegExp(config.custom.valueDisplayRegex), '');
+        // Display only the matched part of the value; fall back to the full value when no match.
+        const match = displayValue.match(new RegExp(config.custom.valueDisplayRegex));
+        if (match) {
+          displayValue = match[0];
+        }
       } catch {}
     }
 
