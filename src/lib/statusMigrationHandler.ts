@@ -155,7 +155,6 @@ export const statusMigrationHandler: PanelMigrationHandler<StatusPanelOptions> =
       clusterName: panel.clusterName,
       clusterUrl: clusterLink?.url,
       clusterTargetBlank: !!clusterLink?.targetBlank,
-      // namePrefix: panel.namePrefix,
       maxAlertNumber: panel?.maxAlertNumber,
       cornerRadius: `${panel.cornerRadius}%`,
       flipCard: panel.flipCard,
