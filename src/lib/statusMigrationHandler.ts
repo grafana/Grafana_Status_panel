@@ -126,6 +126,14 @@ const migrateFieldConfig = (panel: AngularPanelModel) => {
         });
       }
 
+      if (target.url) {
+        // Preserve the per-metric "Measurement URL" as a standard field data link.
+        fieldConfigOverride.properties.push({
+          id: 'links',
+          value: [{ title: '', url: target.url, targetBlank: false }],
+        });
+      }
+
       fieldConfig.overrides.push(fieldConfigOverride);
     }
   }
