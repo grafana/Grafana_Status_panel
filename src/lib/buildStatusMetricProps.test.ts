@@ -2,6 +2,7 @@ import { FieldType, toDataFrame, PanelData, LoadingState, FieldConfigSource } fr
 import { buildStatusMetricProps } from './buildStatusMetricProps';
 import { StatusFieldOptions } from './statusFieldOptionsBuilder';
 import { StatusPanelOptions } from './statusPanelOptionsBuilder';
+import { resetMisconfigurationReports } from './diagnostics';
 
 const baseCustom: StatusFieldOptions = {
   aggregation: 'last',
@@ -209,5 +210,49 @@ describe('Text Only — the value is always shown (regression #10)', () => {
     });
     expect(res.displays).toHaveLength(1);
     expect(res.displays[0].displayValue).toBe('480');
+  });
+});
+
+describe('Misconfiguration is reported, not swallowed', () => {
+  let warn: jest.SpyInstance;
+
+  beforeEach(() => {
+    resetMisconfigurationReports();
+    warn = jest.spyOn(console, 'warn').mockImplementation(() => {});
+  });
+  afterEach(() => warn.mockRestore());
+
+  test('an invalid Value Regex is reported instead of being caught and dropped', () => {
+    // This used to be an empty `catch {}`: the pattern was ignored in complete silence.
+    const res = run([42], { valueDisplayRegex: '[unclosed', displayAliasType: 'Always' });
+
+    expect(warn).toHaveBeenCalledTimes(1);
+    expect(warn.mock.calls[0][0]).toContain('is not a valid regular expression');
+    // and the value still shows, in full
+    expect(res.displays[0].displayValue).toBe('42');
+  });
+
+  test('a threshold bound that is not a number is reported', () => {
+    // A non-numeric bound reads as "not set", which silently changes how the value is
+    // graded. Left unsaid, the card just shows the wrong colour.
+    run([42], { thresholds: { valueHandler: 'Number Threshold', warn: 'abc', crit: '90' } });
+
+    expect(warn).toHaveBeenCalledTimes(1);
+    expect(warn.mock.calls[0][0]).toContain('the Warning threshold "abc" is not a number');
+  });
+
+  test('an empty bound is a legitimate single-sided threshold, not a mistake', () => {
+    run([1], { thresholds: { valueHandler: 'Number Threshold', warn: '', crit: '0' } });
+
+    expect(warn).not.toHaveBeenCalled();
+  });
+
+  test('the same problem is reported once, not on every refresh', () => {
+    const misconfigured = { valueDisplayRegex: '[unclosed', displayAliasType: 'Always' as const };
+    run([42], misconfigured);
+    run([42], misconfigured);
+    run([42], misconfigured);
+
+    expect(warn).toHaveBeenCalledTimes(1);
   });
 });

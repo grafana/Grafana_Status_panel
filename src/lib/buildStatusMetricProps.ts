@@ -15,6 +15,7 @@ import _ from 'lodash';
 
 import { StatusFieldOptions } from 'lib/statusFieldOptionsBuilder';
 import { StatusPanelOptions } from 'lib/statusPanelOptionsBuilder';
+import { reportMisconfiguration } from 'lib/diagnostics';
 import { DataQuery } from '@grafana/schema';
 
 type StatusType = 'ok' | 'hide' | 'warn' | 'crit' | 'disable' | 'noData';
@@ -90,12 +91,31 @@ export function buildStatusMetricProps(
     // if (!field.state?.calcs) {
     //   return;
     // }
+    const card = options.clusterName || 'unnamed';
+    const refId = df.refId ?? '?';
+
+    // An empty bound means "not set" and is a legitimate way to build a single-sided
+    // threshold. A bound that was filled in with something that is not a number is a
+    // mistake, and reads as "not set" too, which silently changes how the value is
+    // graded. Say so, rather than let the card show a confident, wrong colour.
+    const checkBound = (raw: unknown, name: string) => {
+      if (raw !== '' && raw != null && !_.isFinite(Number(raw))) {
+        reportMisconfiguration({
+          card,
+          refId,
+          problem: `the ${name} threshold "${raw}" is not a number, so it was ignored`,
+        });
+      }
+    };
+
     // determine field status & handle formatting based on value handler
     let fieldStatus: StatusType = config.custom.displayAliasType === 'Always' ? 'ok' : 'hide';
     let displayValue = '';
     switch (config.custom.thresholds.valueHandler) {
       case 'Number Threshold': {
         const value: number = fieldCalcs[config.custom.aggregation];
+        checkBound(config.custom.thresholds.warn, 'Warning');
+        checkBound(config.custom.thresholds.crit, 'Critical');
         const severity = classifySeverity(
           value,
           toBound(config.custom.thresholds.warn),
@@ -137,11 +157,24 @@ export function buildStatusMetricProps(
 
         // Compare chronologically (epoch millis) so the bounds grade the same way
         // the numeric ones do.
-        const toDateBound = (raw: string) => (raw ? dateTimeAsMoment(raw).valueOf() : NaN);
+        const toDateBound = (raw: string, name: string) => {
+          if (!raw) {
+            return NaN;
+          }
+          const bound = dateTimeAsMoment(raw).valueOf();
+          if (!_.isFinite(bound)) {
+            reportMisconfiguration({
+              card,
+              refId,
+              problem: `the ${name} threshold "${raw}" is not a date, so it was ignored`,
+            });
+          }
+          return bound;
+        };
         const severity = classifySeverity(
           date.valueOf(),
-          toDateBound(config.custom.thresholds.warn),
-          toDateBound(config.custom.thresholds.crit)
+          toDateBound(config.custom.thresholds.warn, 'Warning'),
+          toDateBound(config.custom.thresholds.crit, 'Critical')
         );
         if (severity) {
           fieldStatus = severity;
@@ -179,7 +212,13 @@ export function buildStatusMetricProps(
         if (match) {
           displayValue = match[0];
         }
-      } catch {}
+      } catch {
+        reportMisconfiguration({
+          card,
+          refId,
+          problem: `the Value Regex "${config.custom.valueDisplayRegex}" is not a valid regular expression, so the whole value is shown`,
+        });
+      }
     }
 
     // get first link and interpolate variables
