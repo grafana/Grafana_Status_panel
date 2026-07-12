@@ -147,3 +147,52 @@ describe('Date Threshold — chronological range comparison (regression #2)', ()
     expect(res.warns).toHaveLength(0);
   });
 });
+
+describe('Number Threshold — equal warn and crit bounds (regression #11)', () => {
+  // The AngularJS panel compared the value against each bound (`value >= crit`,
+  // then `value >= warn`). The React rewrite turned that into a range check whose
+  // two branches are BOTH true when warn === crit, so every value came out crit.
+  // Real dashboards use warn === crit for binary error counters (a filesystem
+  // error flag, a dead-process count), so those panels were permanently red.
+  test('a value below an equal warn/crit bound is not an alert', () => {
+    const res = run([0], { thresholds: { valueHandler: 'Number Threshold', warn: '1', crit: '1' } });
+    expect(res.crits).toHaveLength(0);
+    expect(res.warns).toHaveLength(0);
+  });
+
+  test('a value at an equal warn/crit bound is critical', () => {
+    const res = run([1], { thresholds: { valueHandler: 'Number Threshold', warn: '1', crit: '1' } });
+    expect(res.crits).toHaveLength(1);
+  });
+
+  test('a value above an equal warn/crit bound is critical', () => {
+    const res = run([5], { thresholds: { valueHandler: 'Number Threshold', warn: '1', crit: '1' } });
+    expect(res.crits).toHaveLength(1);
+  });
+});
+
+describe('Number Threshold — direction is taken from the bounds', () => {
+  test('higher is worse: warn 80 / crit 90', () => {
+    expect(run([50], { thresholds: { valueHandler: 'Number Threshold', warn: '80', crit: '90' } }).warns).toHaveLength(
+      0
+    );
+    expect(run([85], { thresholds: { valueHandler: 'Number Threshold', warn: '80', crit: '90' } }).warns).toHaveLength(
+      1
+    );
+    expect(run([95], { thresholds: { valueHandler: 'Number Threshold', warn: '80', crit: '90' } }).crits).toHaveLength(
+      1
+    );
+  });
+
+  test('lower is worse: warn 1 / crit 0, as used for bonding and process counts', () => {
+    expect(run([2], { thresholds: { valueHandler: 'Number Threshold', warn: '1', crit: '0' } }).warns).toHaveLength(0);
+    expect(run([1], { thresholds: { valueHandler: 'Number Threshold', warn: '1', crit: '0' } }).warns).toHaveLength(1);
+    expect(run([0], { thresholds: { valueHandler: 'Number Threshold', warn: '1', crit: '0' } }).crits).toHaveLength(1);
+  });
+
+  test('a healthy process count well above the bounds stays OK', () => {
+    const res = run([89], { thresholds: { valueHandler: 'Number Threshold', warn: '1', crit: '0' } });
+    expect(res.crits).toHaveLength(0);
+    expect(res.warns).toHaveLength(0);
+  });
+});

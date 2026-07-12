@@ -24,6 +24,43 @@ interface StatusMetricProp extends Omit<React.HTMLAttributes<HTMLDivElement>, 'c
   link?: LinkModel;
 }
 
+/** A bound left empty in the editor means "not set", so never coerce it to 0. */
+const toBound = (raw: unknown): number => (raw === '' || raw == null ? NaN : Number(raw));
+
+/**
+ * Grade a value against its two bounds the way the AngularJS panel did: compare it
+ * against each bound in turn, taking the direction from whichever bound is larger.
+ * A single bound falls back to exact equality. Returns null when the value clears
+ * both bounds, which leaves the caller's initial status untouched.
+ */
+function classifySeverity(value: number, warn: number, crit: number): 'warn' | 'crit' | null {
+  const warnIsSet = _.isFinite(warn);
+  const critIsSet = _.isFinite(crit);
+
+  if (warnIsSet && critIsSet) {
+    // `crit < warn` means a lower value is the worse one (bonded slaves, healthy
+    // process counts). Comparing against each bound instead of testing a range
+    // matters when warn === crit: both ends of a range check are then true at
+    // once, which reports crit for every possible value.
+    const lowerIsWorse = crit < warn;
+    if (lowerIsWorse ? value <= crit : value >= crit) {
+      return 'crit';
+    }
+    if (lowerIsWorse ? value <= warn : value >= warn) {
+      return 'warn';
+    }
+    return null;
+  }
+
+  if (critIsSet && value === crit) {
+    return 'crit';
+  }
+  if (warnIsSet && value === warn) {
+    return 'warn';
+  }
+  return null;
+}
+
 export function buildStatusMetricProps(
   data: PanelData,
   fieldConfig: FieldConfigSource,
@@ -58,28 +95,14 @@ export function buildStatusMetricProps(
     let displayValue = '';
     switch (config.custom.thresholds.valueHandler) {
       case 'Number Threshold': {
-        let value: number = fieldCalcs[config.custom.aggregation];
-        const critRaw: any = config.custom.thresholds.crit;
-        const warnRaw: any = config.custom.thresholds.warn;
-        // A threshold left empty (or non-numeric) means "not set" — never coerce it to 0.
-        const critIsNum = critRaw !== '' && critRaw != null && _.isFinite(+critRaw);
-        const warnIsNum = warnRaw !== '' && warnRaw != null && _.isFinite(+warnRaw);
-        const crit = +critRaw;
-        const warn = +warnRaw;
-        if (critIsNum && warnIsNum) {
-          // Both thresholds numeric → range check (direction auto-detected).
-          if ((warn <= crit && crit <= value) || (warn >= crit && crit >= value)) {
-            fieldStatus = 'crit';
-          } else if ((warn <= value && value <= crit) || (warn >= value && value >= crit)) {
-            fieldStatus = 'warn';
-          }
-        } else {
-          // Single-sided threshold → exact-equality on whichever bound is set.
-          if (critIsNum && value === crit) {
-            fieldStatus = 'crit';
-          } else if (warnIsNum && value === warn) {
-            fieldStatus = 'warn';
-          }
+        const value: number = fieldCalcs[config.custom.aggregation];
+        const severity = classifySeverity(
+          value,
+          toBound(config.custom.thresholds.warn),
+          toBound(config.custom.thresholds.crit)
+        );
+        if (severity) {
+          fieldStatus = severity;
         }
 
         if (!_.isFinite(value)) {
@@ -112,27 +135,16 @@ export function buildStatusMetricProps(
 
         displayValue = date.format(config.custom.dateFormat);
 
-        // Compare chronologically (epoch millis), like the numeric handler —
-        // an empty bound means "not set" and falls back to exact equality.
-        const value = date.valueOf();
-        const critRaw = config.custom.thresholds.crit;
-        const warnRaw = config.custom.thresholds.warn;
-        const crit = critRaw ? dateTimeAsMoment(critRaw).valueOf() : NaN;
-        const warn = warnRaw ? dateTimeAsMoment(warnRaw).valueOf() : NaN;
-        const critIsNum = _.isFinite(crit);
-        const warnIsNum = _.isFinite(warn);
-        if (critIsNum && warnIsNum) {
-          if ((warn <= crit && crit <= value) || (warn >= crit && crit >= value)) {
-            fieldStatus = 'crit';
-          } else if ((warn <= value && value <= crit) || (warn >= value && value >= crit)) {
-            fieldStatus = 'warn';
-          }
-        } else {
-          if (critIsNum && value === crit) {
-            fieldStatus = 'crit';
-          } else if (warnIsNum && value === warn) {
-            fieldStatus = 'warn';
-          }
+        // Compare chronologically (epoch millis) so the bounds grade the same way
+        // the numeric ones do.
+        const toDateBound = (raw: string) => (raw ? dateTimeAsMoment(raw).valueOf() : NaN);
+        const severity = classifySeverity(
+          date.valueOf(),
+          toDateBound(config.custom.thresholds.warn),
+          toDateBound(config.custom.thresholds.crit)
+        );
+        if (severity) {
+          fieldStatus = severity;
         }
         break;
       }
