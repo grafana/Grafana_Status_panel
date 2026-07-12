@@ -52,7 +52,7 @@ You can also repeat the panel on a template if you have multiple instances that 
    1. For severity display, select one of the `Threshold` option types (`Number Threshold` / `String Threshold` / `Date Threshold`) under `Handler Type`. Enter the `Warning` and `Critical` thresholds for each of your queries.
       - You can configure when the alias name and its value will be displayed in the dashboard panel by changing the fields: `Display Alias`, `Display Value`
       - `String Threshold` option makes equality check to the values
-      - `Number Threshold` and `Date Threshold` options make range check with the values. The plugin automatically detects if higher values are good, or lower values are good by checking which threshold is higher/lower. i.e. if in your metric higher values are better, put a lower value in the `critical` threshold than the `warning` threshold.
+      - `Number Threshold` and `Date Threshold` compare the value against each bound in turn. The panel works out on its own whether higher or lower is worse, from which of the two bounds is the larger one. If higher values are better for your metric, put a lower number in `Critical` than in `Warning`. Setting both bounds to the same number is allowed and means "critical from this value on".
       - Leave one of the two bounds empty to get a single-sided threshold. The panel then matches the value exactly against the bound you set, instead of checking a range. This is how you build a two-colour, binary status: set `Critical` to `0`, leave `Warning` empty, and the panel turns red only when the metric is exactly `0`.
    2. For disable display, select the `Disable Criteria` option type under `Handler Type`. Enter the `Disable Value` for each of your queries.
    3. For display the text without any condition, select the `Text Only` option type under `Handler Type`. The alias + the value of the metric will be shown on the panel by the `Display Type` value.
@@ -82,33 +82,30 @@ If there is not data from any of the metrics, you can show the panel as disabled
 
 ## Supported Data Sources
 
-Currently the plugin was tested with **influxDB** and **Graphite**. Support for other data sources could be added by demand
+Any data source works. The panel reads whatever your queries return and reduces each one to a single value, so it makes no assumption about where the data came from. It is exercised against Prometheus and the Grafana TestData source.
 
 ## Release Notes
 
+See the [CHANGELOG](https://github.com/grafana/Grafana_Status_panel/blob/main/CHANGELOG.md).
+
 ### Upgrading Tips
 
-When upgrading there might be some changes in the data the plugin uses and saves, so some of the configurations you made might be removed by accident.
-To prevent this loss of configuration you should save the panel JSON of all panels you have (by exporting the panel or dashboards) and keep them somewhere safe until you made sure everything is working after the upgrade.
+Export your dashboards before upgrading, and keep the JSON somewhere safe until you have confirmed the new version renders them the way you expect.
 
-### Version 1.0.8 - What's new?
-
-- Adding support for Grafana 5.0.x:
-  - Added option to auto scroll the alerts in case the text overflows the panel view
-  - Fix header padding when title is absent
+Panels saved by the old AngularJS version are converted when the dashboard is opened, but **Grafana does not save that conversion on its own**. Open each dashboard once and save it, so the converted panel JSON is written back.
 
 # Screenshots
 
 ### Panel States
 
-![ok](https://github.com/Vonage/Grafana_Status_panel/blob/develop/src/img/ok.png?raw=true)
-![warning](https://github.com/Vonage/Grafana_Status_panel/blob/develop/src/img/warning.png?raw=true)
-![error](https://github.com/Vonage/Grafana_Status_panel/blob/develop/src/img/error.png?raw=true)
+![ok](https://github.com/grafana/Grafana_Status_panel/blob/main/src/img/ok.png?raw=true)
+![warning](https://github.com/grafana/Grafana_Status_panel/blob/main/src/img/warning.png?raw=true)
+![error](https://github.com/grafana/Grafana_Status_panel/blob/main/src/img/error.png?raw=true)
 
 ### The end result should look like this
 
-![Result](https://github.com/Vonage/Grafana_Status_panel/blob/develop/src/img/environment_snapshot.png?raw=true)
+![Result](https://github.com/grafana/Grafana_Status_panel/blob/main/src/img/environment_snapshot.png?raw=true)
 
 # License
 
-See the [LICENSE](https://github.com/Vonage/Grafana_Status_panel/blob/master/LICENSE.txt) file for license rights and limitations (Apache License, Version 2.0)
+See the [LICENSE](https://github.com/grafana/Grafana_Status_panel/blob/main/LICENSE) file for license rights and limitations (Apache License, Version 2.0)

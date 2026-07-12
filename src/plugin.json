@@ -4,12 +4,12 @@
   "name": "Status Panel",
   "id": "vonage-status-panel",
   "info": {
-    "description": "Status Panel for Grafana",
+    "description": "Show the status of an environment at a glance: one card per piece of equipment, coloured by the worst of its metrics.",
     "author": {
       "name": "Grafana",
       "url": "https://github.com/grafana/Grafana_Status_panel"
     },
-    "keywords": ["status", "panel"],
+    "keywords": ["status", "panel", "state", "monitoring", "dashboard", "card"],
     "logos": {
       "small": "img/logo.svg",
       "large": "img/logo.svg"
@@ -24,7 +24,24 @@
         "url": "https://github.com/grafana/Grafana_Status_panel/blob/master/LICENSE"
       }
     ],
-    "screenshots": [],
+    "screenshots": [
+      {
+        "name": "Environment overview",
+        "path": "img/environment_snapshot.png"
+      },
+      {
+        "name": "OK state",
+        "path": "img/ok.png"
+      },
+      {
+        "name": "Warning state",
+        "path": "img/warning.png"
+      },
+      {
+        "name": "Critical state",
+        "path": "img/error.png"
+      }
+    ],
     "version": "%VERSION%",
     "updated": "%TODAY%"
   },
