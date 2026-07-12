@@ -48,11 +48,18 @@ Full analysis in [`REGRESSIONS.md`](./REGRESSIONS.md). Summary:
 | 2   | `Date Threshold`: range check → strict string equality (never fires) |   High   |  yes   |
 | 3   | `Disable Criteria` broken for numeric metrics (`===` vs `==`)        |   High   |  yes   |
 | 4   | Single-sided / binary thresholds lost — issue #9                     |   High   |  yes   |
-| 5   | `Text Only`: value not shown / field hidden                          |  Medium  | partly |
+| 5   | `Text Only`: field hidden entirely                                   |  Medium  | partly |
 | 6   | `Remove Prefix` removed but still documented                         |  Medium  |   no   |
 | 7   | Per-metric `Measurement URL` lost on migration                       |  Medium  |  yes   |
+| 8   | Angular panels never detected → migration never ran                  | Critical |  yes   |
+| 9   | Unset bound resurrects the registered default (`warn 70`)            | Critical |  yes   |
+| 10  | `Text Only` value hidden by `Display Value`                          |  Medium  |  yes   |
+| 11  | `warn == crit` → permanently critical, for any value                 | Critical |  yes   |
+| 12  | Long alert lists bounce up/down instead of scrolling                 |  Medium  |   no   |
 
-#1–#4 all live in the same ~60-line `switch` in `buildStatusMetricProps.ts` and should be fixed together, each with a failing-then-passing test.
+#1–#4 all live in the same ~60-line `switch` in `buildStatusMetricProps.ts` and were fixed together, each with a failing-then-passing test.
+
+**#8 to #12 were only found by running the migration over a real 92-panel Angular dashboard.** None of them reproduce on a small hand-built one: #8 needs a panel with no `options` key, #9 and #11 need bounds a synthetic fixture would never leave unset or set equal. This is the strongest argument for keeping a real dashboard fixture in the repo.
 
 ## 5. Roadmap
 
@@ -61,12 +68,13 @@ Full analysis in [`REGRESSIONS.md`](./REGRESSIONS.md). Summary:
 | Item                     | Notes                                                                   |  Effort  |
 | ------------------------ | ----------------------------------------------------------------------- | :------: |
 | **Unit test scaffold**   | none today; cover `buildStatusMetricProps` + migration handler fixtures |    M     |
-| Fix regressions #1–#7    | order: #1, #3, #4, #5, then #2, #7, #6                                  | S–M each |
+| Fix regressions #1–#12   | done; 25 tests                                                          | S–M each |
 | **Grafana 13 support**   | CI matrix 10.4 / 12 / 13, validate `grafanaDependency`                  |    M     |
 | Shape presets            | Square / Rounded / Round (formalises `cornerRadius`)                    |    S     |
 | Emoji / icon per state   | additive, opt-in                                                        |    M     |
 | Title templating         | `{{name}}` / `{{value}}` / labels — replaces Remove Prefix              |    M     |
 | a11y colour-blind (base) | shape + texture in addition to colour                                   |    M     |
+| **Scroll options**       | mode (none / continuous / bounce) + speed; default stays continuous     |    S     |
 
 ### v3.0 — Evolution (managed break, v2→v3 migration)
 
