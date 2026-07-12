@@ -1,20 +1,23 @@
-# Status Panel — Regressions introduced by the AngularJS → React rewrite
+# Status Panel: regressions introduced by the AngularJS → React rewrite
 
-**Scope**: comparison of the last AngularJS release (`Vonage_Grafana_Status_panel` @ tag `1.0.8`, `src/status_ctrl.js`) against the current React implementation (`Grafana_Status_panel/src`, branch `main`). The Vonage `master` React branch is identical to Grafana's on every point below — the regressions date from the React rewrite (Vonage commit `3de80f9 "migration to React"`), which Grafana inherited and published under the same plugin id.
+**Scope**: the last AngularJS release (`Vonage_Grafana_Status_panel` @ tag `1.0.8`, `src/status_ctrl.js`) compared against the React implementation **as published in v2.0.4**. The Vonage `master` React branch matches Grafana's on every point below. The regressions date from the React rewrite (Vonage commit `3de80f9 "migration to React"`), which Grafana inherited and published under the same plugin id.
+
+> **Every line number below refers to v2.0.4, the version being audited, not to the current
+> source.** These regressions are fixed in v2.1.0, so following a reference against `main`
+> today lands on the corrected code. Check out the `v2.0.4` tag to read along.
 
 **Verification legend**:
 
-- ✅ _confirmed by code reading_ (deterministic from the source)
-- ⚠️ _type-level certainty_ (follows from the runtime types, not yet exercised in a live Grafana)
-- ℹ️ _behavioural change, needs a live repro to rate severity_
+- ✅ _reproduced_: confirmed against the source and exercised, by a failing-then-passing test or on a live dashboard
+- ℹ️ _behavioural change, not yet reproduced_: follows from the source, severity not rated
 
 ---
 
-## 1. `Value Regex` does the opposite of what it documents — **HIGH** ✅
+## 1. `Value Regex` does the opposite of what it documents (**HIGH**) ✅
 
 The README (Grafana repo) states: _"if there is match, **only the first match will be displayed**. Otherwise, the original value will be displayed."_ AngularJS implemented exactly that; React does the inverse.
 
-**AngularJS** (`numberOrTextWithRegex` filter, `status_ctrl.js:103-107`) — keeps the match:
+**AngularJS** (`numberOrTextWithRegex` filter, `status_ctrl.js:103-107`) keeps the match:
 
 ```js
 let matchResults = input.match(regex);
@@ -25,7 +28,7 @@ if (matchResults == null) {
 } // display ONLY the match
 ```
 
-**React** (`lib/buildStatusMetricProps.ts:122`) — strips the match:
+**React** (`lib/buildStatusMetricProps.ts:122`) strips the match:
 
 ```js
 displayValue = displayValue.replace(new RegExp(config.custom.valueDisplayRegex), '');
@@ -36,17 +39,17 @@ displayValue = displayValue.replace(new RegExp(config.custom.valueDisplayRegex),
 - Angular: `server` (the match)
 - React: `www.prefix..com` (everything _except_ the match)
 
-Completely inverted output. Silent — no error, just wrong text on every panel using the feature. Also contradicts the shipped README.
+Completely inverted output. Silent: no error, just wrong text on every panel using the feature. Also contradicts the shipped README.
 
 **Fix**: replace the `.replace(regex, '')` with a `match()` returning `matchResults[0]` when it matches, else the original value.
 
 ---
 
-## 2. `Date Threshold` no longer does range comparison — **HIGH** ⚠️
+## 2. `Date Threshold` no longer does range comparison (**HIGH**) ✅
 
-**AngularJS**: `Date Threshold` went through `handleThresholdStatus` like numbers. `parseThresholds` converts `Date` thresholds to numbers via `.valueOf()` and sets `warnIsNumber/critIsNumber = true` (`status_ctrl.js:568-571`), so dates used the **numeric range check** (`>=` / `<=`) — i.e. "alert if the date is after/before the threshold".
+**AngularJS**: `Date Threshold` went through `handleThresholdStatus` like numbers. `parseThresholds` converts `Date` thresholds to numbers via `.valueOf()` and sets `warnIsNumber/critIsNumber = true` (`status_ctrl.js:568-571`), so dates used the **numeric range check** (`>=` / `<=`), i.e. "alert if the date is after/before the threshold".
 
-**React** (`lib/buildStatusMetricProps.ts:99-103`) — strict string equality:
+**React** (`lib/buildStatusMetricProps.ts:99-103`) uses strict string equality:
 
 ```js
 const val: string = fieldCalcs[config.custom.aggregation];
@@ -63,9 +66,9 @@ else if (val === config.custom.thresholds.warn) { fieldStatus = 'warn'; }
 
 ---
 
-## 3. `Disable Criteria` broken for numeric metrics (`==` → `===`) — **HIGH** ⚠️
+## 3. `Disable Criteria` broken for numeric metrics, `==` → `===` (**HIGH**) ✅
 
-**AngularJS** (`status_ctrl.js:461`) — loose equality:
+**AngularJS** (`status_ctrl.js:461`) uses loose equality:
 
 ```js
 if (series.display_value == series.disabledValue) {
@@ -75,7 +78,7 @@ if (series.display_value == series.disabledValue) {
 
 `0 == "0"` → `true`, so a numeric metric returning `0` matched a `disabledValue` of `"0"`.
 
-**React** (`lib/buildStatusMetricProps.ts:106`) — strict equality:
+**React** (`lib/buildStatusMetricProps.ts:106`) uses strict equality:
 
 ```js
 if (fieldCalcs[config.custom.aggregation] === config.custom.disabledValue) {
@@ -85,13 +88,13 @@ if (fieldCalcs[config.custom.aggregation] === config.custom.disabledValue) {
 
 `fieldCalcs[...]` is a `number` for a numeric field; `disabledValue` comes from a text input (`string`). `0 === "0"` → `false`.
 
-**Impact**: the most common disable case — a `0/1` metric with `disabledValue = 0` — never triggers. (Note: this is the same family of use case as issue #9.)
+**Impact**: the most common disable case, a `0/1` metric with `disabledValue = 0`, never triggers. (Note: this is the same family of use case as issue #9.)
 
 **Fix**: coerce/compare with matching types (e.g. `String(value) === disabledValue`), or parse `disabledValue` to the field type.
 
 ---
 
-## 4. Single-sided thresholds / binary 2-colour display lost — **HIGH** ✅ (issue #9)
+## 4. Single-sided thresholds / binary 2-colour display lost (**HIGH**, issue #9) ✅
 
 **AngularJS** (`status_ctrl.js:363-390`): a dual mode driven by `isCheckRanges = warnIsNumber && critIsNumber`. If only one threshold is numeric, it falls back to **exact equality** instead of a range check. That is what made `crit=0` + empty `warn` behave as "red when value == 0, green otherwise".
 
@@ -103,9 +106,9 @@ if (fieldCalcs[config.custom.aggregation] === config.custom.disabledValue) {
 
 ---
 
-## 5. `Text Only` handler no longer shows the value (and often hides the metric) — **MEDIUM** ✅
+## 5. `Text Only` handler no longer shows the value, and often hides the metric (**MEDIUM**) ✅
 
-`Text Only` is still offered in the editor (`StatusThresholdOptionsEditor.tsx:35-39`, described as _"Show the alias + the value on the panel without any condition"_) and in the type union — but `buildStatusMetricProps.ts`'s `switch (valueHandler)` (lines 59-110) has **no `Text Only` case**.
+`Text Only` is still offered in the editor (`StatusThresholdOptionsEditor.tsx:35-39`, described as _"Show the alias + the value on the panel without any condition"_) and in the type union, but `buildStatusMetricProps.ts`'s `switch (valueHandler)` (lines 59-110) has **no `Text Only` case**.
 
 Consequences for a `Text Only` field:
 
@@ -120,11 +123,11 @@ Consequences for a `Text Only` field:
 
 ---
 
-## 6. `Remove Prefix` (namePrefix) feature removed but still documented — **MEDIUM** ✅
+## 6. `Remove Prefix` (namePrefix) feature removed but still documented (**MEDIUM**) ✅
 
-**AngularJS** (`status_ctrl.js:220-222`): `displayName = interpolate(clusterName).replace(new RegExp(namePrefix, 'i'), '')` — the documented "Remove Prefix" feature (still in the README).
+**AngularJS** (`status_ctrl.js:220-222`): `displayName = interpolate(clusterName).replace(new RegExp(namePrefix, 'i'), '')`, the documented "Remove Prefix" feature (still in the README).
 
-**React**: `namePrefix` is **commented out** everywhere — `statusPanelOptionsBuilder.ts:47-53` (editor) and `statusMigrationHandler.ts:8,47` (migration). The option cannot be set, and any saved `namePrefix` is silently dropped on migration.
+**React**: `namePrefix` is **commented out** everywhere, in `statusPanelOptionsBuilder.ts:47-53` (editor) and in `statusMigrationHandler.ts:8,47` (migration). The option cannot be set, and any saved `namePrefix` is silently dropped on migration.
 
 **Impact**: a documented feature is gone; dead/commented code left in place; README now lies. Regression for anyone relying on prefix stripping when repeating panels over a template.
 
@@ -132,11 +135,11 @@ Consequences for a `Text Only` field:
 
 ---
 
-## 7. Per-metric `Measurement URL` dropped during migration — **MEDIUM** ⚠️
+## 7. Per-metric `Measurement URL` dropped during migration (**MEDIUM**) ✅
 
 **AngularJS**: each target had a `url` field rendered as a clickable link (README "Measurement URL"); `status_ctrl.js:252` `s.url = target.url`.
 
-**React**: per-metric links now flow through Grafana's standard field **Data Links** (`field.getLinks()`, `buildStatusMetricProps.ts:127`). That is a reasonable modernisation — **but** `migrateFieldConfig` (`statusMigrationHandler.ts:51-134`) maps `aggregation`, `thresholds`, `displayType`, `displayAliasType`, `displayValueWithAlias`, `decimals`, `units` … and **never maps `target.url`**. The panel-level `panel.links[0]` is migrated to `clusterUrl`, but per-target URLs are lost.
+**React**: per-metric links now flow through Grafana's standard field **Data Links** (`field.getLinks()`, `buildStatusMetricProps.ts:127`). That is a reasonable modernisation. **But** `migrateFieldConfig` (`statusMigrationHandler.ts:51-134`) maps `aggregation`, `thresholds`, `displayType`, `displayAliasType`, `displayValueWithAlias`, `decimals`, `units` … and **never maps `target.url`**. The panel-level `panel.links[0]` is migrated to `clusterUrl`, but per-target URLs are lost.
 
 **Impact**: users upgrading from Angular silently lose all per-metric measurement links.
 
@@ -155,7 +158,7 @@ saved by the Angular editor, which no fixture writes by hand. #9 and #11 need bo
 fixture author would never think to leave empty or to set equal. A synthetic test
 dashboard is written by someone who already knows what the options mean.
 
-### 8. AngularJS panels were never detected, so the migration never ran — **CRITICAL** ✅
+### 8. AngularJS panels were never detected, so the migration never ran (**CRITICAL**) ✅
 
 ```ts
 const isAngularModel = (panel) => !!panel.options && 'clusterName' in panel;
@@ -176,7 +179,7 @@ observe a migrated threshold being misread.
 **Fix**: the root `clusterName` is the real marker, since a React panel keeps it inside
 `options`.
 
-### 9. An unset bound comes back as the registered default — **CRITICAL** ✅
+### 9. An unset bound comes back as the registered default (**CRITICAL**) ✅
 
 The Angular model stores only the bounds the user set. `migrateFieldConfig` left the other
 one `undefined`, and an `undefined` bound is refilled with the option's `defaultValue`
@@ -199,7 +202,7 @@ them was picking up a default.
 Combined with #11, a healthy `Port Enable - 27` (`warn: 1`, no `crit`) was graded against
 `1..70` and reported as a warning.
 
-### 10. `Text Only` loses its value to `Display Value` — **MEDIUM** ✅
+### 10. `Text Only` loses its value to `Display Value` (**MEDIUM**) ✅
 
 **AngularJS** (`handleTextOnly`, `status_ctrl.js:473`) pushes the series straight to the
 display list and never reads `displayValueWithAlias`:
@@ -216,7 +219,7 @@ so a metric configured with `Display Value: Never` renders a bare label. A `Text
 metric is nothing but its value. On the production dashboard some thirty panels showed a
 disk-count label with no number next to it.
 
-### 11. `warn == crit` grades every value as critical — **CRITICAL** ✅
+### 11. `warn == crit` grades every value as critical (**CRITICAL**) ✅
 
 **AngularJS** (`status_ctrl.js:372-382`) compares the value against each bound, taking the
 direction from which bound is larger:
@@ -255,7 +258,7 @@ flag, a dead-process count. On the production dashboard a single such metric, a 
 error flag set to `warn: 1` / `crit: 1` and reading a healthy `0`, pinned 8 panels
 permanently red.
 
-### 12. Long alert lists bounce instead of scrolling — **MEDIUM** ✅
+### 12. Long alert lists bounce instead of scrolling (**MEDIUM**) ✅
 
 **AngularJS** (`status_panel.scss`) loops the list from the bottom edge of the card to the
 top, and pauses on hover:
@@ -284,7 +287,7 @@ card, on every card of the dashboard.
 The overflow guard the Angular panel ran (`isAutoScrollAlerts`, only animate when the
 content does not fit) must be kept, or a card that fits scrolls itself off its own edges.
 
-### 13. Card text is no longer centred — **MEDIUM** ✅
+### 13. Card text is no longer centred (**MEDIUM**) ✅
 
 **AngularJS** centred from the root of the card and let only the annotation column opt
 back out:
@@ -305,8 +308,8 @@ much longer than the rest.
 
 ## Minor / to confirm
 
-- **14. `Delta` aggregation semantics changed** ℹ️ — Angular `Delta = s.stats.diff` (last − first). The migration map (`statusMigrationHandler.ts:38-46`) and the field editor map `Delta → 'delta'`, but Grafana's `delta` reducer sums only _positive_ consecutive deltas, which is **not** last − first. The behaviour-preserving reducer is `'diff'`. Worth a live check.
-- **15. Duplicate-alias validation removed** ℹ️ — Angular flagged duplicate aliases as an `error-state` (`postRefresh`, `status_ctrl.js:125-140` + `updatePanelState:475`). React has no equivalent guard. Loss of a footgun warning, not a functional break.
+- **14. `Delta` aggregation semantics changed** ℹ️: Angular `Delta = s.stats.diff` (last − first). The migration map (`statusMigrationHandler.ts:38-46`) and the field editor map `Delta → 'delta'`, but Grafana's `delta` reducer sums only _positive_ consecutive deltas, which is **not** last − first. The behaviour-preserving reducer is `'diff'`. Worth a live check.
+- **15. Duplicate-alias validation removed** ℹ️: Angular flagged duplicate aliases as an `error-state` (`postRefresh`, `status_ctrl.js:125-140` + `updatePanelState:475`). React has no equivalent guard. Loss of a footgun warning, not a functional break.
 
 ---
 
@@ -330,7 +333,7 @@ much longer than the rest.
 | 14  | Delta reducer semantics (`delta` vs `diff`)         | Low      | Yes     | code reading   |
 | 15  | Duplicate-alias validation removed                  | Low      | No      | code reading   |
 
-**Common thread**: the rewrite ported the _shape_ of the value handlers but dropped the AngularJS branching that made partial and typed configs work (the `isCheckRanges` dual mode, the direction taken from the bounds, loose equality, per-type formatting, `Text Only`). #1–#4 all live in the same ~60-line `switch` in `buildStatusMetricProps.ts` and were fixed together, with a test per case.
+**Common thread**: the rewrite ported the _shape_ of the value handlers but dropped the AngularJS branching that made partial and typed configs work (the `isCheckRanges` dual mode, the direction taken from the bounds, loose equality, per-type formatting, `Text Only`). #1 to #4 all live in the same ~60-line `switch` in `buildStatusMetricProps.ts` and were fixed together, with a test per case.
 
 **Eleven of the fifteen are silent.** They raise nothing and log nothing: they render a colour, and the colour is wrong. That is the worst failure mode a monitoring panel can have, because an operator reads a green square and moves on. v2.1 therefore also reports a metric it could not make sense of, on the console and through Grafana's frontend observability, rather than quietly grading it against a bound it invented.
 

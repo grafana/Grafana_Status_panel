@@ -21,9 +21,18 @@ The five migration and threshold bugs at the top of this list were all found by 
 - **Text Only renders.** These metrics were dropped entirely.
 - **Measurement URL.** A per-query URL survives migration from an Angular panel. It is carried over as a standard field data link.
 
+### Added
+
+- **A metric the panel cannot make sense of is reported.** A `Value Regex` that does not compile used to be discarded by an empty `catch`. A threshold bound filled in with something that is not a number, or a date bound that does not parse, read as "not set" and silently changed how the value was graded. Each of those now names the card and the query it came from, on the browser console and through Grafana's frontend observability. Nothing is drawn on the card, so no dashboard changes appearance.
+
 ### Removed
 
 - **Remove Prefix.** The option had already disappeared in the React rewrite, but the README still promised it. It no longer does.
+
+### Internal
+
+- The deprecated `Select` in the threshold editor is now a `Combobox`.
+- Dependency and build-toolchain updates clear every advisory the official plugin validator reported. None of them reached the shipped bundle, which carries only the plugin's own code and `react-card-flip`; the rest are supplied by Grafana at runtime or used only to build and test.
 
 ### Upgrading
 
