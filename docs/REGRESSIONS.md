@@ -144,25 +144,193 @@ Consequences for a `Text Only` field:
 
 ---
 
+## Found only by migrating a real dashboard
+
+Regressions 1 to 7 come from reading the two sources side by side. The six below were
+invisible that way. They surfaced the first time the migration handler ran over a real
+AngularJS dashboard: 92 panels, 574 queries, exported from production.
+
+None of them reproduce on a hand-built fixture, and that is the point. #8 needs a panel
+saved by the Angular editor, which no fixture writes by hand. #9 and #11 need bounds a
+fixture author would never think to leave empty or to set equal. A synthetic test
+dashboard is written by someone who already knows what the options mean.
+
+### 8. AngularJS panels were never detected, so the migration never ran — **CRITICAL** ✅
+
+```ts
+const isAngularModel = (panel) => !!panel.options && 'clusterName' in panel;
+```
+
+`options` is a React-era concept. A genuine AngularJS panel keeps its settings at the
+root of the panel model and has **no `options` key at all**, so the guard matched nothing
+and `statusMigrationHandler` returned early on every real panel. Zero of the 92 production
+panels were migrated.
+
+The consequence is total: no `fieldConfig.overrides` are written, so every metric falls
+back to the registered defaults of `warn 70 / crit 90`. Every threshold in the dashboard
+is silently replaced by two numbers the user never chose.
+
+This is also what hid #9 and #11: while no threshold was ever migrated, no one could
+observe a migrated threshold being misread.
+
+**Fix**: the root `clusterName` is the real marker, since a React panel keeps it inside
+`options`.
+
+### 9. An unset bound comes back as the registered default — **CRITICAL** ✅
+
+The Angular model stores only the bounds the user set. `migrateFieldConfig` left the other
+one `undefined`, and an `undefined` bound is refilled with the option's `defaultValue`
+(`warn: 70`) by the time the panel reads it. A single-sided threshold silently becomes a
+two-sided one.
+
+Measured on a live panel, reading the effective field config the plugin receives:
+
+| written to the dashboard JSON  | what the panel actually reads |
+| ------------------------------ | ----------------------------- |
+| `{ crit: 0, warn: undefined }` | `{ crit: 0, warn: 70 }`       |
+| `{ crit: 0, warn: null }`      | `{ crit: 0, warn: 70 }`       |
+| `{ crit: 0, warn: '' }`        | `{ crit: 0, warn: '' }`       |
+
+Only the **empty string** survives as "unset", and it is exactly what the option editor
+stores when the field is cleared (`onChange` forwards `currentTarget.value`, a string).
+On the production dashboard, **294 of the 574 migrated bounds are unset**, so every one of
+them was picking up a default.
+
+Combined with #11, a healthy `Port Enable - 27` (`warn: 1`, no `crit`) was graded against
+`1..70` and reported as a warning.
+
+### 10. `Text Only` loses its value to `Display Value` — **MEDIUM** ✅
+
+**AngularJS** (`handleTextOnly`, `status_ctrl.js:473`) pushes the series straight to the
+display list and never reads `displayValueWithAlias`:
+
+```js
+handleTextOnly(series, target) {
+  if (series.displayType == "Annotation") { this.annotation.push(series); }
+  else { this.display.push(series); }
+}
+```
+
+**React** runs `Text Only` through the same `isDisplayValue` test as every other handler,
+so a metric configured with `Display Value: Never` renders a bare label. A `Text Only`
+metric is nothing but its value. On the production dashboard some thirty drive-count
+panels read `Optimals Drives` with no number.
+
+### 11. `warn == crit` grades every value as critical — **CRITICAL** ✅
+
+**AngularJS** (`status_ctrl.js:372-382`) compares the value against each bound, taking the
+direction from which bound is larger:
+
+```js
+series.inverted = series.thresholds.crit < series.thresholds.warn;
+if (!series.inverted) {
+  if (value >= crit) {
+    isCritical = true;
+  } else if (value >= warn) {
+    isWarning = true;
+  }
+} else {
+  if (value <= crit) {
+    isCritical = true;
+  } else if (value <= warn) {
+    isWarning = true;
+  }
+}
+```
+
+**React** recast this as a range check:
+
+```ts
+if ((warn <= crit && crit <= value) || (warn >= crit && crit >= value)) {
+  fieldStatus = 'crit';
+}
+```
+
+The two agree everywhere **except when `warn === crit`**. Both `warn <= crit` and
+`warn >= crit` are then true, so the condition collapses to `crit <= value || crit >= value`,
+which is true for every real number. Such a metric is critical forever, whatever it reads.
+
+`warn == crit` is the normal way to configure a binary error counter: a filesystem error
+flag, a dead-process count. On the production dashboard this pinned 8 panels permanently
+red through a single metric (`/mnt/hpss`, `warn: 1`, `crit: 1`, value `0`).
+
+### 12. Long alert lists bounce instead of scrolling — **MEDIUM** ✅
+
+**AngularJS** (`status_panel.scss`) loops the list from the bottom edge of the card to the
+top, and pauses on hover:
+
+```scss
+.marquee_element {
+  animation: marquee_container 15s linear infinite;
+}
+.marquee_element:hover {
+  animation-play-state: paused;
+}
+@keyframes marquee_container {
+  0% {
+    transform: translate(0, 100%);
+  }
+  100% {
+    transform: translate(0, -100%);
+  }
+}
+```
+
+**React** (`Marquee.tsx`) replaced it with a 30fps `setInterval` driving `scrollTop` and
+flipping direction at each end, so the text jitters up and down. It also runs a timer per
+card, on every card of the dashboard.
+
+The overflow guard the Angular panel ran (`isAutoScrollAlerts`, only animate when the
+content does not fit) must be kept, or a card that fits scrolls itself off its own edges.
+
+### 13. Card text is no longer centred — **MEDIUM** ✅
+
+**AngularJS** centred from the root of the card and let only the annotation column opt
+back out:
+
+```scss
+.status-panel {
+  text-align: center;
+}
+.status-panel-annotation_row {
+  text-align: left;
+}
+```
+
+**React** carried neither rule. Each metric line is left-aligned inside a box that shrinks
+to its longest line, so a card whose lines differ in length looks ragged. It goes unnoticed
+while the lines happen to be about the same width, and is obvious as soon as one line runs
+much longer than the rest.
+
 ## Minor / to confirm
 
-- **8. `Delta` aggregation semantics changed** ℹ️ — Angular `Delta = s.stats.diff` (last − first). The migration map (`statusMigrationHandler.ts:38-46`) and the field editor map `Delta → 'delta'`, but Grafana's `delta` reducer sums only _positive_ consecutive deltas, which is **not** last − first. The behaviour-preserving reducer is `'diff'`. Worth a live check.
-- **9. Duplicate-alias validation removed** ℹ️ — Angular flagged duplicate aliases as an `error-state` (`postRefresh`, `status_ctrl.js:125-140` + `updatePanelState:475`). React has no equivalent guard. Loss of a footgun warning, not a functional break.
+- **14. `Delta` aggregation semantics changed** ℹ️ — Angular `Delta = s.stats.diff` (last − first). The migration map (`statusMigrationHandler.ts:38-46`) and the field editor map `Delta → 'delta'`, but Grafana's `delta` reducer sums only _positive_ consecutive deltas, which is **not** last − first. The behaviour-preserving reducer is `'diff'`. Worth a live check.
+- **15. Duplicate-alias validation removed** ℹ️ — Angular flagged duplicate aliases as an `error-state` (`postRefresh`, `status_ctrl.js:125-140` + `updatePanelState:475`). React has no equivalent guard. Loss of a footgun warning, not a functional break.
 
 ---
 
 ## Summary
 
-| #   | Regression                                          | Severity | Silent? | Root cause                               |
-| --- | --------------------------------------------------- | -------- | ------- | ---------------------------------------- |
-| 1   | Value Regex inverted (`replace` vs keep-match)      | High     | Yes     | `buildStatusMetricProps.ts:122`          |
-| 2   | Date Threshold: range → strict string equality      | High     | Yes     | `buildStatusMetricProps.ts:99-103`       |
-| 3   | Disable Criteria broken for numeric metrics (`===`) | High     | Yes     | `buildStatusMetricProps.ts:106`          |
-| 4   | Single-sided / binary thresholds lost (issue #9)    | High     | Yes     | `buildStatusMetricProps.ts:61-68`        |
-| 5   | Text Only: value not shown / field hidden           | Medium   | Partly  | missing `switch` case                    |
-| 6   | Remove Prefix feature removed (still documented)    | Medium   | No      | commented-out option + migration         |
-| 7   | Per-metric Measurement URL lost on migration        | Medium   | Yes     | `statusMigrationHandler.ts` no `url` map |
-| 8   | Delta reducer semantics (`delta` vs `diff`)         | Low      | Yes     | migration map + field editor             |
-| 9   | Duplicate-alias validation removed                  | Low      | No      | not reimplemented                        |
+| #   | Regression                                          | Severity | Silent? | Found by       |
+| --- | --------------------------------------------------- | -------- | ------- | -------------- |
+| 1   | Value Regex inverted (`replace` vs keep-match)      | High     | Yes     | code reading   |
+| 2   | Date Threshold: range → strict string equality      | High     | Yes     | code reading   |
+| 3   | Disable Criteria broken for numeric metrics (`===`) | High     | Yes     | code reading   |
+| 4   | Single-sided / binary thresholds lost (issue #9)    | High     | Yes     | code reading   |
+| 5   | Text Only: field not rendered at all                | Medium   | Partly  | code reading   |
+| 6   | Remove Prefix feature removed (still documented)    | Medium   | No      | code reading   |
+| 7   | Per-metric Measurement URL lost on migration        | Medium   | Yes     | code reading   |
+| 8   | AngularJS panels never detected → migration is dead | Critical | Yes     | real dashboard |
+| 9   | Unset bound comes back as the default (`warn 70`)   | Critical | Yes     | real dashboard |
+| 10  | Text Only value hidden by `Display Value`           | Medium   | Yes     | real dashboard |
+| 11  | `warn == crit` → critical for every value           | Critical | Yes     | real dashboard |
+| 12  | Alert lists bounce instead of scrolling             | Medium   | No      | real dashboard |
+| 13  | Card text left-aligned (`text-align` rules dropped) | Medium   | No      | real dashboard |
+| 14  | Delta reducer semantics (`delta` vs `diff`)         | Low      | Yes     | code reading   |
+| 15  | Duplicate-alias validation removed                  | Low      | No      | code reading   |
 
-**Common thread**: the rewrite ported the _shape_ of the value handlers but dropped the AngularJS branching that made partial/typed configs work (the `isCheckRanges` dual mode, loose equality, per-type formatting, `Text Only`). #1–#4 all live in the same ~60-line `switch` in `buildStatusMetricProps.ts` and could be fixed together with tests per case.
+**Common thread**: the rewrite ported the _shape_ of the value handlers but dropped the AngularJS branching that made partial and typed configs work (the `isCheckRanges` dual mode, the direction taken from the bounds, loose equality, per-type formatting, `Text Only`). #1–#4 all live in the same ~60-line `switch` in `buildStatusMetricProps.ts` and were fixed together, with a test per case.
+
+**Eleven of the fifteen are silent.** They raise nothing and log nothing: they render a colour, and the colour is wrong. That is the worst failure mode a monitoring panel can have, because an operator reads a green square and moves on. v2.1 therefore also reports a metric it could not make sense of, on the console and through Grafana's frontend observability, rather than quietly grading it against a bound it invented.
+
+**Read #8 first.** While the migration never ran, no migrated threshold could be observed being misread, which is why #9 and #11 stayed hidden through an entire major version.
