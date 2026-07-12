@@ -87,8 +87,13 @@ const migrateFieldConfig = (panel: AngularPanelModel) => {
           id: 'custom.thresholds',
           value: {
             valueHandler: target.valueHandler,
-            crit: target.crit,
-            warn: target.warn,
+            // Write an empty string for a bound the Angular panel did not set. That is
+            // what the option editor itself stores when you clear the field, and it is
+            // the only "unset" value that survives: left undefined or null, the bound
+            // comes back as the registered default (warn 70 / crit 90) and a
+            // single-sided threshold silently turns into a two-sided one.
+            crit: target.crit ?? '',
+            warn: target.warn ?? '',
           },
         });
       }
