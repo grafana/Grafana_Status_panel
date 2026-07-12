@@ -60,7 +60,7 @@ Full analysis in [`REGRESSIONS.md`](./REGRESSIONS.md). Summary:
 
 #1–#4 all live in the same ~60-line `switch` in `buildStatusMetricProps.ts` and were fixed together, each with a failing-then-passing test.
 
-**#8 to #12 were only found by running the migration over a real 92-panel Angular dashboard.** None of them reproduce on a small hand-built one: #8 needs a panel with no `options` key, #9 and #11 need bounds a synthetic fixture would never leave unset or set equal. This is the strongest argument for keeping a real dashboard fixture in the repo.
+**#8 to #13 were only found by running the migration over a real 92-panel Angular dashboard.** None of them reproduce on a small hand-built one: #8 needs a panel with no `options` key, #9 and #11 need bounds a synthetic fixture would never leave unset or set equal. This is the strongest argument for keeping a real dashboard fixture in the repo.
 
 ## 5. Roadmap
 
@@ -69,7 +69,7 @@ Full analysis in [`REGRESSIONS.md`](./REGRESSIONS.md). Summary:
 | Item                     | Notes                                                                   |  Effort  |
 | ------------------------ | ----------------------------------------------------------------------- | :------: |
 | **Unit test scaffold**   | none today; cover `buildStatusMetricProps` + migration handler fixtures |    M     |
-| Fix regressions #1–#12   | done; 25 tests                                                          | S–M each |
+| Fix regressions #1–#13   | done; 25 tests                                                          | S–M each |
 | **Grafana 13 support**   | CI matrix 10.4 / 12 / 13, validate `grafanaDependency`                  |    M     |
 | Shape presets            | Square / Rounded / Round (formalises `cornerRadius`)                    |    S     |
 | Emoji / icon per state   | additive, opt-in                                                        |    M     |
