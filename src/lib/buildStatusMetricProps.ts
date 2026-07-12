@@ -164,6 +164,9 @@ export function buildStatusMetricProps(
     // only display value when appropriate
     const withAlias = config.custom.displayValueWithAlias;
     const isDisplayValue =
+      // A Text Only metric is nothing but its value, so it ignores this option. The
+      // Angular panel pushed it straight to the display list without ever reading it.
+      config.custom.thresholds.valueHandler === 'Text Only' ||
       withAlias === 'When Alias Displayed' ||
       (fieldStatus === 'warn' && withAlias === 'Warning / Critical') ||
       (fieldStatus === 'crit' && (withAlias === 'Warning / Critical' || withAlias === 'Critical Only'));

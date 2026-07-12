@@ -196,3 +196,18 @@ describe('Number Threshold — direction is taken from the bounds', () => {
     expect(res.warns).toHaveLength(0);
   });
 });
+
+describe('Text Only — the value is always shown (regression #10)', () => {
+  // handleTextOnly in the Angular panel pushed the series straight to the display
+  // list without ever looking at displayValueWithAlias, so the value showed up
+  // even when the option said "Never".
+  test('shows the value even when displayValueWithAlias is Never', () => {
+    const res = run([480], {
+      thresholds: { valueHandler: 'Text Only', warn: '', crit: '' },
+      displayValueWithAlias: 'Never',
+      displayAliasType: 'Warning / Critical',
+    });
+    expect(res.displays).toHaveLength(1);
+    expect(res.displays[0].displayValue).toBe('480');
+  });
+});
