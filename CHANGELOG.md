@@ -2,7 +2,7 @@
 
 ## v2.1.0 (unreleased)
 
-A stabilisation release. Twelve behaviours broke during the Angular-to-React rewrite, most of them silently. They work again, and each one now has a unit test holding it in place.
+A stabilisation release. Thirteen behaviours broke during the Angular-to-React rewrite, most of them silently. They work again, and each one now has a unit test holding it in place.
 
 The five migration and threshold bugs at the top of this list were all found by running the handler over a real 92-panel Angular dashboard. None of them show up on a small hand-built one, which is why they survived a whole major version.
 
@@ -14,6 +14,7 @@ The five migration and threshold bugs at the top of this list were all found by 
 - **Single-sided thresholds.** An empty `Warning` or `Critical` bound used to be read as `0`. It now means "not set": leave one bound empty and the panel matches the value exactly against the other one. That is what brings back a two-colour, binary status. Set `Critical` to `0`, leave `Warning` empty, and the panel only turns red when the metric really is `0`. ([#9](https://github.com/grafana/Grafana_Status_panel/issues/9))
 - **Text Only shows its value.** It is a metric with nothing but a value, so it ignores `Display Value`. Hiding the number left a bare label.
 - **Long alert lists scroll again.** They loop from the bottom of the card to the top, instead of jittering up and down. Hovering pauses them.
+- **Card text is centred again.** Metric lines were left-aligned inside a box that hugs the longest one, which showed up as soon as one line ran much longer than the others. Annotations stay in their left-aligned column.
 - **Date Threshold.** Bounds are compared chronologically instead of by exact string match, so the handler actually fires.
 - **Disable Criteria.** A numeric metric of `0` matches a `Disable Value` of `0`.
 - **Value Regex.** The panel shows the part of the value that matches the regex, as the README always claimed, rather than everything that does not match.

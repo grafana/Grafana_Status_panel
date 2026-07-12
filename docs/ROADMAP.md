@@ -56,6 +56,7 @@ Full analysis in [`REGRESSIONS.md`](./REGRESSIONS.md). Summary:
 | 10  | `Text Only` value hidden by `Display Value`                          |  Medium  |  yes   |
 | 11  | `warn == crit` → permanently critical, for any value                 | Critical |  yes   |
 | 12  | Long alert lists bounce up/down instead of scrolling                 |  Medium  |   no   |
+| 13  | Card text left-aligned; `text-align` rules never carried over        |  Medium  |   no   |
 
 #1–#4 all live in the same ~60-line `switch` in `buildStatusMetricProps.ts` and were fixed together, each with a failing-then-passing test.
 
