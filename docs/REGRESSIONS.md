@@ -213,8 +213,8 @@ handleTextOnly(series, target) {
 
 **React** runs `Text Only` through the same `isDisplayValue` test as every other handler,
 so a metric configured with `Display Value: Never` renders a bare label. A `Text Only`
-metric is nothing but its value. On the production dashboard some thirty drive-count
-panels read `Optimals Drives` with no number.
+metric is nothing but its value. On the production dashboard some thirty panels showed a
+disk-count label with no number next to it.
 
 ### 11. `warn == crit` grades every value as critical — **CRITICAL** ✅
 
@@ -251,8 +251,9 @@ The two agree everywhere **except when `warn === crit`**. Both `warn <= crit` an
 which is true for every real number. Such a metric is critical forever, whatever it reads.
 
 `warn == crit` is the normal way to configure a binary error counter: a filesystem error
-flag, a dead-process count. On the production dashboard this pinned 8 panels permanently
-red through a single metric (`/mnt/hpss`, `warn: 1`, `crit: 1`, value `0`).
+flag, a dead-process count. On the production dashboard a single such metric, a mount-point
+error flag set to `warn: 1` / `crit: 1` and reading a healthy `0`, pinned 8 panels
+permanently red.
 
 ### 12. Long alert lists bounce instead of scrolling — **MEDIUM** ✅
 
