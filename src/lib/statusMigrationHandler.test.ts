@@ -12,6 +12,24 @@ function angularPanel(targets: any[]): PanelModel<StatusPanelOptions> {
   } as unknown as PanelModel<StatusPanelOptions>;
 }
 
+describe('Angular panel detection (regression #8)', () => {
+  test('detects a real AngularJS panel, which has no "options" key at all', () => {
+    // A genuine AngularJS panel model: settings live at the root, and there is
+    // no `options` object (that is a React-era concept).
+    const panel = {
+      clusterName: 'DA20',
+      colors: { crit: '', warn: '', ok: '', disable: '' },
+      targets: [{ refId: 'A', valueHandler: 'Number Threshold', warn: 1 }],
+    } as unknown as PanelModel<StatusPanelOptions>;
+
+    statusMigrationHandler(panel);
+
+    expect(panel.fieldConfig?.overrides).toHaveLength(1);
+    const props = (panel.fieldConfig.overrides as any[])[0].properties;
+    expect(props.find((p: any) => p.id === 'custom.thresholds').value.warn).toBe(1);
+  });
+});
+
 describe('Angular migration — per-metric URL (regression #7)', () => {
   test("migrates a target's url into a field data link", () => {
     const panel = angularPanel([{ refId: 'A', url: 'https://wiki/runbook' }]);

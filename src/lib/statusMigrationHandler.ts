@@ -45,8 +45,10 @@ const aggregationMigrationMap = {
   Delta: 'delta',
 };
 
-const isAngularModel = (panel: Omit<PanelModel, 'targets'>): panel is AngularPanelModel =>
-  !!panel.options && 'clusterName' in panel;
+// A genuine AngularJS panel keeps its settings at the root of the panel model and
+// has no `options` object at all, so requiring one here matched nothing. The root
+// `clusterName` is the real marker: a React panel keeps it inside `options`.
+const isAngularModel = (panel: Omit<PanelModel, 'targets'>): panel is AngularPanelModel => 'clusterName' in panel;
 
 const migrateFieldConfig = (panel: AngularPanelModel) => {
   const fieldConfig = {
