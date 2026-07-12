@@ -1,5 +1,5 @@
-import { SelectableValue, StandardEditorProps } from '@grafana/data';
-import { Input, Label, Select } from '@grafana/ui';
+import { StandardEditorProps } from '@grafana/data';
+import { Combobox, ComboboxOption, Input, Label } from '@grafana/ui';
 import React from 'react';
 
 export interface StatusThresholdOptions {
@@ -8,7 +8,7 @@ export interface StatusThresholdOptions {
   crit: string;
 }
 
-const valueHandlerOptions: Array<SelectableValue<StatusThresholdOptions['valueHandler']>> = [
+const valueHandlerOptions: Array<ComboboxOption<StatusThresholdOptions['valueHandler']>> = [
   {
     label: 'Number Threshold',
     value: 'Number Threshold',
@@ -58,11 +58,11 @@ export const StatusThresholdOptionsEditor: React.FC<StandardEditorProps<StatusTh
 
   return (
     <>
-      <Select
+      <Combobox
         value={value.valueHandler}
         options={valueHandlerOptions}
-        onChange={({ value: valueHandler }) => valueHandler && onChange({ ...value, valueHandler })}
-      ></Select>
+        onChange={({ value: valueHandler }) => onChange({ ...value, valueHandler })}
+      />
       {inputType && (
         <>
           <Label>Critical Value</Label>
