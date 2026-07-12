@@ -122,7 +122,7 @@ export const StatusPanel: React.FC<Props> = ({
               : 'Warn'}
           </MaybeAnchor>
         </div>
-        <div className={css({ height, display: 'flex', flexDirection: 'column' })}>
+        <div className={css({ height, display: 'flex', flexDirection: 'column', textAlign: 'center' })}>
           <div
             className={css({
               flex: '1 0 0',
@@ -175,6 +175,9 @@ export const StatusPanel: React.FC<Props> = ({
               padding: '1rem',
               display: 'flex',
               flexDirection: 'column',
+              // Annotations sit in the top-left corner and read as a column, so they
+              // opt out of the card's centred text.
+              textAlign: 'left',
               '::-webkit-scrollbar': { background: 'transparent', width: '0px', display: 'none' },
             })}
           >
