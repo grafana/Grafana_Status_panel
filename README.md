@@ -53,6 +53,7 @@ You can also repeat the panel on a template if you have multiple instances that 
       - You can configure when the alias name and its value will be displayed in the dashboard panel by changing the fields: `Display Alias`, `Display Value`
       - `String Threshold` option makes equality check to the values
       - `Number Threshold` and `Date Threshold` options make range check with the values. The plugin automatically detects if higher values are good, or lower values are good by checking which threshold is higher/lower. i.e. if in your metric higher values are better, put a lower value in the `critical` threshold than the `warning` threshold.
+      - Leave one of the two bounds empty to get a single-sided threshold. The panel then matches the value exactly against the bound you set, instead of checking a range. This is how you build a two-colour, binary status: set `Critical` to `0`, leave `Warning` empty, and the panel turns red only when the metric is exactly `0`.
    2. For disable display, select the `Disable Criteria` option type under `Handler Type`. Enter the `Disable Value` for each of your queries.
    3. For display the text without any condition, select the `Text Only` option type under `Handler Type`. The alias + the value of the metric will be shown on the panel by the `Display Type` value.
 4. If the query returns multiple values, choose the type of aggregation you want to be used (`None` will use first item from the result)
