@@ -4,6 +4,10 @@ One panel that shows the health of many components at once. You give it a set of
 
 ![A dashboard of status cards, most of them green](https://github.com/grafana/Grafana_Status_panel/blob/main/src/img/environment_snapshot.png?raw=true)
 
+The same panel makes a good switch faceplate, one card per port, green for up and red for down:
+
+![A grid of switch ports, most green with a few red and grey](https://github.com/grafana/Grafana_Status_panel/blob/main/src/img/switch.png?raw=true)
+
 ## Why you might want it
 
 Say you watch a fleet of servers and track several metrics on each one: CPU, memory, disk, a couple of health probes. A Single Stat panel shows you one of those numbers. This panel holds all of them in one card and colours it by the worst thing it finds, so a wall of green tells you at a glance that nothing needs you right now.

@@ -30,6 +30,10 @@
         "path": "img/environment_snapshot.png"
       },
       {
+        "name": "Network switch (ports up and down)",
+        "path": "img/switch.png"
+      },
+      {
         "name": "OK state",
         "path": "img/ok.png"
       },
