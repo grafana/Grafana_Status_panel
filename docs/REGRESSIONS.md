@@ -201,13 +201,15 @@ stores when the field is cleared (`onChange` forwards `currentTarget.value`, a s
 Single-sided thresholds are common in Angular dashboards, so a large share of the bounds a
 real migration has to carry over are unset ones. Every one of them was picking up a default.
 
-Combined with #11, a healthy `Port Enable - 27` (`warn: 1`, no `crit`) was graded against
-`1..70` and reported as a warning.
+Combined with #11, a healthy metric reading `27` with `warn: 1` and no `crit` set was
+graded against the range `1..90` (its `crit` resurrected to the default) and flagged as a
+warning, when the intent was an exact match on `1`.
 
-### 10. `Text Only` loses its value to `Display Value` (**MEDIUM**) ✅
+### 10. Restoring `Text Only` is not enough: `Display Value` still hides the value (**MEDIUM**) ✅
 
-**AngularJS** (`handleTextOnly`, `status_ctrl.js:473`) pushes the series straight to the
-display list and never reads `displayValueWithAlias`:
+This one only shows up once #5 is fixed, which is why it is a distinct change with its own
+test. `handleTextOnly` in AngularJS (`status_ctrl.js:473`) pushed the series straight to the
+display list and never read `displayValueWithAlias`:
 
 ```js
 handleTextOnly(series, target) {
@@ -216,10 +218,11 @@ handleTextOnly(series, target) {
 }
 ```
 
-**React** runs `Text Only` through the same `isDisplayValue` test as every other handler,
-so a metric configured with `Display Value: Never` renders a bare label. A `Text Only`
-metric is nothing but its value. Hiding it leaves a bare label with no number next to it,
-on every panel that uses the handler.
+Add a `Text Only` case to the React switch the obvious way and the value runs through the
+same `isDisplayValue` test as every other handler, so a metric set to `Display Value: Never`
+shows a bare label with no number. A `Text Only` metric is nothing but its value, so the
+restored handler has to ignore `Display Value`. The bare labels were visible on the real
+dashboard, which is what flagged it.
 
 ### 11. `warn == crit` grades every value as critical (**CRITICAL**) ✅
 
@@ -336,6 +339,6 @@ much longer than the rest.
 
 **Common thread**: the rewrite ported the _shape_ of the value handlers but dropped the AngularJS branching that made partial and typed configs work (the `isCheckRanges` dual mode, the direction taken from the bounds, loose equality, per-type formatting, `Text Only`). #1 to #4 all live in the same ~60-line `switch` in `buildStatusMetricProps.ts` and were fixed together, with a test per case.
 
-**Eleven of the fifteen are silent.** They raise nothing and log nothing: they render a colour, and the colour is wrong. That is the worst failure mode a monitoring panel can have, because an operator reads a green square and moves on. v2.1 therefore also reports a metric it could not make sense of, on the console and through Grafana's frontend observability, rather than quietly grading it against a bound it invented.
+**Ten of the fifteen are fully silent, and #5 is silent with the default options.** They raise nothing and log nothing: they render a colour, and the colour is wrong. That is the worst failure mode a monitoring panel can have, because an operator reads a green square and moves on. v2.1 therefore also reports a metric it could not make sense of, on the console and through Grafana's frontend observability, rather than quietly grading it against a bound it invented.
 
 **Read #8 first.** While the migration never ran, no migrated threshold could be observed being misread, which is why #9 and #11 stayed hidden through an entire major version.
