@@ -150,13 +150,15 @@ Consequences for a `Text Only` field:
 ## Found only by migrating a real dashboard
 
 Regressions 1 to 7 come from reading the two sources side by side. The six below were
-invisible that way. They surfaced the first time the migration handler ran over a real
-AngularJS dashboard: 92 panels, 574 queries, exported from production.
+invisible that way. They surfaced the first time the migration handler ran over a dashboard
+that had actually been saved by the AngularJS editor.
 
 None of them reproduce on a hand-built fixture, and that is the point. #8 needs a panel
-saved by the Angular editor, which no fixture writes by hand. #9 and #11 need bounds a
-fixture author would never think to leave empty or to set equal. A synthetic test
-dashboard is written by someone who already knows what the options mean.
+model the Angular editor wrote, which no fixture writes by hand. #9 and #11 need bounds a
+fixture author would never think to leave empty or to set equal. A synthetic test dashboard
+is written by someone who already knows what the options mean.
+
+Each one is now pinned by a test, so the fixture is no longer needed to keep them fixed.
 
 ### 8. AngularJS panels were never detected, so the migration never ran (**CRITICAL**) ✅
 
@@ -166,8 +168,8 @@ const isAngularModel = (panel) => !!panel.options && 'clusterName' in panel;
 
 `options` is a React-era concept. A genuine AngularJS panel keeps its settings at the
 root of the panel model and has **no `options` key at all**, so the guard matched nothing
-and `statusMigrationHandler` returned early on every real panel. Zero of the 92 production
-panels were migrated.
+and `statusMigrationHandler` returned early on every real panel. Not one Angular panel was
+ever migrated.
 
 The consequence is total: no `fieldConfig.overrides` are written, so every metric falls
 back to the registered defaults of `warn 70 / crit 90`. Every threshold in the dashboard
@@ -196,8 +198,8 @@ Measured on a live panel, reading the effective field config the plugin receives
 
 Only the **empty string** survives as "unset", and it is exactly what the option editor
 stores when the field is cleared (`onChange` forwards `currentTarget.value`, a string).
-On the production dashboard, **294 of the 574 migrated bounds are unset**, so every one of
-them was picking up a default.
+Single-sided thresholds are common in Angular dashboards, so a large share of the bounds a
+real migration has to carry over are unset ones. Every one of them was picking up a default.
 
 Combined with #11, a healthy `Port Enable - 27` (`warn: 1`, no `crit`) was graded against
 `1..70` and reported as a warning.
@@ -216,8 +218,8 @@ handleTextOnly(series, target) {
 
 **React** runs `Text Only` through the same `isDisplayValue` test as every other handler,
 so a metric configured with `Display Value: Never` renders a bare label. A `Text Only`
-metric is nothing but its value. On the production dashboard some thirty panels showed a
-disk-count label with no number next to it.
+metric is nothing but its value. Hiding it leaves a bare label with no number next to it,
+on every panel that uses the handler.
 
 ### 11. `warn == crit` grades every value as critical (**CRITICAL**) ✅
 
@@ -254,9 +256,8 @@ The two agree everywhere **except when `warn === crit`**. Both `warn <= crit` an
 which is true for every real number. Such a metric is critical forever, whatever it reads.
 
 `warn == crit` is the normal way to configure a binary error counter: a filesystem error
-flag, a dead-process count. On the production dashboard a single such metric, a mount-point
-error flag set to `warn: 1` / `crit: 1` and reading a healthy `0`, pinned 8 panels
-permanently red.
+flag, a dead-process count. One such metric, set to `warn: 1` / `crit: 1` and reading a
+healthy `0`, is enough to pin every panel that carries it permanently red.
 
 ### 12. Long alert lists bounce instead of scrolling (**MEDIUM**) ✅
 

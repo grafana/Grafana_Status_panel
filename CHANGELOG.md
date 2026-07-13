@@ -4,7 +4,7 @@
 
 A stabilisation release. Thirteen behaviours broke during the Angular-to-React rewrite, most of them silently. They work again, and every one that carries logic now has a unit test holding it in place. The two that are purely a matter of styling were checked in a browser instead.
 
-The five migration and threshold bugs at the top of this list were all found by running the handler over a real 92-panel Angular dashboard. None of them show up on a small hand-built one, which is why they survived a whole major version.
+The five migration and threshold bugs at the top of this list only surface on dashboards that were actually saved by the AngularJS editor. None of them show up on a small hand-built fixture, which is why they survived a whole major version.
 
 ### Fixed
 

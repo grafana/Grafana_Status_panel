@@ -60,7 +60,7 @@ Full analysis in [`REGRESSIONS.md`](./REGRESSIONS.md). Summary:
 
 #1 to #4 all live in the same ~60-line `switch` in `buildStatusMetricProps.ts` and were fixed together, each with a failing-then-passing test.
 
-**#8 to #13 were only found by running the migration over a real 92-panel Angular dashboard.** None of them reproduce on a small hand-built one: #8 needs a panel with no `options` key, #9 and #11 need bounds a synthetic fixture would never leave unset or set equal. This is the strongest argument for keeping a real dashboard fixture in the repo.
+**#8 to #13 were only found by running the migration over a dashboard genuinely saved by the AngularJS editor.** None of them reproduce on a small hand-built one: #8 needs a panel with no `options` key, #9 and #11 need bounds a synthetic fixture would never leave unset or set equal. Each is now pinned by a test.
 
 ## 5. Roadmap
 
