@@ -23,48 +23,61 @@
   "liveNow": false,
   "panels": [
     {
-      "clusterName": "Status Panel test 1.0.11",
+      "gridPos": {
+        "h": 3,
+        "w": 24,
+        "x": 0,
+        "y": 0
+      },
+      "id": 1,
+      "options": {
+        "mode": "markdown",
+        "content": "### What this is\n\nThe card below is saved in the old **AngularJS** panel format. Opening this dashboard runs the plugin's migration, which converts it to the current React model on the fly: thresholds, aggregations, and per-metric links are all carried over. Grafana does not write the conversion back to a provisioned file, so the migration re-runs on every load. It is here as a fixture to keep that path working."
+      },
+      "transparent": true,
+      "type": "text"
+    },
+    {
+      "clusterName": "payments-api",
       "colorMode": "Panel",
       "colors": {
-        "crit": "rgba(245, 54, 54, 0.9)",
+        "crit": "rgba(196, 22, 42, 0.9)",
         "disable": "rgba(128, 128, 128, 0.9)",
-        "ok": "rgba(50, 128, 45, 0.9)",
-        "warn": "rgba(237, 129, 40, 0.9)"
+        "ok": "rgba(56, 135, 45, 0.9)",
+        "warn": "rgba(224, 117, 45, 0.9)"
       },
       "cornerRadius": 3,
       "datasource": {
         "type": "grafana-testdata-datasource",
         "uid": "bdi86bi8f7zswc"
       },
-      "displayName": "Status Panel test 1.0.11",
-      "flipCard": true,
-      "flipTime": "3",
+      "displayName": "payments-api",
+      "flipCard": false,
       "fontFormat": "Bold",
       "gridPos": {
         "h": 8,
         "w": 12,
         "x": 0,
-        "y": 0
+        "y": 3
       },
-      "id": 1,
+      "id": 2,
       "isAutoScrollOnOverflow": false,
       "isGrayOnNoData": false,
       "isHideAlertsOnDisable": false,
       "isIgnoreOKColors": false,
-      "maxAlertNumber": 11,
-      "namePrefix": "prefixo",
+      "maxAlertNumber": -1,
       "targets": [
         {
           "$$hashKey": "object:49",
           "aggregation": "Avg",
-          "alias": "TheAWithAvg",
+          "alias": "CPU",
           "crit": 90,
-          "csvContent": "\"time\",\"TheAWithAvg\"\n\"2024-01-01 00:00:00\", 45",
+          "csvContent": "\"time\",\"CPU\"\n\"2024-01-01 00:00:00\", 75",
           "datasource": {
             "type": "grafana-testdata-datasource",
             "uid": "bdi86bi8f7zswc"
           },
-          "decimals": 2,
+          "decimals": 0,
           "displayAliasType": "Always",
           "displayType": "Regular",
           "displayValueWithAlias": "When Alias Displayed",
@@ -72,21 +85,21 @@
           "refId": "A",
           "scenarioId": "csv_content",
           "units": "none",
-          "url": "https://example.com/runbooks/a",
+          "url": "https://example.com/runbooks/cpu",
           "valueHandler": "Number Threshold",
           "warn": 70
         },
         {
           "$$hashKey": "object:50",
           "aggregation": "Last",
-          "alias": "TheBWithLast",
+          "alias": "Memory",
           "crit": 90,
-          "csvContent": "\"time\",\"TheBWithLast\"\n\"2024-01-01 00:00:00\", 82",
+          "csvContent": "\"time\",\"Memory\"\n\"2024-01-01 00:00:00\", 82",
           "datasource": {
             "type": "grafana-testdata-datasource",
             "uid": "bdi86bi8f7zswc"
           },
-          "decimals": 2,
+          "decimals": 0,
           "displayAliasType": "Always",
           "displayType": "Regular",
           "displayValueWithAlias": "When Alias Displayed",
@@ -94,21 +107,21 @@
           "refId": "B",
           "scenarioId": "csv_content",
           "units": "none",
-          "url": "https://example.com/runbooks/b",
+          "url": "https://example.com/runbooks/memory",
           "valueHandler": "Number Threshold",
           "warn": 70
         },
         {
           "$$hashKey": "object:51",
-          "aggregation": "Sum",
-          "alias": "TheCWithSum",
+          "aggregation": "Max",
+          "alias": "Disk",
           "crit": 90,
-          "csvContent": "\"time\",\"TheCWithSum\"\n\"2024-01-01 00:00:00\", 96",
+          "csvContent": "\"time\",\"Disk\"\n\"2024-01-01 00:00:00\", 94",
           "datasource": {
             "type": "grafana-testdata-datasource",
             "uid": "bdi86bi8f7zswc"
           },
-          "decimals": 2,
+          "decimals": 0,
           "displayAliasType": "Always",
           "displayType": "Regular",
           "displayValueWithAlias": "When Alias Displayed",
@@ -116,12 +129,12 @@
           "refId": "C",
           "scenarioId": "csv_content",
           "units": "none",
-          "url": "https://example.com/runbooks/c",
+          "url": "https://example.com/runbooks/disk",
           "valueHandler": "Number Threshold",
           "warn": 70
         }
       ],
-      "title": "Panel Title",
+      "title": "",
       "type": "vonage-status-panel"
     }
   ],
@@ -137,8 +150,8 @@
   },
   "timepicker": {},
   "timezone": "",
-  "title": "Status Panel 1.0.11 (AngularJS migration fixture)",
-  "uid": "ad646d2d-4588-4633-bd73-97e9cf5c49a9",
+  "title": "Legacy AngularJS panel (migration demo)",
+  "uid": "legacy-migration",
   "version": 1,
   "weekStart": ""
 }
