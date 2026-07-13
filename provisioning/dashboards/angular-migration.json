@@ -84,7 +84,7 @@
           "hide": false,
           "refId": "A",
           "scenarioId": "csv_content",
-          "units": "none",
+          "units": "percent",
           "url": "https://example.com/runbooks/cpu",
           "valueHandler": "Number Threshold",
           "warn": 70
@@ -106,7 +106,7 @@
           "hide": false,
           "refId": "B",
           "scenarioId": "csv_content",
-          "units": "none",
+          "units": "percent",
           "url": "https://example.com/runbooks/memory",
           "valueHandler": "Number Threshold",
           "warn": 70
@@ -128,7 +128,7 @@
           "hide": false,
           "refId": "C",
           "scenarioId": "csv_content",
-          "units": "none",
+          "units": "percent",
           "url": "https://example.com/runbooks/disk",
           "valueHandler": "Number Threshold",
           "warn": 70
