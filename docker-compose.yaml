@@ -3,7 +3,7 @@ services:
     platform: 'linux/amd64'
     build:
       args:
-        grafana_version: ${GRAFANA_VERSION:-11.5.0}
+        grafana_version: ${GRAFANA_VERSION:-13.1.0}
         development: ${DEVELOPMENT:-true}
     ports:
       - 3000:3000/tcp
