@@ -28,10 +28,14 @@ help: ## Show the available targets
 	@grep -hE '^[a-z-]+:.*##' $(MAKEFILE_LIST) | \
 		awk 'BEGIN{FS=":.*## "}{printf "  \033[36m%-9s\033[0m %s\n", $$1, $$2}'
 
+# Create dist/ as the host user first, so docker compose can never auto-create
+# it as root (which would then block the unprivileged build container).
 build: ## Install deps and produce a production dist/ (Node in Docker)
+	@mkdir -p dist
 	$(NODE_RUN) sh -lc 'npm ci && npm run build'
 
 dev: ## Install deps and watch-build dist/ (Ctrl-C to stop)
+	@mkdir -p dist
 	$(NODE_RUN) sh -lc 'npm ci && npm run dev'
 
 up: build ## Build dist/ then start the Grafana dev server
@@ -47,5 +51,7 @@ down: ## Stop the Grafana dev server
 logs: ## Follow the Grafana logs
 	docker compose logs -f grafana
 
-clean: ## Remove dist/ and node_modules
-	$(NODE_RUN) sh -lc 'rm -rf dist node_modules'
+# Runs as root (no -u) so it can also remove a dist/ that a bare `docker
+# compose up` created as root before this Makefile existed.
+clean: ## Remove dist/ and node_modules (clears a root-owned dist too)
+	docker run --rm -v $(CURDIR):/work -w /work $(NODE_IMAGE) rm -rf dist node_modules
