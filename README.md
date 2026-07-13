@@ -4,16 +4,6 @@ One panel that shows the health of many components at once. You give it a set of
 
 ![A dashboard of status cards, most of them green](https://github.com/grafana/Grafana_Status_panel/blob/main/src/img/environment_snapshot.png?raw=true)
 
-> This project was originally contributed by [Vonage](https://github.com/Vonage/Grafana_Status_panel) - thanks for all your great work!
->
-> The previous published version of the plugin relied on AngularJS which is [deprecated](https://grafana.com/docs/grafana/latest/developers/angular_deprecation/). We reached out to Vonage to support publishing an updated version based on the changes made in the source repo, but they were unable to pursue this at the time.
->
-> We have stepped up for the time being to minimize disruption, but would be happy to hand maintainership back at any point in the future.
->
-> We have republished under the same plugin ID, but with the Grafana signature. This means you can simply update your plugin version. A new ID would have required manual updates to your dashboards. We changed the signature to Grafana to reflect the change in publisher and so that it is clear we are not impersonating the original authors. For additional information on the changes, see the [Notices](https://github.com/grafana/Grafana_Status_panel/blob/main/NOTICES).
-
-⚠️ This project is not actively maintained by Grafana Labs. Pull requests are welcome and will be reviewed on a best-effort basis. Contact integrations@grafana.com if you are interested in taking on this project longer term. We will be happy to work with and eventually hand over to people who are interested in maintaining it again.
-
 ## Why you might want it
 
 Say you watch a fleet of servers and track several metrics on each one: CPU, memory, disk, a couple of health probes. A Single Stat panel shows you one of those numbers. This panel holds all of them in one card and colours it by the worst thing it finds, so a wall of green tells you at a glance that nothing needs you right now.
@@ -109,6 +99,16 @@ npm run server     # boots Grafana on localhost:3000 with the plugin mounted
 ## Release notes
 
 See the [CHANGELOG](https://github.com/grafana/Grafana_Status_panel/blob/main/CHANGELOG.md).
+
+## Project status
+
+This plugin is not actively maintained by Grafana Labs. Pull requests are welcome and reviewed on a best-effort basis. If you would like to take it on longer term, contact integrations@grafana.com. We are glad to work with new maintainers and to hand the project over.
+
+### History
+
+The plugin was originally contributed by [Vonage](https://github.com/Vonage/Grafana_Status_panel), and we are grateful for that work. The published version ran on AngularJS, which Grafana has [deprecated](https://grafana.com/docs/grafana/latest/developers/angular_deprecation/). We asked Vonage about publishing an update based on the changes in their source repo, but they could not take it on at the time, so we stepped up to keep the plugin working.
+
+We republished it under the same plugin ID, so existing dashboards keep working and you can update in place. A new ID would have forced you to edit every dashboard by hand. We signed it as Grafana to make the change of publisher clear and to avoid any impression that we are the original authors. See the [Notices](https://github.com/grafana/Grafana_Status_panel/blob/main/NOTICES) for the details.
 
 ## License
 
