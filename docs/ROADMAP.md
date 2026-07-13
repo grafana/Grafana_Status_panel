@@ -34,8 +34,9 @@ existing dashboards working. Stabilising the documented regressions (incl. issue
 Reproducible, and doubles as CI/e2e/publish material (Grafana-recommended provisioning).
 
 - Fork cloned in `dev/Grafana_Status_panel` (`origin` = SckyzO, `upstream` = grafana).
-- **Grafana 13.1.0** container (`docker compose up`), plugin verified rendering on GF13 (no 12→13 regression).
-- Fake data: TestData datasource, `csv_content` scenario (native, offline), incl. 0/1 status series for the "pupitreur" case.
+- Build with `make up` (builds `dist/` in a pinned Node 22 container tracking `.nvmrc`, then `docker compose up`) or the host npm scripts. `dist/` is not committed, so it is built before Grafana can load the plugin.
+- **Grafana 13.1.0** container, plugin verified rendering on GF13 (no 12→13 regression).
+- Provisioned demo dashboards (offline, TestData `csv_content`): a host-health board (CPU / memory / disk), a network-switch faceplate (ports up / down / admin-disabled via the single-sided threshold), and an AngularJS panel kept as a migration fixture.
 - MCP: `chrome-devtools` (UI iteration, works under WSL) + `mcp-grafana` (API).
 
 ## 4. Regressions (AngularJS → React): the v2.1 backlog
@@ -69,7 +70,7 @@ Full analysis in [`REGRESSIONS.md`](./REGRESSIONS.md). Summary:
 | Item                      | Notes                                                                   |  Effort  |
 | ------------------------- | ----------------------------------------------------------------------- | :------: |
 | **Unit test scaffold**    | none today; cover `buildStatusMetricProps` + migration handler fixtures |    M     |
-| Fix regressions #1 to #13 | done; 36 tests                                                          | S/M each |
+| Fix regressions #1 to #13 | done; 29 tests                                                          | S/M each |
 | **Grafana 13 support**    | CI matrix 10.4 / 12 / 13, validate `grafanaDependency`                  |    M     |
 | Shape presets             | Square / Rounded / Round (formalises `cornerRadius`)                    |    S     |
 | Emoji / icon per state    | additive, opt-in                                                        |    M     |

@@ -86,15 +86,25 @@ Panels saved by the old AngularJS version are converted when the dashboard is op
 
 ## Contributing
 
-Pull requests are welcome. To build and run the plugin locally:
+Pull requests are welcome.
+
+The `dist/` folder is built from source and is not committed, so you build it before the Grafana dev server can load the plugin. The shortest path needs only Docker:
+
+```bash
+make up      # builds dist/ in a pinned Node container, then starts Grafana
+```
+
+Grafana comes up on http://localhost:3000 with the plugin and a few demo dashboards already loaded. `make dev` rebuilds `dist/` on change, and `make down`, `make logs` and `make help` cover the rest.
+
+If you have Node 22 (see `.nvmrc`) and would rather build on the host:
 
 ```bash
 npm install
-npm run build      # or: npm run dev  (webpack watch)
-npm run server     # boots Grafana on localhost:3000 with the plugin mounted
+npm run dev        # build and watch; or npm run build for a one-off
+npm run server     # start Grafana with the plugin mounted
 ```
 
-`npm run test:ci` runs the unit tests and `npm run e2e` runs the Playwright tests against the local server.
+`npm run test:ci` runs the unit tests, and `npm run e2e` runs the Playwright tests against the running server.
 
 ## Release notes
 
