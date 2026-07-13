@@ -33,8 +33,8 @@
       },
       "cornerRadius": 3,
       "datasource": {
-        "type": "datasource",
-        "uid": "grafana"
+        "type": "grafana-testdata-datasource",
+        "uid": "bdi86bi8f7zswc"
       },
       "displayName": "Status Panel test 1.0.11",
       "flipCard": true,
@@ -58,58 +58,67 @@
           "$$hashKey": "object:49",
           "aggregation": "Avg",
           "alias": "TheAWithAvg",
+          "crit": 90,
+          "csvContent": "\"time\",\"TheAWithAvg\"\n\"2024-01-01 00:00:00\", 45",
           "datasource": {
-            "type": "datasource",
-            "uid": "grafana"
+            "type": "grafana-testdata-datasource",
+            "uid": "bdi86bi8f7zswc"
           },
           "decimals": 2,
-          "displayAliasType": "Warning / Critical",
+          "displayAliasType": "Always",
           "displayType": "Regular",
-          "displayValueWithAlias": "Never",
+          "displayValueWithAlias": "When Alias Displayed",
           "hide": false,
-          "queryType": "randomWalk",
           "refId": "A",
+          "scenarioId": "csv_content",
           "units": "none",
-          "url": "https://themetrica.com",
-          "valueHandler": "Number Threshold"
+          "url": "https://example.com/runbooks/a",
+          "valueHandler": "Number Threshold",
+          "warn": 70
         },
         {
           "$$hashKey": "object:50",
           "aggregation": "Last",
           "alias": "TheBWithLast",
+          "crit": 90,
+          "csvContent": "\"time\",\"TheBWithLast\"\n\"2024-01-01 00:00:00\", 82",
           "datasource": {
-            "type": "datasource",
-            "uid": "grafana"
+            "type": "grafana-testdata-datasource",
+            "uid": "bdi86bi8f7zswc"
           },
           "decimals": 2,
-          "displayAliasType": "Warning / Critical",
+          "displayAliasType": "Always",
           "displayType": "Regular",
-          "displayValueWithAlias": "Never",
+          "displayValueWithAlias": "When Alias Displayed",
           "hide": false,
-          "queryType": "randomWalk",
           "refId": "B",
+          "scenarioId": "csv_content",
           "units": "none",
-          "url": "https://themetricb.com",
-          "valueHandler": "Number Threshold"
+          "url": "https://example.com/runbooks/b",
+          "valueHandler": "Number Threshold",
+          "warn": 70
         },
         {
           "$$hashKey": "object:51",
           "aggregation": "Sum",
           "alias": "TheCWithSum",
+          "crit": 90,
+          "csvContent": "\"time\",\"TheCWithSum\"\n\"2024-01-01 00:00:00\", 96",
           "datasource": {
-            "type": "datasource",
-            "uid": "grafana"
+            "type": "grafana-testdata-datasource",
+            "uid": "bdi86bi8f7zswc"
           },
           "decimals": 2,
-          "displayAliasType": "Warning / Critical",
+          "displayAliasType": "Always",
           "displayType": "Regular",
-          "displayValueWithAlias": "Never",
+          "displayValueWithAlias": "When Alias Displayed",
           "hide": false,
-          "queryType": "randomWalk",
           "refId": "C",
+          "scenarioId": "csv_content",
           "units": "none",
-          "url": "https://themetricc.com",
-          "valueHandler": "Number Threshold"
+          "url": "https://example.com/runbooks/c",
+          "valueHandler": "Number Threshold",
+          "warn": 70
         }
       ],
       "title": "Panel Title",
@@ -118,7 +127,7 @@
   ],
   "refresh": "",
   "schemaVersion": 39,
-  "tags": [],
+  "tags": ["status-panel", "migration"],
   "templating": {
     "list": []
   },
@@ -128,7 +137,7 @@
   },
   "timepicker": {},
   "timezone": "",
-  "title": "Status Panel 1.0.11",
+  "title": "Status Panel 1.0.11 (AngularJS migration fixture)",
   "uid": "ad646d2d-4588-4633-bd73-97e9cf5c49a9",
   "version": 1,
   "weekStart": ""
