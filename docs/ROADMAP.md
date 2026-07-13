@@ -36,7 +36,7 @@ Reproducible, and doubles as CI/e2e/publish material (Grafana-recommended provis
 - Fork cloned in `dev/Grafana_Status_panel` (`origin` = SckyzO, `upstream` = grafana).
 - Build with `make up` (builds `dist/` in a pinned Node 22 container tracking `.nvmrc`, then `docker compose up`) or the host npm scripts. `dist/` is not committed, so it is built before Grafana can load the plugin.
 - **Grafana 13.1.0** container, plugin verified rendering on GF13 (no 12→13 regression).
-- Provisioned demo dashboards (offline, TestData `csv_content`): a host-health board (CPU / memory / disk), a network-switch faceplate (ports up / down / admin-disabled via the single-sided threshold), and an AngularJS panel kept as a migration fixture.
+- Provisioned demo dashboards (offline, TestData `csv_content`): a host-health board (CPU / memory / disk), a network-switch faceplate (ports up / down / admin-disabled via the single-sided threshold), and an AngularJS panel kept as a migration fixture (with an in-dashboard note explaining that it converts on open).
 - MCP: `chrome-devtools` (UI iteration, works under WSL) + `mcp-grafana` (API).
 
 ## 4. Regressions (AngularJS → React): the v2.1 backlog

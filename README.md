@@ -94,7 +94,7 @@ The `dist/` folder is built from source and is not committed, so you build it be
 make up      # builds dist/ in a pinned Node container, then starts Grafana
 ```
 
-Grafana comes up on http://localhost:3000 with the plugin and a few demo dashboards already loaded. `make dev` rebuilds `dist/` on change, and `make down`, `make logs` and `make help` cover the rest.
+Grafana comes up on http://localhost:3000 with the plugin and three demo dashboards already loaded: a host-health board, a network-switch faceplate (ports up, down, and disabled), and a legacy AngularJS panel that shows the migration in action. `make dev` rebuilds `dist/` on change, and `make down`, `make logs` and `make help` cover the rest.
 
 If you have Node 22 (see `.nvmrc`) and would rather build on the host:
 
