@@ -6,7 +6,7 @@
 
 - **Fork**: `SckyzO/Grafana_Status_panel`, forked from `grafana/Grafana_Status_panel` at v2.0.4. Working branch `v2.1-stabilisation`, version 2.1.0.
 - **Plugin id**: `vonage-status-panel` (kept for drop-in updates on existing dashboards)
-- **Last updated**: 2026-07-12
+- **Last updated**: 2026-07-14
 
 ---
 
@@ -26,7 +26,7 @@ existing dashboards working. Stabilising the documented regressions (incl. issue
 
 ## 2. Strategy: two phases (non-regression first)
 
-- **v2.1 Stabilisation**: fix regressions + small additive features. 100% backward-compatible, no forced migration.
+- **v2.1 Stabilisation**: fix the regressions, and nothing else that a user would notice. 100% backward-compatible, no forced migration. The one exception is a knob for a default #12 changed (see §5).
 - **v3.0 Evolution**: multi-metric card model, threshold steps, multicard, per-metric mappings, all behind an **automatic v2→v3 migration**, plugin id preserved.
 
 ## 3. Development environment
