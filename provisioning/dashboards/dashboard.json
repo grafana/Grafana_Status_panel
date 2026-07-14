@@ -22,6 +22,21 @@
   "liveNow": false,
   "panels": [
     {
+      "gridPos": {
+        "h": 4,
+        "w": 24,
+        "x": 0,
+        "y": 0
+      },
+      "id": 90,
+      "options": {
+        "mode": "markdown",
+        "content": "### What this shows\n\nOne card per server. Each card carries three queries (CPU, memory, disk), and **Coloring Mode: Panel** fills the whole card with the colour of the worst of them, so `db-01` is amber on its CPU and `db-02` is red on its memory. The metrics are listed worst first.\n\nEvery query is graded on a **Number Threshold** with warning at 70 and critical at 90, reduced with **Aggregation: Last**, and given the `percent` unit so the value reads as `34%`."
+      },
+      "transparent": true,
+      "type": "text"
+    },
+    {
       "datasource": {
         "type": "grafana-testdata-datasource",
         "uid": "bdi86bi8f7zswc"
@@ -51,7 +66,7 @@
         "h": 5,
         "w": 6,
         "x": 0,
-        "y": 0
+        "y": 4
       },
       "id": 2,
       "options": {
@@ -140,7 +155,7 @@
         "h": 5,
         "w": 6,
         "x": 6,
-        "y": 0
+        "y": 4
       },
       "id": 3,
       "options": {
@@ -229,7 +244,7 @@
         "h": 5,
         "w": 6,
         "x": 12,
-        "y": 0
+        "y": 4
       },
       "id": 4,
       "options": {
@@ -318,7 +333,7 @@
         "h": 5,
         "w": 6,
         "x": 18,
-        "y": 0
+        "y": 4
       },
       "id": 5,
       "options": {
@@ -407,7 +422,7 @@
         "h": 5,
         "w": 6,
         "x": 0,
-        "y": 5
+        "y": 9
       },
       "id": 6,
       "options": {
@@ -496,7 +511,7 @@
         "h": 5,
         "w": 6,
         "x": 6,
-        "y": 5
+        "y": 9
       },
       "id": 7,
       "options": {
@@ -585,7 +600,7 @@
         "h": 5,
         "w": 6,
         "x": 12,
-        "y": 5
+        "y": 9
       },
       "id": 8,
       "options": {
@@ -674,7 +689,7 @@
         "h": 5,
         "w": 6,
         "x": 18,
-        "y": 5
+        "y": 9
       },
       "id": 9,
       "options": {
@@ -746,7 +761,7 @@
   },
   "timepicker": {},
   "timezone": "browser",
-  "title": "Host health — demo",
+  "title": "Host health",
   "uid": "adi86k7m8jksga",
   "version": 1,
   "weekStart": ""

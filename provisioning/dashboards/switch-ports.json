@@ -22,6 +22,21 @@
   "liveNow": false,
   "panels": [
     {
+      "gridPos": {
+        "h": 4,
+        "w": 24,
+        "x": 0,
+        "y": 0
+      },
+      "id": 89,
+      "options": {
+        "mode": "markdown",
+        "content": "### What this shows\n\nOne card per switch port, from a **single panel repeated** over the `Port` variable. That variable is a custom `name : state` list, so one entry carries both: its text form names the card (Cluster Name expands template variables) and its value feeds the query with the link state. Adding a port means adding one entry.\n\nThe threshold is **single-sided**: Critical is `0` and Warning is left empty, so a card turns red only when the link reads exactly `0`. Anything else is up."
+      },
+      "transparent": true,
+      "type": "text"
+    },
+    {
       "datasource": {
         "type": "grafana-testdata-datasource",
         "uid": "bdi86bi8f7zswc"
@@ -50,7 +65,7 @@
         "h": 3,
         "w": 3,
         "x": 0,
-        "y": 0
+        "y": 4
       },
       "id": 1,
       "maxPerRow": 8,
@@ -97,7 +112,7 @@
         "h": 3,
         "w": 24,
         "x": 0,
-        "y": 3
+        "y": 7
       },
       "id": 90,
       "options": {
@@ -136,7 +151,7 @@
         "h": 3,
         "w": 3,
         "x": 0,
-        "y": 6
+        "y": 10
       },
       "id": 91,
       "maxPerRow": 8,
@@ -204,7 +219,7 @@
         "h": 3,
         "w": 3,
         "x": 3,
-        "y": 6
+        "y": 10
       },
       "id": 92,
       "maxPerRow": 8,
@@ -271,7 +286,7 @@
   },
   "timepicker": {},
   "timezone": "browser",
-  "title": "Network switch — port status",
+  "title": "Switch port status",
   "uid": "switchports",
   "version": 1,
   "weekStart": ""

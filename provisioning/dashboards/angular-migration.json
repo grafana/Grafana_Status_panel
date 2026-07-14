@@ -24,7 +24,7 @@
   "panels": [
     {
       "gridPos": {
-        "h": 3,
+        "h": 5,
         "w": 24,
         "x": 0,
         "y": 0
@@ -32,7 +32,7 @@
       "id": 1,
       "options": {
         "mode": "markdown",
-        "content": "### What this is\n\nThe card below is saved in the old **AngularJS** panel format. Opening this dashboard runs the plugin's migration, which converts it to the current React model on the fly: thresholds, aggregations, and per-metric links are all carried over. Grafana does not write the conversion back to a provisioned file, so the migration re-runs on every load. It is here as a fixture to keep that path working."
+        "content": "### What this shows\n\nThe card below is still saved in the old **AngularJS** panel format, with its settings at the top of the panel and its thresholds on each query. Opening this dashboard runs the plugin's migration, which converts it to the current React model on the fly. It is here as a fixture, to keep that path honest.\n\nWatch what survives the conversion: the three queries keep their warning at 70 and critical at 90, their old `Avg` / `Last` / `Max` aggregations are remapped to the current names, their `percent` unit carries over, and the runbook URL on each one becomes a data link. Disk reads 94, so the card is critical.\n\nGrafana never writes the conversion back to a provisioned file, so this migration re-runs on every load."
       },
       "transparent": true,
       "type": "text"
@@ -58,7 +58,7 @@
         "h": 8,
         "w": 12,
         "x": 0,
-        "y": 3
+        "y": 5
       },
       "id": 2,
       "isAutoScrollOnOverflow": false,
