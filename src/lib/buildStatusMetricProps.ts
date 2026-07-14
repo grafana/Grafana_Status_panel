@@ -15,6 +15,7 @@ import _ from 'lodash';
 
 import { StatusFieldOptions } from 'lib/statusFieldOptionsBuilder';
 import { StatusPanelOptions } from 'lib/statusPanelOptionsBuilder';
+import { reportMisconfiguration } from 'lib/diagnostics';
 import { DataQuery } from '@grafana/schema';
 
 type StatusType = 'ok' | 'hide' | 'warn' | 'crit' | 'disable' | 'noData';
@@ -22,6 +23,43 @@ interface StatusMetricProp extends Omit<React.HTMLAttributes<HTMLDivElement>, 'c
   alias: string;
   displayValue?: string | number;
   link?: LinkModel;
+}
+
+/** A bound left empty in the editor means "not set", so never coerce it to 0. */
+const toBound = (raw: unknown): number => (raw === '' || raw == null ? NaN : Number(raw));
+
+/**
+ * Grade a value against its two bounds the way the AngularJS panel did: compare it
+ * against each bound in turn, taking the direction from whichever bound is larger.
+ * A single bound falls back to exact equality. Returns null when the value clears
+ * both bounds, which leaves the caller's initial status untouched.
+ */
+function classifySeverity(value: number, warn: number, crit: number): 'warn' | 'crit' | null {
+  const warnIsSet = _.isFinite(warn);
+  const critIsSet = _.isFinite(crit);
+
+  if (warnIsSet && critIsSet) {
+    // `crit < warn` means a lower value is the worse one (bonded slaves, healthy
+    // process counts). Comparing against each bound instead of testing a range
+    // matters when warn === crit: both ends of a range check are then true at
+    // once, which reports crit for every possible value.
+    const lowerIsWorse = crit < warn;
+    if (lowerIsWorse ? value <= crit : value >= crit) {
+      return 'crit';
+    }
+    if (lowerIsWorse ? value <= warn : value >= warn) {
+      return 'warn';
+    }
+    return null;
+  }
+
+  if (critIsSet && value === crit) {
+    return 'crit';
+  }
+  if (warnIsSet && value === warn) {
+    return 'warn';
+  }
+  return null;
 }
 
 export function buildStatusMetricProps(
@@ -53,18 +91,38 @@ export function buildStatusMetricProps(
     // if (!field.state?.calcs) {
     //   return;
     // }
+    const card = options.clusterName || 'unnamed';
+    const refId = df.refId ?? '?';
+
+    // An empty bound means "not set" and is a legitimate way to build a single-sided
+    // threshold. A bound that was filled in with something that is not a number is a
+    // mistake, and reads as "not set" too, which silently changes how the value is
+    // graded. Say so, rather than let the card show a confident, wrong colour.
+    const checkBound = (raw: unknown, name: string) => {
+      if (raw !== '' && raw != null && !_.isFinite(Number(raw))) {
+        reportMisconfiguration({
+          card,
+          refId,
+          problem: `the ${name} threshold "${raw}" is not a number, so it was ignored`,
+        });
+      }
+    };
+
     // determine field status & handle formatting based on value handler
     let fieldStatus: StatusType = config.custom.displayAliasType === 'Always' ? 'ok' : 'hide';
     let displayValue = '';
     switch (config.custom.thresholds.valueHandler) {
-      case 'Number Threshold':
-        let value: number = fieldCalcs[config.custom.aggregation];
-        const crit = +config.custom.thresholds.crit;
-        const warn = +config.custom.thresholds.warn;
-        if ((warn <= crit && crit <= value) || (warn >= crit && crit >= value)) {
-          fieldStatus = 'crit';
-        } else if ((warn <= value && value <= crit) || (warn >= value && value >= crit)) {
-          fieldStatus = 'warn';
+      case 'Number Threshold': {
+        const value: number = fieldCalcs[config.custom.aggregation];
+        checkBound(config.custom.thresholds.warn, 'Warning');
+        checkBound(config.custom.thresholds.crit, 'Critical');
+        const severity = classifySeverity(
+          value,
+          toBound(config.custom.thresholds.warn),
+          toBound(config.custom.thresholds.crit)
+        );
+        if (severity) {
+          fieldStatus = severity;
         }
 
         if (!_.isFinite(value)) {
@@ -75,6 +133,7 @@ export function buildStatusMetricProps(
           displayValue = toFixed(value, config.decimals);
         }
         break;
+      }
       case 'String Threshold':
         displayValue = fieldCalcs[config.custom.aggregation];
         if (displayValue === undefined || displayValue === null || displayValue !== displayValue) {
@@ -87,8 +146,8 @@ export function buildStatusMetricProps(
           fieldStatus = 'warn';
         }
         break;
-      case 'Date Threshold':
-        const val: string = fieldCalcs[config.custom.aggregation];
+      case 'Date Threshold': {
+        const val = fieldCalcs[config.custom.aggregation];
         let date = dateTimeAsMoment(val);
         if (timeZone === 'utc') {
           date = date.utc();
@@ -96,22 +155,51 @@ export function buildStatusMetricProps(
 
         displayValue = date.format(config.custom.dateFormat);
 
-        if (val === config.custom.thresholds.crit) {
-          fieldStatus = 'crit';
-        } else if (val === config.custom.thresholds.warn) {
-          fieldStatus = 'warn';
+        // Compare chronologically (epoch millis) so the bounds grade the same way
+        // the numeric ones do.
+        const toDateBound = (raw: string, name: string) => {
+          if (!raw) {
+            return NaN;
+          }
+          const bound = dateTimeAsMoment(raw).valueOf();
+          if (!_.isFinite(bound)) {
+            reportMisconfiguration({
+              card,
+              refId,
+              problem: `the ${name} threshold "${raw}" is not a date, so it was ignored`,
+            });
+          }
+          return bound;
+        };
+        const severity = classifySeverity(
+          date.valueOf(),
+          toDateBound(config.custom.thresholds.warn, 'Warning'),
+          toDateBound(config.custom.thresholds.crit, 'Critical')
+        );
+        if (severity) {
+          fieldStatus = severity;
         }
         break;
+      }
       case 'Disable Criteria':
-        if (fieldCalcs[config.custom.aggregation] === config.custom.disabledValue) {
+        // Compare as strings so a numeric metric (e.g. 0) matches a text disabledValue ("0").
+        if (String(fieldCalcs[config.custom.aggregation]) === config.custom.disabledValue) {
           fieldStatus = 'disable';
         }
+        break;
+      case 'Text Only':
+        // Always show the metric, with no threshold condition.
+        fieldStatus = 'ok';
+        displayValue = String(fieldCalcs[config.custom.aggregation]);
         break;
     }
 
     // only display value when appropriate
     const withAlias = config.custom.displayValueWithAlias;
     const isDisplayValue =
+      // A Text Only metric is nothing but its value, so it ignores this option. The
+      // Angular panel pushed it straight to the display list without ever reading it.
+      config.custom.thresholds.valueHandler === 'Text Only' ||
       withAlias === 'When Alias Displayed' ||
       (fieldStatus === 'warn' && withAlias === 'Warning / Critical') ||
       (fieldStatus === 'crit' && (withAlias === 'Warning / Critical' || withAlias === 'Critical Only'));
@@ -119,8 +207,18 @@ export function buildStatusMetricProps(
     // apply RegEx if value will be displayed
     if (isDisplayValue && config.custom.valueDisplayRegex) {
       try {
-        displayValue = displayValue.replace(new RegExp(config.custom.valueDisplayRegex), '');
-      } catch {}
+        // Display only the matched part of the value; fall back to the full value when no match.
+        const match = displayValue.match(new RegExp(config.custom.valueDisplayRegex));
+        if (match) {
+          displayValue = match[0];
+        }
+      } catch {
+        reportMisconfiguration({
+          card,
+          refId,
+          problem: `the Value Regex "${config.custom.valueDisplayRegex}" is not a valid regular expression, so the whole value is shown`,
+        });
+      }
     }
 
     // get first link and interpolate variables

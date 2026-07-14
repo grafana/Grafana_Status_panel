@@ -1,0 +1,157 @@
+{
+  "annotations": {
+    "list": [
+      {
+        "builtIn": 1,
+        "datasource": {
+          "type": "grafana",
+          "uid": "-- Grafana --"
+        },
+        "enable": true,
+        "hide": true,
+        "iconColor": "rgba(0, 211, 255, 1)",
+        "name": "Annotations & Alerts",
+        "type": "dashboard"
+      }
+    ]
+  },
+  "editable": true,
+  "fiscalYearStartMonth": 0,
+  "graphTooltip": 0,
+  "id": 1,
+  "links": [],
+  "liveNow": false,
+  "panels": [
+    {
+      "gridPos": {
+        "h": 5,
+        "w": 24,
+        "x": 0,
+        "y": 0
+      },
+      "id": 1,
+      "options": {
+        "mode": "markdown",
+        "content": "### What this shows\n\nThe card below is still saved in the old **AngularJS** panel format, with its settings at the top of the panel and its thresholds on each query. Opening this dashboard runs the plugin's migration, which converts it to the current React model on the fly. It is here as a fixture, to keep that path honest.\n\nWatch what survives the conversion: the three queries keep their warning at 70 and critical at 90, their old `Avg` / `Last` / `Max` aggregations are remapped to the current names, their `percent` unit carries over, and the runbook URL on each one becomes a data link. Disk reads 94, so the card is critical.\n\nGrafana never writes the conversion back to a provisioned file, so this migration re-runs on every load."
+      },
+      "transparent": true,
+      "type": "text"
+    },
+    {
+      "clusterName": "payments-api",
+      "colorMode": "Panel",
+      "colors": {
+        "crit": "rgba(196, 22, 42, 0.9)",
+        "disable": "rgba(128, 128, 128, 0.9)",
+        "ok": "rgba(56, 135, 45, 0.9)",
+        "warn": "rgba(224, 117, 45, 0.9)"
+      },
+      "cornerRadius": 3,
+      "datasource": {
+        "type": "grafana-testdata-datasource",
+        "uid": "bdi86bi8f7zswc"
+      },
+      "displayName": "payments-api",
+      "flipCard": false,
+      "fontFormat": "Bold",
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 0,
+        "y": 5
+      },
+      "id": 2,
+      "isAutoScrollOnOverflow": false,
+      "isGrayOnNoData": false,
+      "isHideAlertsOnDisable": false,
+      "isIgnoreOKColors": false,
+      "maxAlertNumber": -1,
+      "targets": [
+        {
+          "$$hashKey": "object:49",
+          "aggregation": "Avg",
+          "alias": "CPU",
+          "crit": 90,
+          "csvContent": "\"time\",\"CPU\"\n\"2024-01-01 00:00:00\", 75",
+          "datasource": {
+            "type": "grafana-testdata-datasource",
+            "uid": "bdi86bi8f7zswc"
+          },
+          "decimals": 0,
+          "displayAliasType": "Always",
+          "displayType": "Regular",
+          "displayValueWithAlias": "When Alias Displayed",
+          "hide": false,
+          "refId": "A",
+          "scenarioId": "csv_content",
+          "units": "percent",
+          "url": "https://example.com/runbooks/cpu",
+          "valueHandler": "Number Threshold",
+          "warn": 70
+        },
+        {
+          "$$hashKey": "object:50",
+          "aggregation": "Last",
+          "alias": "Memory",
+          "crit": 90,
+          "csvContent": "\"time\",\"Memory\"\n\"2024-01-01 00:00:00\", 82",
+          "datasource": {
+            "type": "grafana-testdata-datasource",
+            "uid": "bdi86bi8f7zswc"
+          },
+          "decimals": 0,
+          "displayAliasType": "Always",
+          "displayType": "Regular",
+          "displayValueWithAlias": "When Alias Displayed",
+          "hide": false,
+          "refId": "B",
+          "scenarioId": "csv_content",
+          "units": "percent",
+          "url": "https://example.com/runbooks/memory",
+          "valueHandler": "Number Threshold",
+          "warn": 70
+        },
+        {
+          "$$hashKey": "object:51",
+          "aggregation": "Max",
+          "alias": "Disk",
+          "crit": 90,
+          "csvContent": "\"time\",\"Disk\"\n\"2024-01-01 00:00:00\", 94",
+          "datasource": {
+            "type": "grafana-testdata-datasource",
+            "uid": "bdi86bi8f7zswc"
+          },
+          "decimals": 0,
+          "displayAliasType": "Always",
+          "displayType": "Regular",
+          "displayValueWithAlias": "When Alias Displayed",
+          "hide": false,
+          "refId": "C",
+          "scenarioId": "csv_content",
+          "units": "percent",
+          "url": "https://example.com/runbooks/disk",
+          "valueHandler": "Number Threshold",
+          "warn": 70
+        }
+      ],
+      "title": "",
+      "type": "vonage-status-panel"
+    }
+  ],
+  "refresh": "",
+  "schemaVersion": 39,
+  "tags": ["status-panel", "migration"],
+  "templating": {
+    "list": []
+  },
+  "time": {
+    "from": "now-6h",
+    "to": "now"
+  },
+  "timepicker": {},
+  "timezone": "",
+  "title": "Legacy AngularJS panel (migration demo)",
+  "uid": "legacy-migration",
+  "version": 1,
+  "weekStart": ""
+}

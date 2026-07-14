@@ -6,7 +6,6 @@ export interface StatusPanelOptions {
   clusterName: string;
   clusterUrl: string;
   clusterTargetBlank: boolean;
-  // namePrefix: string;
   maxAlertNumber: number;
   cornerRadius: string;
   flipCard: boolean;
@@ -44,13 +43,6 @@ export const statusPanelOptionsBuilder = (builder: PanelOptionsEditorBuilder<Sta
       category: ['Status Panel options'],
       showIf: ({ clusterUrl }) => !!clusterUrl,
     })
-    // .addTextInput({
-    //   path: 'namePrefix',
-    //   name: 'Remove Prefix',
-    //   defaultValue: '',
-    //   description: 'A prefix to remove from the name (helpful when repeating panel over a template)',
-    //   category: ['Status Panel Options'],
-    // })
     .addNumberInput({
       path: 'maxAlertNumber',
       name: 'Max Alerts',

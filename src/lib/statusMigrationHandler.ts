@@ -45,8 +45,10 @@ const aggregationMigrationMap = {
   Delta: 'delta',
 };
 
-const isAngularModel = (panel: Omit<PanelModel, 'targets'>): panel is AngularPanelModel =>
-  !!panel.options && 'clusterName' in panel;
+// A genuine AngularJS panel keeps its settings at the root of the panel model and
+// has no `options` object at all, so requiring one here matched nothing. The root
+// `clusterName` is the real marker: a React panel keeps it inside `options`.
+const isAngularModel = (panel: Omit<PanelModel, 'targets'>): panel is AngularPanelModel => 'clusterName' in panel;
 
 const migrateFieldConfig = (panel: AngularPanelModel) => {
   const fieldConfig = {
@@ -85,8 +87,13 @@ const migrateFieldConfig = (panel: AngularPanelModel) => {
           id: 'custom.thresholds',
           value: {
             valueHandler: target.valueHandler,
-            crit: target.crit,
-            warn: target.warn,
+            // Write an empty string for a bound the Angular panel did not set. That is
+            // what the option editor itself stores when you clear the field, and it is
+            // the only "unset" value that survives: left undefined or null, the bound
+            // comes back as the registered default (warn 70 / crit 90) and a
+            // single-sided threshold silently turns into a two-sided one.
+            crit: target.crit ?? '',
+            warn: target.warn ?? '',
           },
         });
       }
@@ -126,6 +133,14 @@ const migrateFieldConfig = (panel: AngularPanelModel) => {
         });
       }
 
+      if (target.url) {
+        // Preserve the per-metric "Measurement URL" as a standard field data link.
+        fieldConfigOverride.properties.push({
+          id: 'links',
+          value: [{ title: '', url: target.url, targetBlank: false }],
+        });
+      }
+
       fieldConfig.overrides.push(fieldConfigOverride);
     }
   }
@@ -147,7 +162,6 @@ export const statusMigrationHandler: PanelMigrationHandler<StatusPanelOptions> =
       clusterName: panel.clusterName,
       clusterUrl: clusterLink?.url,
       clusterTargetBlank: !!clusterLink?.targetBlank,
-      // namePrefix: panel.namePrefix,
       maxAlertNumber: panel?.maxAlertNumber,
       cornerRadius: `${panel.cornerRadius}%`,
       flipCard: panel.flipCard,

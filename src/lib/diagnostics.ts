@@ -1,0 +1,41 @@
+import { logWarning } from '@grafana/runtime';
+
+/**
+ * A misconfigured metric does not fail. It renders a colour, the colour is wrong, and
+ * nothing on the card says so. An operator reads a green square and moves on. These
+ * warnings are the only trace they get, so each one names the card and the query it
+ * came from, and says what the panel did about it.
+ *
+ * They go to the browser console and to Grafana's frontend observability. Nothing is
+ * drawn on the card: a panel that starts flagging its own configuration would be a
+ * behaviour change for every dashboard that already works.
+ */
+export interface Misconfiguration {
+  /** The card the metric belongs to, as the user named it. */
+  card: string;
+  /** The Grafana query the metric comes from (A, B, C...). */
+  refId: string;
+  /** What is wrong, and what the panel did instead. */
+  problem: string;
+}
+
+// A panel re-renders on every refresh, so the same problem would otherwise be logged
+// every few seconds for as long as the dashboard is open.
+const reported = new Set<string>();
+
+export function reportMisconfiguration({ card, refId, problem }: Misconfiguration) {
+  const key = JSON.stringify([card, refId, problem]);
+  if (reported.has(key)) {
+    return;
+  }
+  reported.add(key);
+
+  const message = `Status panel "${card}", query ${refId}: ${problem}`;
+  console.warn(message);
+  logWarning(message, { card, refId, problem });
+}
+
+/** Clears the "logged once" memory. Used by the tests to keep each case independent. */
+export function resetMisconfigurationReports() {
+  reported.clear();
+}

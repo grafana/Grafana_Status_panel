@@ -1,33 +1,42 @@
 import React from 'react';
-import { useInterval } from 'hooks';
+import { css, cx, keyframes } from '@emotion/css';
 
 interface Props extends React.HTMLAttributes<HTMLDivElement> {
   autoScroll?: boolean;
-  hover?: boolean;
 }
 
-export const ReactMarquee: React.FC<Props> = ({ autoScroll, hover, ...props }) => {
+/**
+ * A list too long for its card loops from the bottom edge to the top, at a steady
+ * pace, the way the AngularJS panel scrolled it. Hovering pauses it so the alert
+ * under the cursor can be read.
+ */
+const scrollUp = keyframes({
+  '0%': { transform: 'translate(0, 100%)' },
+  '100%': { transform: 'translate(0, -100%)' },
+});
+
+const marquee = css({
+  backfaceVisibility: 'hidden',
+  display: 'inline-block',
+  animation: `${scrollUp} 15s linear infinite`,
+  '&:hover': { animationPlayState: 'paused' },
+});
+
+export const ReactMarquee: React.FC<Props> = ({ autoScroll, className, children, ...props }) => {
   const div = React.useRef<HTMLDivElement>(null);
+  const [overflows, setOverflows] = React.useState(false);
 
-  const fps = 30;
-  const [y, setY] = React.useState(0);
-  const [dy, setDy] = React.useState(1);
+  // Scroll only a list that does not fit. Animating one that already fits would
+  // carry a perfectly readable card off its own edges. The panel re-renders its
+  // list on every refresh and every resize, which is exactly when this can change.
+  React.useLayoutEffect(() => {
+    const viewport = div.current?.parentElement;
+    setOverflows(!!viewport && viewport.offsetHeight < viewport.scrollHeight);
+  }, [children]);
 
-  useInterval(() => {
-    if (div.current) {
-      if (hover) {
-        setY(div.current.parentElement!.scrollTop | 0);
-      } else if (autoScroll) {
-        if (0 <= y && y <= div.current.parentElement!.scrollHeight - div.current.parentElement!.offsetHeight + 1) {
-          div.current.parentElement!.scrollTo(0, y);
-          setY(y + dy);
-        } else {
-          setY(y - dy);
-          setDy(-dy);
-        }
-      }
-    }
-  }, 1000 / fps);
-
-  return <div ref={div} {...props}></div>;
+  return (
+    <div ref={div} className={cx(className, { [marquee]: autoScroll && overflows })} {...props}>
+      {children}
+    </div>
+  );
 };

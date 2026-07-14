@@ -11,12 +11,6 @@
         "hide": true,
         "iconColor": "rgba(0, 211, 255, 1)",
         "name": "Annotations & Alerts",
-        "target": {
-          "limit": 100,
-          "matchAny": false,
-          "tags": [],
-          "type": "dashboard"
-        },
         "type": "dashboard"
       }
     ]
@@ -28,109 +22,736 @@
   "liveNow": false,
   "panels": [
     {
+      "gridPos": {
+        "h": 4,
+        "w": 24,
+        "x": 0,
+        "y": 0
+      },
+      "id": 90,
+      "options": {
+        "mode": "markdown",
+        "content": "### What this shows\n\nOne card per server. Each card carries three queries (CPU, memory, disk), and **Coloring Mode: Panel** fills the whole card with the colour of the worst of them, so `db-01` is amber on its CPU and `db-02` is red on its memory. The metrics are listed worst first.\n\nEvery query is graded on a **Number Threshold** with warning at 70 and critical at 90, reduced with **Aggregation: Last**, and given the `percent` unit so the value reads as `34%`."
+      },
+      "transparent": true,
+      "type": "text"
+    },
+    {
       "datasource": {
         "type": "grafana-testdata-datasource",
         "uid": "bdi86bi8f7zswc"
       },
       "fieldConfig": {
         "defaults": {
-          "color": {
-            "mode": "thresholds"
-          },
           "custom": {
             "aggregation": "last",
             "dateFormat": "YYYY-MM-DD HH:mm:ss",
-            "displayAliasType": "Warning / Critical",
+            "displayAliasType": "Always",
             "displayType": "Regular",
             "displayValueWithAlias": "When Alias Displayed",
             "fontFormat": "Regular",
             "thresholds": {
-              "crit": 90,
               "valueHandler": "Number Threshold",
-              "warn": 70
+              "warn": 70,
+              "crit": 90
             },
             "valueDisplayRegex": ""
           },
           "mappings": [],
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "green",
-                "value": null
-              },
-              {
-                "color": "red",
-                "value": 80
-              }
-            ]
-          },
-          "unitScale": true
+          "unit": "percent"
         },
         "overrides": []
       },
       "gridPos": {
-        "h": 8,
-        "w": 12,
+        "h": 5,
+        "w": 6,
         "x": 0,
-        "y": 0
+        "y": 4
       },
-      "id": 3,
+      "id": 2,
       "options": {
-        "clusterName": "Prod Results",
+        "clusterName": "web-01",
         "clusterTargetBlank": false,
         "clusterUrl": "",
         "colorMode": "Panel",
         "colors": {
-          "crit": "#F2495C",
+          "crit": "#C4162A",
           "disable": "#808080",
-          "ok": "#73BF69",
-          "warn": "#FF9830"
+          "ok": "#37872D",
+          "warn": "#E0752D"
         },
-        "cornerRadius": "0rem",
+        "cornerRadius": "3px",
         "flipCard": false,
         "flipTime": 5,
         "isAutoScrollOnOverflow": false,
-        "isGrayOnNoData": false,
+        "isGrayOnNoData": true,
         "isHideAlertsOnDisable": false,
         "isIgnoreOKColors": false,
         "maxAlertNumber": -1
       },
-      "pluginVersion": "2.0.0",
+      "pluginVersion": "2.1.0",
       "targets": [
         {
-          "alias": "Current",
-          "csvContent": "\"time\",\"Current\"\n\"2024-04-02 00:30:00\", 83561\n\"2024-04-02 00:36:00\", 82875",
+          "alias": "CPU",
+          "csvContent": "\"time\",\"CPU\"\n\"2024-01-01 00:00:00\", 34",
           "datasource": {
             "type": "grafana-testdata-datasource",
             "uid": "bdi86bi8f7zswc"
           },
-          "displayType": "Regular",
           "refId": "A",
-          "scenarioId": "csv_content",
-          "valueHandler": "Number Threshold"
+          "scenarioId": "csv_content"
         },
         {
-          "alias": "Peak",
-          "csvContent": "\"time\",\"Peak\"\n\"2024-04-02 00:30:00\", 83561\n\"2024-04-02 00:36:00\", 82875",
+          "alias": "Memory",
+          "csvContent": "\"time\",\"Memory\"\n\"2024-01-01 00:00:00\", 52",
           "datasource": {
             "type": "grafana-testdata-datasource",
             "uid": "bdi86bi8f7zswc"
           },
-          "displayType": "Regular",
-          "hide": false,
           "refId": "B",
-          "scenarioId": "csv_content",
-          "valueHandler": "Number Threshold"
+          "scenarioId": "csv_content"
+        },
+        {
+          "alias": "Disk",
+          "csvContent": "\"time\",\"Disk\"\n\"2024-01-01 00:00:00\", 61",
+          "datasource": {
+            "type": "grafana-testdata-datasource",
+            "uid": "bdi86bi8f7zswc"
+          },
+          "refId": "C",
+          "scenarioId": "csv_content"
         }
       ],
-      "title": "Total",
+      "title": "",
       "type": "vonage-status-panel"
-    }    
+    },
+    {
+      "datasource": {
+        "type": "grafana-testdata-datasource",
+        "uid": "bdi86bi8f7zswc"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "custom": {
+            "aggregation": "last",
+            "dateFormat": "YYYY-MM-DD HH:mm:ss",
+            "displayAliasType": "Always",
+            "displayType": "Regular",
+            "displayValueWithAlias": "When Alias Displayed",
+            "fontFormat": "Regular",
+            "thresholds": {
+              "valueHandler": "Number Threshold",
+              "warn": 70,
+              "crit": 90
+            },
+            "valueDisplayRegex": ""
+          },
+          "mappings": [],
+          "unit": "percent"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 5,
+        "w": 6,
+        "x": 6,
+        "y": 4
+      },
+      "id": 3,
+      "options": {
+        "clusterName": "web-02",
+        "clusterTargetBlank": false,
+        "clusterUrl": "",
+        "colorMode": "Panel",
+        "colors": {
+          "crit": "#C4162A",
+          "disable": "#808080",
+          "ok": "#37872D",
+          "warn": "#E0752D"
+        },
+        "cornerRadius": "3px",
+        "flipCard": false,
+        "flipTime": 5,
+        "isAutoScrollOnOverflow": false,
+        "isGrayOnNoData": true,
+        "isHideAlertsOnDisable": false,
+        "isIgnoreOKColors": false,
+        "maxAlertNumber": -1
+      },
+      "pluginVersion": "2.1.0",
+      "targets": [
+        {
+          "alias": "CPU",
+          "csvContent": "\"time\",\"CPU\"\n\"2024-01-01 00:00:00\", 41",
+          "datasource": {
+            "type": "grafana-testdata-datasource",
+            "uid": "bdi86bi8f7zswc"
+          },
+          "refId": "A",
+          "scenarioId": "csv_content"
+        },
+        {
+          "alias": "Memory",
+          "csvContent": "\"time\",\"Memory\"\n\"2024-01-01 00:00:00\", 48",
+          "datasource": {
+            "type": "grafana-testdata-datasource",
+            "uid": "bdi86bi8f7zswc"
+          },
+          "refId": "B",
+          "scenarioId": "csv_content"
+        },
+        {
+          "alias": "Disk",
+          "csvContent": "\"time\",\"Disk\"\n\"2024-01-01 00:00:00\", 55",
+          "datasource": {
+            "type": "grafana-testdata-datasource",
+            "uid": "bdi86bi8f7zswc"
+          },
+          "refId": "C",
+          "scenarioId": "csv_content"
+        }
+      ],
+      "title": "",
+      "type": "vonage-status-panel"
+    },
+    {
+      "datasource": {
+        "type": "grafana-testdata-datasource",
+        "uid": "bdi86bi8f7zswc"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "custom": {
+            "aggregation": "last",
+            "dateFormat": "YYYY-MM-DD HH:mm:ss",
+            "displayAliasType": "Always",
+            "displayType": "Regular",
+            "displayValueWithAlias": "When Alias Displayed",
+            "fontFormat": "Regular",
+            "thresholds": {
+              "valueHandler": "Number Threshold",
+              "warn": 70,
+              "crit": 90
+            },
+            "valueDisplayRegex": ""
+          },
+          "mappings": [],
+          "unit": "percent"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 5,
+        "w": 6,
+        "x": 12,
+        "y": 4
+      },
+      "id": 4,
+      "options": {
+        "clusterName": "db-01",
+        "clusterTargetBlank": false,
+        "clusterUrl": "",
+        "colorMode": "Panel",
+        "colors": {
+          "crit": "#C4162A",
+          "disable": "#808080",
+          "ok": "#37872D",
+          "warn": "#E0752D"
+        },
+        "cornerRadius": "3px",
+        "flipCard": false,
+        "flipTime": 5,
+        "isAutoScrollOnOverflow": false,
+        "isGrayOnNoData": true,
+        "isHideAlertsOnDisable": false,
+        "isIgnoreOKColors": false,
+        "maxAlertNumber": -1
+      },
+      "pluginVersion": "2.1.0",
+      "targets": [
+        {
+          "alias": "CPU",
+          "csvContent": "\"time\",\"CPU\"\n\"2024-01-01 00:00:00\", 88",
+          "datasource": {
+            "type": "grafana-testdata-datasource",
+            "uid": "bdi86bi8f7zswc"
+          },
+          "refId": "A",
+          "scenarioId": "csv_content"
+        },
+        {
+          "alias": "Memory",
+          "csvContent": "\"time\",\"Memory\"\n\"2024-01-01 00:00:00\", 76",
+          "datasource": {
+            "type": "grafana-testdata-datasource",
+            "uid": "bdi86bi8f7zswc"
+          },
+          "refId": "B",
+          "scenarioId": "csv_content"
+        },
+        {
+          "alias": "Disk",
+          "csvContent": "\"time\",\"Disk\"\n\"2024-01-01 00:00:00\", 64",
+          "datasource": {
+            "type": "grafana-testdata-datasource",
+            "uid": "bdi86bi8f7zswc"
+          },
+          "refId": "C",
+          "scenarioId": "csv_content"
+        }
+      ],
+      "title": "",
+      "type": "vonage-status-panel"
+    },
+    {
+      "datasource": {
+        "type": "grafana-testdata-datasource",
+        "uid": "bdi86bi8f7zswc"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "custom": {
+            "aggregation": "last",
+            "dateFormat": "YYYY-MM-DD HH:mm:ss",
+            "displayAliasType": "Always",
+            "displayType": "Regular",
+            "displayValueWithAlias": "When Alias Displayed",
+            "fontFormat": "Regular",
+            "thresholds": {
+              "valueHandler": "Number Threshold",
+              "warn": 70,
+              "crit": 90
+            },
+            "valueDisplayRegex": ""
+          },
+          "mappings": [],
+          "unit": "percent"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 5,
+        "w": 6,
+        "x": 18,
+        "y": 4
+      },
+      "id": 5,
+      "options": {
+        "clusterName": "db-02",
+        "clusterTargetBlank": false,
+        "clusterUrl": "",
+        "colorMode": "Panel",
+        "colors": {
+          "crit": "#C4162A",
+          "disable": "#808080",
+          "ok": "#37872D",
+          "warn": "#E0752D"
+        },
+        "cornerRadius": "3px",
+        "flipCard": false,
+        "flipTime": 5,
+        "isAutoScrollOnOverflow": false,
+        "isGrayOnNoData": true,
+        "isHideAlertsOnDisable": false,
+        "isIgnoreOKColors": false,
+        "maxAlertNumber": -1
+      },
+      "pluginVersion": "2.1.0",
+      "targets": [
+        {
+          "alias": "CPU",
+          "csvContent": "\"time\",\"CPU\"\n\"2024-01-01 00:00:00\", 45",
+          "datasource": {
+            "type": "grafana-testdata-datasource",
+            "uid": "bdi86bi8f7zswc"
+          },
+          "refId": "A",
+          "scenarioId": "csv_content"
+        },
+        {
+          "alias": "Memory",
+          "csvContent": "\"time\",\"Memory\"\n\"2024-01-01 00:00:00\", 93",
+          "datasource": {
+            "type": "grafana-testdata-datasource",
+            "uid": "bdi86bi8f7zswc"
+          },
+          "refId": "B",
+          "scenarioId": "csv_content"
+        },
+        {
+          "alias": "Disk",
+          "csvContent": "\"time\",\"Disk\"\n\"2024-01-01 00:00:00\", 70",
+          "datasource": {
+            "type": "grafana-testdata-datasource",
+            "uid": "bdi86bi8f7zswc"
+          },
+          "refId": "C",
+          "scenarioId": "csv_content"
+        }
+      ],
+      "title": "",
+      "type": "vonage-status-panel"
+    },
+    {
+      "datasource": {
+        "type": "grafana-testdata-datasource",
+        "uid": "bdi86bi8f7zswc"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "custom": {
+            "aggregation": "last",
+            "dateFormat": "YYYY-MM-DD HH:mm:ss",
+            "displayAliasType": "Always",
+            "displayType": "Regular",
+            "displayValueWithAlias": "When Alias Displayed",
+            "fontFormat": "Regular",
+            "thresholds": {
+              "valueHandler": "Number Threshold",
+              "warn": 70,
+              "crit": 90
+            },
+            "valueDisplayRegex": ""
+          },
+          "mappings": [],
+          "unit": "percent"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 5,
+        "w": 6,
+        "x": 0,
+        "y": 9
+      },
+      "id": 6,
+      "options": {
+        "clusterName": "cache-01",
+        "clusterTargetBlank": false,
+        "clusterUrl": "",
+        "colorMode": "Panel",
+        "colors": {
+          "crit": "#C4162A",
+          "disable": "#808080",
+          "ok": "#37872D",
+          "warn": "#E0752D"
+        },
+        "cornerRadius": "3px",
+        "flipCard": false,
+        "flipTime": 5,
+        "isAutoScrollOnOverflow": false,
+        "isGrayOnNoData": true,
+        "isHideAlertsOnDisable": false,
+        "isIgnoreOKColors": false,
+        "maxAlertNumber": -1
+      },
+      "pluginVersion": "2.1.0",
+      "targets": [
+        {
+          "alias": "CPU",
+          "csvContent": "\"time\",\"CPU\"\n\"2024-01-01 00:00:00\", 22",
+          "datasource": {
+            "type": "grafana-testdata-datasource",
+            "uid": "bdi86bi8f7zswc"
+          },
+          "refId": "A",
+          "scenarioId": "csv_content"
+        },
+        {
+          "alias": "Memory",
+          "csvContent": "\"time\",\"Memory\"\n\"2024-01-01 00:00:00\", 38",
+          "datasource": {
+            "type": "grafana-testdata-datasource",
+            "uid": "bdi86bi8f7zswc"
+          },
+          "refId": "B",
+          "scenarioId": "csv_content"
+        },
+        {
+          "alias": "Disk",
+          "csvContent": "\"time\",\"Disk\"\n\"2024-01-01 00:00:00\", 44",
+          "datasource": {
+            "type": "grafana-testdata-datasource",
+            "uid": "bdi86bi8f7zswc"
+          },
+          "refId": "C",
+          "scenarioId": "csv_content"
+        }
+      ],
+      "title": "",
+      "type": "vonage-status-panel"
+    },
+    {
+      "datasource": {
+        "type": "grafana-testdata-datasource",
+        "uid": "bdi86bi8f7zswc"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "custom": {
+            "aggregation": "last",
+            "dateFormat": "YYYY-MM-DD HH:mm:ss",
+            "displayAliasType": "Always",
+            "displayType": "Regular",
+            "displayValueWithAlias": "When Alias Displayed",
+            "fontFormat": "Regular",
+            "thresholds": {
+              "valueHandler": "Number Threshold",
+              "warn": 70,
+              "crit": 90
+            },
+            "valueDisplayRegex": ""
+          },
+          "mappings": [],
+          "unit": "percent"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 5,
+        "w": 6,
+        "x": 6,
+        "y": 9
+      },
+      "id": 7,
+      "options": {
+        "clusterName": "cache-02",
+        "clusterTargetBlank": false,
+        "clusterUrl": "",
+        "colorMode": "Panel",
+        "colors": {
+          "crit": "#C4162A",
+          "disable": "#808080",
+          "ok": "#37872D",
+          "warn": "#E0752D"
+        },
+        "cornerRadius": "3px",
+        "flipCard": false,
+        "flipTime": 5,
+        "isAutoScrollOnOverflow": false,
+        "isGrayOnNoData": true,
+        "isHideAlertsOnDisable": false,
+        "isIgnoreOKColors": false,
+        "maxAlertNumber": -1
+      },
+      "pluginVersion": "2.1.0",
+      "targets": [
+        {
+          "alias": "CPU",
+          "csvContent": "\"time\",\"CPU\"\n\"2024-01-01 00:00:00\", 55",
+          "datasource": {
+            "type": "grafana-testdata-datasource",
+            "uid": "bdi86bi8f7zswc"
+          },
+          "refId": "A",
+          "scenarioId": "csv_content"
+        },
+        {
+          "alias": "Memory",
+          "csvContent": "\"time\",\"Memory\"\n\"2024-01-01 00:00:00\", 60",
+          "datasource": {
+            "type": "grafana-testdata-datasource",
+            "uid": "bdi86bi8f7zswc"
+          },
+          "refId": "B",
+          "scenarioId": "csv_content"
+        },
+        {
+          "alias": "Disk",
+          "csvContent": "\"time\",\"Disk\"\n\"2024-01-01 00:00:00\", 72",
+          "datasource": {
+            "type": "grafana-testdata-datasource",
+            "uid": "bdi86bi8f7zswc"
+          },
+          "refId": "C",
+          "scenarioId": "csv_content"
+        }
+      ],
+      "title": "",
+      "type": "vonage-status-panel"
+    },
+    {
+      "datasource": {
+        "type": "grafana-testdata-datasource",
+        "uid": "bdi86bi8f7zswc"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "custom": {
+            "aggregation": "last",
+            "dateFormat": "YYYY-MM-DD HH:mm:ss",
+            "displayAliasType": "Always",
+            "displayType": "Regular",
+            "displayValueWithAlias": "When Alias Displayed",
+            "fontFormat": "Regular",
+            "thresholds": {
+              "valueHandler": "Number Threshold",
+              "warn": 70,
+              "crit": 90
+            },
+            "valueDisplayRegex": ""
+          },
+          "mappings": [],
+          "unit": "percent"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 5,
+        "w": 6,
+        "x": 12,
+        "y": 9
+      },
+      "id": 8,
+      "options": {
+        "clusterName": "lb-01",
+        "clusterTargetBlank": false,
+        "clusterUrl": "",
+        "colorMode": "Panel",
+        "colors": {
+          "crit": "#C4162A",
+          "disable": "#808080",
+          "ok": "#37872D",
+          "warn": "#E0752D"
+        },
+        "cornerRadius": "3px",
+        "flipCard": false,
+        "flipTime": 5,
+        "isAutoScrollOnOverflow": false,
+        "isGrayOnNoData": true,
+        "isHideAlertsOnDisable": false,
+        "isIgnoreOKColors": false,
+        "maxAlertNumber": -1
+      },
+      "pluginVersion": "2.1.0",
+      "targets": [
+        {
+          "alias": "CPU",
+          "csvContent": "\"time\",\"CPU\"\n\"2024-01-01 00:00:00\", 12",
+          "datasource": {
+            "type": "grafana-testdata-datasource",
+            "uid": "bdi86bi8f7zswc"
+          },
+          "refId": "A",
+          "scenarioId": "csv_content"
+        },
+        {
+          "alias": "Memory",
+          "csvContent": "\"time\",\"Memory\"\n\"2024-01-01 00:00:00\", 25",
+          "datasource": {
+            "type": "grafana-testdata-datasource",
+            "uid": "bdi86bi8f7zswc"
+          },
+          "refId": "B",
+          "scenarioId": "csv_content"
+        },
+        {
+          "alias": "Disk",
+          "csvContent": "\"time\",\"Disk\"\n\"2024-01-01 00:00:00\", 30",
+          "datasource": {
+            "type": "grafana-testdata-datasource",
+            "uid": "bdi86bi8f7zswc"
+          },
+          "refId": "C",
+          "scenarioId": "csv_content"
+        }
+      ],
+      "title": "",
+      "type": "vonage-status-panel"
+    },
+    {
+      "datasource": {
+        "type": "grafana-testdata-datasource",
+        "uid": "bdi86bi8f7zswc"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "custom": {
+            "aggregation": "last",
+            "dateFormat": "YYYY-MM-DD HH:mm:ss",
+            "displayAliasType": "Always",
+            "displayType": "Regular",
+            "displayValueWithAlias": "When Alias Displayed",
+            "fontFormat": "Regular",
+            "thresholds": {
+              "valueHandler": "Number Threshold",
+              "warn": 70,
+              "crit": 90
+            },
+            "valueDisplayRegex": ""
+          },
+          "mappings": [],
+          "unit": "percent"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 5,
+        "w": 6,
+        "x": 18,
+        "y": 9
+      },
+      "id": 9,
+      "options": {
+        "clusterName": "worker-01",
+        "clusterTargetBlank": false,
+        "clusterUrl": "",
+        "colorMode": "Panel",
+        "colors": {
+          "crit": "#C4162A",
+          "disable": "#808080",
+          "ok": "#37872D",
+          "warn": "#E0752D"
+        },
+        "cornerRadius": "3px",
+        "flipCard": false,
+        "flipTime": 5,
+        "isAutoScrollOnOverflow": false,
+        "isGrayOnNoData": true,
+        "isHideAlertsOnDisable": false,
+        "isIgnoreOKColors": false,
+        "maxAlertNumber": -1
+      },
+      "pluginVersion": "2.1.0",
+      "targets": [
+        {
+          "alias": "CPU",
+          "csvContent": "\"time\",\"CPU\"\n\"2024-01-01 00:00:00\", 63",
+          "datasource": {
+            "type": "grafana-testdata-datasource",
+            "uid": "bdi86bi8f7zswc"
+          },
+          "refId": "A",
+          "scenarioId": "csv_content"
+        },
+        {
+          "alias": "Memory",
+          "csvContent": "\"time\",\"Memory\"\n\"2024-01-01 00:00:00\", 58",
+          "datasource": {
+            "type": "grafana-testdata-datasource",
+            "uid": "bdi86bi8f7zswc"
+          },
+          "refId": "B",
+          "scenarioId": "csv_content"
+        },
+        {
+          "alias": "Disk",
+          "csvContent": "\"time\",\"Disk\"\n\"2024-01-01 00:00:00\", 49",
+          "datasource": {
+            "type": "grafana-testdata-datasource",
+            "uid": "bdi86bi8f7zswc"
+          },
+          "refId": "C",
+          "scenarioId": "csv_content"
+        }
+      ],
+      "title": "",
+      "type": "vonage-status-panel"
+    }
   ],
   "refresh": "",
   "schemaVersion": 39,
-  "tags": [],
+  "tags": ["status-panel", "demo"],
   "templating": {
     "list": []
   },
@@ -140,8 +761,8 @@
   },
   "timepicker": {},
   "timezone": "browser",
-  "title": "status-panel",
+  "title": "Host health",
   "uid": "adi86k7m8jksga",
-  "version": 2,
+  "version": 1,
   "weekStart": ""
 }

@@ -71,8 +71,6 @@ export const StatusPanel: React.FC<Props> = ({
     ? 'noData'
     : 'ok';
 
-
-
   return (
     <div
       ref={wrapper}
@@ -86,7 +84,9 @@ export const StatusPanel: React.FC<Props> = ({
           zIndex: 10,
         },
         !(panelStatus === 'ok' && options.isIgnoreOKColors) &&
-          options.colorMode === 'Panel' && { backgroundColor: (options.colors as any)[panelStatus === "noData" ? "disable": panelStatus] }
+          options.colorMode === 'Panel' && {
+            backgroundColor: (options.colors as any)[panelStatus === 'noData' ? 'disable' : panelStatus],
+          }
       )}
     >
       <ReactCardFlip isFlipped={flipped}>
@@ -122,7 +122,7 @@ export const StatusPanel: React.FC<Props> = ({
               : 'Warn'}
           </MaybeAnchor>
         </div>
-        <div className={css({ height, display: 'flex', flexDirection: 'column' })}>
+        <div className={css({ height, display: 'flex', flexDirection: 'column', textAlign: 'center' })}>
           <div
             className={css({
               flex: '1 0 0',
@@ -151,7 +151,7 @@ export const StatusPanel: React.FC<Props> = ({
               '::-webkit-scrollbar': { background: 'transparent', width: '0px', display: 'none' },
             })}
           >
-            <ReactMarquee hover={isHover} autoScroll={options.isAutoScrollOnOverflow}>
+            <ReactMarquee autoScroll={options.isAutoScrollOnOverflow}>
               <div>
                 {alerts.map(({ alias, link, className, displayValue }, index) => (
                   <div key={index} className={className} style={{ color: 'inherit' }}>
@@ -175,10 +175,13 @@ export const StatusPanel: React.FC<Props> = ({
               padding: '1rem',
               display: 'flex',
               flexDirection: 'column',
+              // Annotations sit in the top-left corner and read as a column, so they
+              // opt out of the card's centred text.
+              textAlign: 'left',
               '::-webkit-scrollbar': { background: 'transparent', width: '0px', display: 'none' },
             })}
           >
-            <ReactMarquee hover={isHover} autoScroll={options.isAutoScrollOnOverflow}>
+            <ReactMarquee autoScroll={options.isAutoScrollOnOverflow}>
               <div className={css({ fontSize: '0.85rem' })}>
                 {annotations.map(({ alias, link, className, displayValue }, index) => (
                   <div key={index} className={className} style={{ color: 'inherit' }}>
@@ -197,7 +200,7 @@ export const StatusPanel: React.FC<Props> = ({
           name={'exchange-alt'}
           onClick={() => setFlipped(!flipped)}
           className={css({ position: 'absolute', bottom: '2rem', right: '2rem' })}
-          aria-label='Flip Card'
+          aria-label="Flip Card"
         ></IconButton>
       )}
     </div>

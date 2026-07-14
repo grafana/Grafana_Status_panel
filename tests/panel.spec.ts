@@ -1,28 +1,19 @@
 import { test, expect } from '@grafana/plugin-e2e';
 
-test('should display "Prod Results" by default', async ({
-  gotoPanelEditPage,
-  readProvisionedDashboard,
-}) => {
+test('shows the host name on the card', async ({ gotoPanelEditPage, readProvisionedDashboard }) => {
   const dashboard = await readProvisionedDashboard({ fileName: 'dashboard.json' });
-  const panelEditPage = await gotoPanelEditPage({ dashboard, id: '3' });
-  await expect(panelEditPage.panel.locator).toContainText('Prod Results');
+  const panelEditPage = await gotoPanelEditPage({ dashboard, id: '2' });
+  await expect(panelEditPage.panel.locator).toContainText('web-01');
 });
 
-test('should display Peak', async ({
-  gotoPanelEditPage,
-  readProvisionedDashboard,
-}) => {
+test('shows the CPU metric', async ({ gotoPanelEditPage, readProvisionedDashboard }) => {
   const dashboard = await readProvisionedDashboard({ fileName: 'dashboard.json' });
-  const panelEditPage = await gotoPanelEditPage({ dashboard, id: '3' });
-  await expect(panelEditPage.panel.locator).toContainText('Peak -');
+  const panelEditPage = await gotoPanelEditPage({ dashboard, id: '2' });
+  await expect(panelEditPage.panel.locator).toContainText('CPU -');
 });
 
-test('should display Current', async ({
-  gotoPanelEditPage,
-  readProvisionedDashboard,
-}) => {
+test('shows the Memory metric', async ({ gotoPanelEditPage, readProvisionedDashboard }) => {
   const dashboard = await readProvisionedDashboard({ fileName: 'dashboard.json' });
-  const panelEditPage = await gotoPanelEditPage({ dashboard, id: '3' });
-  await expect(panelEditPage.panel.locator).toContainText('Current -');
+  const panelEditPage = await gotoPanelEditPage({ dashboard, id: '2' });
+  await expect(panelEditPage.panel.locator).toContainText('Memory -');
 });
