@@ -67,16 +67,21 @@ Full analysis in [`REGRESSIONS.md`](./REGRESSIONS.md). Summary:
 
 ### v2.1 Stabilisation (compat-strict, drop-in)
 
-| Item                      | Notes                                                                   |  Effort  |
-| ------------------------- | ----------------------------------------------------------------------- | :------: |
-| **Unit test scaffold**    | none today; cover `buildStatusMetricProps` + migration handler fixtures |    M     |
-| Fix regressions #1 to #13 | done; 29 tests                                                          | S/M each |
-| **Grafana 13 support**    | CI matrix 10.4 / 12 / 13, validate `grafanaDependency`                  |    M     |
-| Shape presets             | Square / Rounded / Round (formalises `cornerRadius`)                    |    S     |
-| Emoji / icon per state    | additive, opt-in                                                        |    M     |
-| Title templating          | `{{name}}` / `{{value}}` / labels (replaces Remove Prefix)              |    M     |
-| a11y colour-blind (base)  | shape + texture in addition to colour                                   |    M     |
-| **Scroll options**        | mode (none / continuous / bounce) + speed; default stays continuous     |    S     |
+| Item                      | Notes                                                                            |  Status   |
+| ------------------------- | -------------------------------------------------------------------------------- | :-------: |
+| **Unit test scaffold**    | covers `buildStatusMetricProps`, the migration handler and the marquee           | done (29) |
+| Fix regressions #1 to #13 | each pinned by a failing-then-passing test, except the centring fix              |   done    |
+| **Grafana 13 support**    | validated on 13.1.0; `plugincheck` and multi-version e2e run in CI               |   done    |
+| **Scroll speed**          | the marquee has run at a hardcoded `15s` since #12; expose it, default unchanged |  open, S  |
+
+Scroll speed is the only feature that belongs in a stabilisation release, and only
+because #12 **changed a default**: the list used to bounce, it now scrolls, and the
+speed is hardcoded. Change a default, offer the knob. The mode is deliberately not
+offered: bouncing was the bug, not a feature, and on/off already exists as
+`Auto scroll alerts on overflow`.
+
+Everything else in the original v2.1 list is a feature. It moved to v3 rather than
+dilute the release, whose whole story is that nothing else changes.
 
 ### v3.0 Evolution (managed break, v2→v3 migration)
 
@@ -88,7 +93,19 @@ Full analysis in [`REGRESSIONS.md`](./REGRESSIONS.md). Summary:
 | **Multicard**                 | responsive grid, 1 card per equipment                             | registry   |
 | **Per-metric option box**     | auto-generated from `context.data`, keyed by `refId` (see §6)     | none       |
 | Editor simplification         | 3-section layout, advanced collapsed                              | v3 models  |
+| **a11y colour-blind**         | shape + texture as well as colour (see below)                     | none       |
+| Emoji / icon per state        | user-customisable (see §6)                                        | none       |
+| Title templating              | `{{name}}` / `{{value}}` / labels                                 | none       |
+| Shape presets                 | Square / Rounded / Round (formalises `cornerRadius`)              | none       |
 | **v2→v3 migration**           | warn/crit → steps, options → multicard                            | all of v3  |
+
+**Colour-blindness is the one to take seriously.** A panel that carries its entire
+meaning in red versus green is unreadable for roughly one man in twelve, and this
+one is nothing but red versus green. It is not a cosmetic item on the list.
+
+Title templating is narrower than it first looks: `Cluster Name` already expands
+dashboard variables (`expandTemplateVars`), which is what the switch demo repeats
+over. What is missing is per-metric templating (`{{value}}`).
 
 **Cross-cutting (continuous)**: honest README + provisioned sample dashboards · `plugincheck` validator in CI · signing status.
 
@@ -113,6 +130,8 @@ Interactive prototype (internal design preview, private): <https://claude.ai/cod
 | Binding by `refId`, not order                  | stable under query reordering/deletion                             |
 | Grouping by label **+** panel repeat (both)    | they live at different layers and compose; not an exclusive toggle |
 | Keep plugin id `vonage-status-panel`           | drop-in updates, no dashboard rewrites                             |
+| Features moved out of v2.1 into v3             | the release's whole story is that nothing but the bugs changes     |
+| Scroll: expose the speed, not the mode         | bouncing was the bug, not a feature; on/off already exists         |
 
 ## 8. Open questions (defer)
 
