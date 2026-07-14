@@ -30,7 +30,7 @@
         "path": "img/environment_snapshot.png"
       },
       {
-        "name": "Network switch (ports up and down)",
+        "name": "Network switch (ports up, down, and with no signal)",
         "path": "img/switch.png"
       },
       {
