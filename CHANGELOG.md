@@ -2,7 +2,7 @@
 
 ## v2.1.0 (unreleased)
 
-A stabilisation release. Thirteen behaviours broke during the Angular-to-React rewrite, most of them silently. They work again, and every one that carries logic now has a unit test holding it in place. The two that are purely a matter of styling were checked in a browser instead.
+A stabilisation release. Thirteen behaviours broke during the Angular-to-React rewrite, most of them silently. They work again, and every one that carries logic now has a unit test holding it in place. What is purely visual was checked in a browser instead.
 
 The five migration and threshold bugs at the top of this list only surface on dashboards that were actually saved by the AngularJS editor. None of them show up on a small hand-built fixture, which is why they survived a whole major version.
 
@@ -16,7 +16,7 @@ The five migration and threshold bugs at the top of this list only surface on da
 - **Long alert lists scroll again.** They loop from the bottom of the card to the top, instead of jittering up and down. Hovering pauses them.
 - **Card text is centred again.** Metric lines were left-aligned inside a box that hugs the longest one, which showed up as soon as one line ran much longer than the others. Annotations stay in their left-aligned column.
 - **Date Threshold.** Bounds are compared chronologically instead of by exact string match, so the handler actually fires.
-- **Disable Criteria.** A numeric metric of `0` matches a `Disable Value` of `0`.
+- **Disable Criteria.** A numeric metric of `0` matches a `Disable Criteria` of `0`.
 - **Value Regex.** The panel shows the part of the value that matches the regex, as the README always claimed, rather than everything that does not match.
 - **Text Only renders.** These metrics were dropped entirely.
 - **Measurement URL.** A per-query URL survives migration from an Angular panel. It is carried over as a standard field data link.
@@ -32,6 +32,7 @@ The five migration and threshold bugs at the top of this list only surface on da
 ### Internal
 
 - The deprecated `Select` in the threshold editor is now a `Combobox`.
+- `make up` builds the plugin in a pinned Node container and starts Grafana, so a contributor needs only Docker. The dev server now provisions three demo dashboards: host health, a switch faceplate built with panel repeat, and an AngularJS panel kept as a migration fixture.
 - Dependency and build-toolchain updates clear every advisory the official plugin validator reported. None of them reached the shipped bundle, which carries only the plugin's own code and `react-card-flip`; the rest are supplied by Grafana at runtime or used only to build and test.
 
 ### Upgrading
