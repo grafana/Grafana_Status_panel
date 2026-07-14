@@ -4,9 +4,9 @@ One panel that shows the health of many components at once. You give it a set of
 
 ![A dashboard of status cards, most of them green](https://github.com/grafana/Grafana_Status_panel/blob/main/src/img/environment_snapshot.png?raw=true)
 
-The same panel makes a good switch faceplate, green for up and red for down. This one is a single panel repeated over a template variable, so adding a port is a one-line change:
+The same panel makes a good switch faceplate: green for up, red for down, and grey for a port that has stopped reporting altogether. This one is a single panel repeated over a template variable, so adding a port is a one-line change:
 
-![A grid of switch ports, most green with a few red for the down links](https://github.com/grafana/Grafana_Status_panel/blob/main/src/img/switch.png?raw=true)
+![A grid of switch ports, most green, a few red for down links, two grey with no signal](https://github.com/grafana/Grafana_Status_panel/blob/main/src/img/switch.png?raw=true)
 
 ## Why you might want it
 

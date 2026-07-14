@@ -80,13 +80,164 @@
       "targets": [
         {
           "alias": "Link",
-          "csvContent": "\"time\",\"Link\"\n\"2024-01-01 00:00:00\", $port",
+          "csvContent": "\"Link\"\n$port",
           "datasource": {
             "type": "grafana-testdata-datasource",
             "uid": "bdi86bi8f7zswc"
           },
           "refId": "A",
           "scenarioId": "csv_content"
+        }
+      ],
+      "title": "",
+      "type": "vonage-status-panel"
+    },
+    {
+      "gridPos": {
+        "h": 3,
+        "w": 24,
+        "x": 0,
+        "y": 3
+      },
+      "id": 90,
+      "options": {
+        "mode": "markdown",
+        "content": "### No signal\nThese ports return no data at all. `Use 'Disable' color if no data` greys the card, so a dead poller never looks healthy."
+      },
+      "transparent": true,
+      "type": "text"
+    },
+    {
+      "datasource": {
+        "type": "grafana-testdata-datasource",
+        "uid": "bdi86bi8f7zswc"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "custom": {
+            "aggregation": "last",
+            "dateFormat": "YYYY-MM-DD HH:mm:ss",
+            "displayAliasType": "Warning / Critical",
+            "displayType": "Regular",
+            "displayValueWithAlias": "Never",
+            "fontFormat": "Bold",
+            "thresholds": {
+              "valueHandler": "Number Threshold",
+              "warn": "",
+              "crit": 0
+            },
+            "valueDisplayRegex": ""
+          },
+          "mappings": []
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 3,
+        "w": 3,
+        "x": 0,
+        "y": 6
+      },
+      "id": 91,
+      "maxPerRow": 8,
+      "options": {
+        "clusterName": "Gi1/0/25",
+        "clusterTargetBlank": false,
+        "clusterUrl": "",
+        "colorMode": "Panel",
+        "colors": {
+          "crit": "#C4162A",
+          "disable": "#808080",
+          "ok": "#37872D",
+          "warn": "#E0752D"
+        },
+        "cornerRadius": "3px",
+        "flipCard": false,
+        "flipTime": 5,
+        "isAutoScrollOnOverflow": false,
+        "isGrayOnNoData": true,
+        "isHideAlertsOnDisable": false,
+        "isIgnoreOKColors": false,
+        "maxAlertNumber": -1
+      },
+      "pluginVersion": "2.1.0",
+      "targets": [
+        {
+          "alias": "Link",
+          "datasource": {
+            "type": "grafana-testdata-datasource",
+            "uid": "bdi86bi8f7zswc"
+          },
+          "refId": "A",
+          "scenarioId": "no_data_points"
+        }
+      ],
+      "title": "",
+      "type": "vonage-status-panel"
+    },
+    {
+      "datasource": {
+        "type": "grafana-testdata-datasource",
+        "uid": "bdi86bi8f7zswc"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "custom": {
+            "aggregation": "last",
+            "dateFormat": "YYYY-MM-DD HH:mm:ss",
+            "displayAliasType": "Warning / Critical",
+            "displayType": "Regular",
+            "displayValueWithAlias": "Never",
+            "fontFormat": "Bold",
+            "thresholds": {
+              "valueHandler": "Number Threshold",
+              "warn": "",
+              "crit": 0
+            },
+            "valueDisplayRegex": ""
+          },
+          "mappings": []
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 3,
+        "w": 3,
+        "x": 3,
+        "y": 6
+      },
+      "id": 92,
+      "maxPerRow": 8,
+      "options": {
+        "clusterName": "Gi1/0/26",
+        "clusterTargetBlank": false,
+        "clusterUrl": "",
+        "colorMode": "Panel",
+        "colors": {
+          "crit": "#C4162A",
+          "disable": "#808080",
+          "ok": "#37872D",
+          "warn": "#E0752D"
+        },
+        "cornerRadius": "3px",
+        "flipCard": false,
+        "flipTime": 5,
+        "isAutoScrollOnOverflow": false,
+        "isGrayOnNoData": true,
+        "isHideAlertsOnDisable": false,
+        "isIgnoreOKColors": false,
+        "maxAlertNumber": -1
+      },
+      "pluginVersion": "2.1.0",
+      "targets": [
+        {
+          "alias": "Link",
+          "datasource": {
+            "type": "grafana-testdata-datasource",
+            "uid": "bdi86bi8f7zswc"
+          },
+          "refId": "A",
+          "scenarioId": "no_data_points"
         }
       ],
       "title": "",
