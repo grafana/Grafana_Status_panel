@@ -30,7 +30,7 @@ describe('Angular panel detection (regression #8)', () => {
   });
 });
 
-describe('Angular migration — unset thresholds stay unset (regression #9)', () => {
+describe('Angular migration - unset thresholds stay unset (regression #9)', () => {
   test('a bound the Angular panel did not set is migrated as an empty string', () => {
     // Only an empty string survives Grafana's field config pipeline as "unset".
     // Left undefined or null, the bound comes back as the registered default
@@ -48,7 +48,7 @@ describe('Angular migration — unset thresholds stay unset (regression #9)', ()
   });
 });
 
-describe('Angular migration — per-metric URL (regression #7)', () => {
+describe('Angular migration - per-metric URL (regression #7)', () => {
   test("migrates a target's url into a field data link", () => {
     const panel = angularPanel([{ refId: 'A', url: 'https://wiki/runbook' }]);
 

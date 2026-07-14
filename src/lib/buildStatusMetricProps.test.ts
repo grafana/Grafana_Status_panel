@@ -55,7 +55,7 @@ function run(values: Array<number | string>, custom: Partial<StatusFieldOptions>
   return buildStatusMetricProps(data, fieldConfig, baseOptions, noopColors, (s: string) => s, 'browser');
 }
 
-describe('Number Threshold — single-sided thresholds (regression #4 / issue #9)', () => {
+describe('Number Threshold - single-sided thresholds (regression #4 / issue #9)', () => {
   test('crit=0 with empty warn does NOT alert a value that differs from the threshold', () => {
     const res = run([1], { thresholds: { valueHandler: 'Number Threshold', crit: '0', warn: '' } });
     expect(res.crits).toHaveLength(0);
@@ -68,7 +68,7 @@ describe('Number Threshold — single-sided thresholds (regression #4 / issue #9
   });
 });
 
-describe('Disable Criteria — numeric metric (regression #3)', () => {
+describe('Disable Criteria - numeric metric (regression #3)', () => {
   test('a numeric 0 matches disabledValue "0"', () => {
     const res = run([0], {
       thresholds: { valueHandler: 'Disable Criteria', crit: '', warn: '' },
@@ -86,7 +86,7 @@ describe('Disable Criteria — numeric metric (regression #3)', () => {
   });
 });
 
-describe('Value Regex — keeps the match, not the remainder (regression #1)', () => {
+describe('Value Regex - keeps the match, not the remainder (regression #1)', () => {
   test('displays only the matched part of the value', () => {
     const res = run([12345], {
       thresholds: { valueHandler: 'Number Threshold', crit: '', warn: '' },
@@ -124,7 +124,7 @@ describe('Text Only handler (regression #5)', () => {
   });
 });
 
-describe('Date Threshold — chronological range comparison (regression #2)', () => {
+describe('Date Threshold - chronological range comparison (regression #2)', () => {
   const epoch = (iso: string) => new Date(iso).getTime();
   const dateThresholds = {
     valueHandler: 'Date Threshold' as const,
@@ -149,7 +149,7 @@ describe('Date Threshold — chronological range comparison (regression #2)', ()
   });
 });
 
-describe('Number Threshold — equal warn and crit bounds (regression #11)', () => {
+describe('Number Threshold - equal warn and crit bounds (regression #11)', () => {
   // The AngularJS panel compared the value against each bound (`value >= crit`,
   // then `value >= warn`). The React rewrite turned that into a range check whose
   // two branches are BOTH true when warn === crit, so every value came out crit.
@@ -172,7 +172,7 @@ describe('Number Threshold — equal warn and crit bounds (regression #11)', () 
   });
 });
 
-describe('Number Threshold — direction is taken from the bounds', () => {
+describe('Number Threshold - direction is taken from the bounds', () => {
   test('higher is worse: warn 80 / crit 90', () => {
     expect(run([50], { thresholds: { valueHandler: 'Number Threshold', warn: '80', crit: '90' } }).warns).toHaveLength(
       0
@@ -198,7 +198,7 @@ describe('Number Threshold — direction is taken from the bounds', () => {
   });
 });
 
-describe('Text Only — the value is always shown (regression #10)', () => {
+describe('Text Only - the value is always shown (regression #10)', () => {
   // handleTextOnly in the Angular panel pushed the series straight to the display
   // list without ever looking at displayValueWithAlias, so the value showed up
   // even when the option said "Never".

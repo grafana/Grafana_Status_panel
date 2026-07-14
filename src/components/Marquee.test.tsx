@@ -22,7 +22,7 @@ function renderMarquee({ autoScroll, overflowing }: { autoScroll: boolean; overf
   return screen.getByTestId('marquee');
 }
 
-describe('ReactMarquee — scrolling (regression #12)', () => {
+describe('ReactMarquee - scrolling (regression #12)', () => {
   test('an overflowing list scrolls', () => {
     expect(renderMarquee({ autoScroll: true, overflowing: true }).className).not.toBe('');
   });
